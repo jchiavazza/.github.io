@@ -139,13 +139,6 @@ a { color: var(--acento); }
   margin: 0 auto 22px;
 }
 
-.icono {
-  width: 116px; height: 116px;
-  border-radius: 26px;
-  box-shadow: var(--relieve);
-  display: block; margin: 0 auto 26px;
-}
-
 .portada h1 {
   font-size: clamp(32px, 6.5vw, 50px);
   letter-spacing: -0.02em;
