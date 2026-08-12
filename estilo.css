@@ -242,14 +242,47 @@ a { color: var(--acento); }
 .datos dd a { text-decoration: none; }
 .datos dd a:hover { text-decoration: underline; }
 
-/* Las sedes: cada bloque es una provincia y puede llevar varios clubes,
-   separados por una línea fina para que no se lean como uno solo. */
-.sedes dd { font-size: 16px; line-height: 1.35; }
-.sedes dd + dd {
-  margin-top: 12px;
-  padding-top: 12px;
-  border-top: 1px solid var(--borde);
+/* ---------------------------------- sedes */
+
+.grilla-sedes {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+  gap: 24px 18px;
 }
+.sede { text-align: center; }
+
+/* Los escudos vienen de ocho clubes distintos: unos con transparencia,
+   otros con fondo blanco o celeste. La chapa blanca los iguala y evita
+   que en modo oscuro cada uno se recorte con su propio fondo. */
+.sede-logo {
+  background: #FFFFFF;
+  border: 1px solid var(--borde);
+  border-radius: 14px;
+  box-shadow: var(--relieve-chico);
+  aspect-ratio: 1;
+  padding: 12px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.sede-logo img {
+  max-width: 100%;
+  max-height: 100%;
+  object-fit: contain;
+}
+.sede-logo.sin-logo {
+  background: none;
+  border-style: dashed;
+  box-shadow: var(--hundido);
+  font-size: 22px;
+  font-weight: 700;
+  color: var(--texto-suave);
+}
+.sede h3 { font-size: 15px; margin: 12px 0 2px; }
+.sede p { font-size: 13px; color: var(--texto-suave); margin: 0; line-height: 1.4; }
+.sede.proxima .sede-logo { opacity: 0.75; }
+.sede.proxima strong { color: var(--acento); font-weight: 600; }
+
 .detalle {
   display: block;
   font-weight: 400;
