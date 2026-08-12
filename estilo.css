@@ -104,7 +104,7 @@ a { color: var(--acento); }
   align-items: center;
 }
 .barra .marca img {
-  height: 52px;
+  height: 84px;
   width: auto;
   display: block;
 }
@@ -504,6 +504,41 @@ a { color: var(--acento); }
   .visor-nav { position: absolute; bottom: 52px; }
   .visor-antes { left: 16px; }
   .visor-luego { right: 16px; }
+}
+
+/* ---------------------------------- volver al principio */
+
+.arriba {
+  position: fixed;
+  right: 20px;
+  bottom: 20px;
+  z-index: 40;
+  padding: 12px 18px;
+  border-radius: 15px;
+  border: 1px solid var(--borde);
+  background: var(--fondo);
+  color: var(--acento);
+  font-size: 15px;
+  font-weight: 600;
+  font-family: inherit;
+  cursor: pointer;
+  box-shadow: var(--relieve);
+  /* Escondido hasta que se baje: si no, tapa la portada. */
+  opacity: 0;
+  transform: translateY(12px);
+  pointer-events: none;
+  transition: opacity .2s ease, transform .2s ease, box-shadow .15s ease;
+}
+.arriba.visible {
+  opacity: 1;
+  transform: none;
+  pointer-events: auto;
+}
+.arriba:active { box-shadow: var(--hundido); }
+.arriba span { margin-right: 4px; }
+
+@media (max-width: 600px) {
+  .arriba { right: 14px; bottom: 14px; padding: 11px 15px; font-size: 14px; }
 }
 
 /* ---------------------------------- pie */
