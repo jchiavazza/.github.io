@@ -104,7 +104,7 @@ a { color: var(--acento); }
   align-items: center;
 }
 .barra .marca img {
-  height: 84px;
+  height: 168px;
   width: auto;
   display: block;
 }
@@ -336,18 +336,14 @@ a { color: var(--acento); }
 
 /* ---------------------------------- capturas */
 
+/* Las cuatro pantallas entran juntas, sin scroll: se reparten el ancho
+   disponible en partes iguales. En el celular pasan a dos y dos. */
 .capturas {
-  display: flex;
-  gap: 18px;
-  overflow-x: auto;
-  padding-bottom: 12px;
-  scroll-snap-type: x mandatory;
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 14px;
 }
-.capturas figure {
-  margin: 0;
-  flex: 0 0 232px;
-  scroll-snap-align: start;
-}
+.capturas figure { margin: 0; min-width: 0; }
 .capturas img {
   width: 100%;
   /* Sin esto, el atributo height del HTML manda y la captura sale
@@ -559,4 +555,7 @@ footer a:hover { text-decoration: underline; }
   .portada { padding: 36px 0 36px; }
   .boton { width: 100%; text-align: center; }
   .destacada { flex-direction: column; text-align: center; }
+  /* Cuatro capturas en una pantalla angosta quedan ilegibles: dos y dos. */
+  .capturas { grid-template-columns: repeat(2, 1fr); }
+  .barra .marca img { height: 104px; }
 }
