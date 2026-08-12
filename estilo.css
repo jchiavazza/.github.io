@@ -90,7 +90,8 @@ a { color: var(--acento); }
   display: flex;
   align-items: center;
   justify-content: space-between;
-  gap: 16px;
+  flex-wrap: wrap;
+  gap: 14px;
   padding: 20px 0 0;
   font-size: 15px;
 }
@@ -99,14 +100,44 @@ a { color: var(--acento); }
   text-decoration: none;
   color: var(--texto);
   letter-spacing: -0.01em;
+  display: flex;
+  align-items: center;
 }
-.barra nav { display: flex; gap: 18px; }
-.barra nav a { text-decoration: none; }
-.barra nav a:hover { text-decoration: underline; }
+.barra .marca img {
+  height: 52px;
+  width: auto;
+  display: block;
+}
+
+/* Los enlaces del menú son botones chicos, con el mismo relieve que los
+   de la portada: se hunden al tocarlos igual que "Quiero tirar". */
+.barra nav { display: flex; flex-wrap: wrap; gap: 10px; }
+.barra nav a {
+  text-decoration: none;
+  color: var(--acento);
+  font-weight: 600;
+  padding: 9px 16px;
+  border-radius: 12px;
+  border: 1px solid var(--borde);
+  background: var(--fondo);
+  box-shadow: var(--relieve-chico);
+  transition: box-shadow .15s ease, transform .15s ease;
+}
+.barra nav a:hover { transform: translateY(-1px); }
+.barra nav a:active { box-shadow: var(--hundido); transform: translateY(0); }
 
 /* ---------------------------------- portada */
 
 .portada { padding: 52px 0 48px; text-align: center; }
+
+/* El escudo del club: va sin chapa ni relieve porque ya trae su propio
+   volumen y su fondo transparente lo apoya sobre el beige. */
+.logo-portada {
+  display: block;
+  width: min(340px, 78%);
+  height: auto;
+  margin: 0 auto 22px;
+}
 
 .icono {
   width: 116px; height: 116px;
