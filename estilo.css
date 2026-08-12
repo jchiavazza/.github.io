@@ -244,10 +244,13 @@ a { color: var(--acento); }
 
 /* ---------------------------------- sedes */
 
+/* Ocho sedes en una sola franja: los escudos chicos y en fila ocupan una
+   fracción de lo que ocupaban apilados. En pantalla angosta se reparten
+   en dos o tres filas solos. */
 .grilla-sedes {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
-  gap: 24px 18px;
+  grid-template-columns: repeat(auto-fill, minmax(96px, 1fr));
+  gap: 20px 14px;
 }
 .sede { text-align: center; }
 
@@ -260,7 +263,7 @@ a { color: var(--acento); }
   border-radius: 14px;
   box-shadow: var(--relieve-chico);
   aspect-ratio: 1;
-  padding: 12px;
+  padding: 9px;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -278,8 +281,8 @@ a { color: var(--acento); }
   font-weight: 700;
   color: var(--texto-suave);
 }
-.sede h3 { font-size: 15px; margin: 12px 0 2px; }
-.sede p { font-size: 13px; color: var(--texto-suave); margin: 0; line-height: 1.4; }
+.sede h3 { font-size: 13px; margin: 9px 0 1px; line-height: 1.25; }
+.sede p { font-size: 12px; color: var(--texto-suave); margin: 0; line-height: 1.35; }
 .sede.proxima .sede-logo { opacity: 0.75; }
 .sede.proxima strong { color: var(--acento); font-weight: 600; }
 
