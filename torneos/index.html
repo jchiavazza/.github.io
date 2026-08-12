@@ -1,0 +1,159 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Torneos — Club 9x19 Shooting</title>
+<meta name="description" content="Fotos de los matches de IDPA que organiza el Club 9x19 Shooting: Club Fénix en San Luis, Tiro Federal de Esperanza y Tiro Federal Argentino de Santa Fe.">
+<link rel="icon" href="../assets/icono.png">
+<link rel="stylesheet" href="../estilo.css">
+
+<meta property="og:type" content="website">
+<meta property="og:title" content="Torneos del Club 9x19 Shooting">
+<meta property="og:description" content="Fotos de los matches de IDPA que organizamos.">
+<meta property="og:url" content="https://9x19shooting.com.ar/torneos/">
+<meta property="og:locale" content="es_AR">
+</head>
+<body>
+
+<div class="envoltorio">
+  <div class="barra">
+    <a class="marca" href="/">9x19 Shooting</a>
+    <nav>
+      <a href="/#donde">Sedes</a>
+      <a href="/score/">La app</a>
+      <a href="/#contacto">Contacto</a>
+    </nav>
+  </div>
+</div>
+
+<main class="envoltorio">
+
+  <header class="portada">
+    <h1>Nuestros torneos</h1>
+    <p class="bajada">Los matches que fuimos corriendo, fecha por fecha.</p>
+  </header>
+
+  <div id="galerias"></div>
+
+</main>
+
+<footer>
+  <div class="envoltorio">
+    <p>
+      Club 9x19 Shooting · Villa María, Córdoba, Argentina ·
+      <a href="mailto:9x19shooting@gmail.com">9x19shooting@gmail.com</a>
+    </p>
+  </div>
+</footer>
+
+<!-- Visor: se abre al tocar una miniatura. Se cierra con Esc, con la X o
+     tocando el fondo; se pasa de foto con las flechas del teclado. -->
+<div id="visor" class="visor" hidden>
+  <button class="visor-cerrar" type="button" aria-label="Cerrar">✕</button>
+  <button class="visor-nav visor-antes" type="button" aria-label="Anterior">‹</button>
+  <img id="visor-img" alt="">
+  <button class="visor-nav visor-luego" type="button" aria-label="Siguiente">›</button>
+  <p class="visor-pie"><span id="visor-torneo"></span> <span id="visor-cuenta"></span></p>
+</div>
+
+<script>
+// Cada torneo: la carpeta en galeria/ y cuántas fotos tiene. Las fotos se
+// llaman 01.jpg, 02.jpg… así que con el total alcanza para armar la lista.
+// Para sumar un torneo: correr scripts/fotos.ps1 y agregar una línea acá.
+const TORNEOS = [
+  { slug: 'primera-fecha-fenix',     titulo: 'Primera Fecha',  sede: 'Polígono de Tiro Fénix, San Luis',      fecha: '11 de abril de 2026', fotos: 28 },
+  { slug: 'primera-fecha-esperanza', titulo: 'Primera Fecha',  sede: 'Tiro Federal de Esperanza, Santa Fe',   fecha: '30 de mayo de 2026',  fotos: 28 },
+  { slug: 'segunda-fecha-santa-fe',  titulo: 'Segunda Fecha',  sede: 'Tiro Federal Argentino de Santa Fe',    fecha: '13 de junio de 2026', fotos: 20 },
+  { slug: 'tercera-fecha-esperanza', titulo: 'Tercera Fecha',  sede: 'Tiro Federal de Esperanza, Santa Fe',   fecha: '12 de julio de 2026', fotos: 31 },
+];
+
+const dosDigitos = (n) => String(n).padStart(2, '0');
+const contenedor = document.getElementById('galerias');
+
+TORNEOS.forEach((t) => {
+  const sec = document.createElement('section');
+  sec.id = t.slug;
+
+  const h2 = document.createElement('h2');
+  h2.textContent = t.titulo;
+  const bajo = document.createElement('p');
+  bajo.className = 'sede-torneo';
+  bajo.innerHTML = t.sede + ' · ' + t.fecha;
+  sec.append(h2, bajo);
+
+  const grilla = document.createElement('div');
+  grilla.className = 'grilla-fotos';
+  for (let i = 1; i <= t.fotos; i++) {
+    const n = dosDigitos(i);
+    const b = document.createElement('button');
+    b.type = 'button';
+    b.className = 'foto';
+    b.dataset.torneo = t.slug;
+    b.dataset.n = i;
+    const img = document.createElement('img');
+    img.src = `../galeria/${t.slug}/mini/${n}.jpg`;
+    img.alt = `${t.titulo} en ${t.sede}, foto ${i} de ${t.fotos}`;
+    img.loading = 'lazy';
+    b.append(img);
+    grilla.append(b);
+  }
+  sec.append(grilla);
+  contenedor.append(sec);
+});
+
+// ---- el visor
+
+const visor  = document.getElementById('visor');
+const vImg   = document.getElementById('visor-img');
+const vTorneo= document.getElementById('visor-torneo');
+const vCuenta= document.getElementById('visor-cuenta');
+let actual = null; // { torneo, n }
+
+function abrir(slug, n) {
+  const t = TORNEOS.find((x) => x.slug === slug);
+  if (!t) return;
+  if (n < 1) n = t.fotos;
+  if (n > t.fotos) n = 1;
+  actual = { slug, n };
+  vImg.src = `../galeria/${slug}/g/${dosDigitos(n)}.jpg`;
+  vImg.alt = `${t.titulo} en ${t.sede}, foto ${n} de ${t.fotos}`;
+  vTorneo.textContent = `${t.titulo} — ${t.sede}`;
+  vCuenta.textContent = `${n} / ${t.fotos}`;
+  visor.hidden = false;
+  document.body.style.overflow = 'hidden';
+}
+
+function cerrar() {
+  visor.hidden = true;
+  vImg.removeAttribute('src');
+  actual = null;
+  document.body.style.overflow = '';
+}
+
+function mover(paso) {
+  if (actual) abrir(actual.slug, actual.n + paso);
+}
+
+contenedor.addEventListener('click', (e) => {
+  const b = e.target.closest('.foto');
+  if (b) abrir(b.dataset.torneo, Number(b.dataset.n));
+});
+
+visor.querySelector('.visor-cerrar').addEventListener('click', cerrar);
+visor.querySelector('.visor-antes').addEventListener('click', () => mover(-1));
+visor.querySelector('.visor-luego').addEventListener('click', () => mover(1));
+
+// Tocar el fondo cierra; tocar la foto o los botones, no.
+visor.addEventListener('click', (e) => { if (e.target === visor) cerrar(); });
+
+document.addEventListener('keydown', (e) => {
+  if (visor.hidden) return;
+  if (e.key === 'Escape') cerrar();
+  else if (e.key === 'ArrowLeft') mover(-1);
+  else if (e.key === 'ArrowRight') mover(1);
+});
+</script>
+
+</body>
+</html>

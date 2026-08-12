@@ -367,6 +367,111 @@ a { color: var(--acento); }
   font-weight: 700;
 }
 
+/* ---------------------------------- galería de torneos */
+
+.sede-torneo {
+  color: var(--texto-suave);
+  font-size: 15px;
+  margin-top: -8px;
+}
+
+.grilla-fotos {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
+  gap: 12px;
+}
+.foto {
+  padding: 0;
+  border: 1px solid var(--borde);
+  border-radius: 12px;
+  background: none;
+  cursor: pointer;
+  overflow: hidden;
+  aspect-ratio: 4 / 3;
+  box-shadow: var(--relieve-chico);
+  transition: transform .15s ease;
+}
+.foto:hover { transform: translateY(-2px); }
+.foto:active { transform: none; box-shadow: var(--hundido); }
+.foto img {
+  width: 100%; height: 100%;
+  object-fit: cover;
+  display: block;
+}
+
+/* Tarjetas de torneo en la portada: la foto de tapa y el nombre encima. */
+.grilla-torneos {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(210px, 1fr));
+  gap: 18px;
+}
+.torneo {
+  display: block;
+  text-decoration: none;
+  color: inherit;
+  border-radius: 12px;
+  overflow: hidden;
+  border: 1px solid var(--borde);
+  box-shadow: var(--relieve-chico);
+  transition: transform .15s ease;
+}
+.torneo:hover { transform: translateY(-2px); }
+.torneo img { width: 100%; aspect-ratio: 4 / 3; object-fit: cover; display: block; }
+.torneo div { padding: 14px 16px; }
+.torneo h3 { font-size: 16px; margin: 0 0 3px; }
+.torneo p { font-size: 13px; color: var(--texto-suave); margin: 0; line-height: 1.4; }
+
+/* ---------------------------------- visor de fotos */
+
+.visor {
+  position: fixed; inset: 0;
+  z-index: 50;
+  background: rgba(20, 18, 15, 0.94);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  padding: 20px;
+}
+.visor[hidden] { display: none; }
+.visor img {
+  max-width: 100%;
+  max-height: calc(100vh - 110px);
+  border-radius: 8px;
+  object-fit: contain;
+}
+.visor-cerrar, .visor-nav {
+  background: rgba(255, 255, 255, 0.12);
+  color: #FFF;
+  border: none;
+  cursor: pointer;
+  border-radius: 50%;
+  flex-shrink: 0;
+}
+.visor-cerrar {
+  position: absolute; top: 16px; right: 16px;
+  width: 42px; height: 42px;
+  font-size: 18px;
+}
+.visor-nav { width: 46px; height: 46px; font-size: 28px; line-height: 1; }
+.visor-cerrar:hover, .visor-nav:hover { background: rgba(255, 255, 255, 0.24); }
+.visor-pie {
+  position: absolute; bottom: 18px; left: 0; right: 0;
+  text-align: center;
+  color: rgba(255, 255, 255, 0.75);
+  font-size: 14px;
+  margin: 0;
+  padding: 0 20px;
+}
+.visor-pie span + span { margin-left: 10px; }
+
+@media (max-width: 600px) {
+  .visor { padding: 10px; }
+  .visor-nav { position: absolute; bottom: 52px; }
+  .visor-antes { left: 16px; }
+  .visor-luego { right: 16px; }
+}
+
 /* ---------------------------------- pie */
 
 footer {
