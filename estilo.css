@@ -242,6 +242,15 @@ a { color: var(--acento); }
 .datos dd a { text-decoration: none; }
 .datos dd a:hover { text-decoration: underline; }
 
+/* El número de asociado, debajo del nombre: se lee si se busca, pero no
+   compite con él. */
+.matricula {
+  font-weight: 400;
+  font-size: 14px;
+  color: var(--texto-suave);
+  letter-spacing: 0.04em;
+}
+
 /* ---------------------------------- capturas */
 
 .capturas {
