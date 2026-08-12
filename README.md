@@ -1,11 +1,23 @@
 # 9x19shooting.com.ar
 
-Sitio de 9x19 Score. Una sola página estática, sin dependencias ni build:
-`index.html` con el CSS adentro y dos imágenes en `assets/`.
+Sitio del **Club 9x19 Shooting**, de Villa María, Córdoba: club de tiro
+afiliado a IDPA con el número CL100757. Páginas estáticas, sin
+dependencias ni build.
+
+```
+index.html        el club: qué es IDPA, actividades, sedes, contacto
+score/index.html  la app 9x19 Score
+estilo.css        el sistema visual, compartido por las dos
+assets/           iconos e imagenes
+```
 
 El diseño replica el sistema de relieve de la app (`src/theme.js` en
 `PuntajeApp`): mismos colores, mismas sombras. Si cambia la paleta de la
-app, se cambia acá en las variables del `:root`.
+app, se cambia acá en las variables del `:root` de `estilo.css`.
+
+La leyenda "Aplicación no oficial, sin relación con IDPA" va solo en la
+página de la app, y tiene que quedarse: el club sí está afiliado, pero la
+app no es un producto de IDPA ni está avalada por ellos.
 
 ## Cómo se publica
 
@@ -56,6 +68,6 @@ declarada en la ficha de Play y no se puede mover.
 
 ## El placeholder anterior
 
-Hasta el 12/8/2026 el dominio mostraba una página de "sitio en
+Hasta el 12/8/2026 el dominio mostraba una pagina de "sitio en
 construcción". No se perdió: está en la historia del repo, en el commit
 anterior a este sitio.

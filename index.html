@@ -3,387 +3,170 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>9x19 Score — Puntuá matches de IDPA desde el celular</title>
-<meta name="description" content="Aplicación Android para organizar y puntuar competencias de IDPA: etapas, competidores, puntajes, resultados y sincronización entre varios celulares. Funciona sin conexión.">
+<title>Club 9x19 Shooting — Tiro defensivo IDPA en Villa María, Córdoba</title>
+<meta name="description" content="Club de tiro afiliado a la International Defensive Pistol Association (IDPA), CL100757, en Villa María, provincia de Córdoba, Argentina. Entrenamientos, matches y clasificaciones oficiales de tiro defensivo.">
 <link rel="icon" href="assets/icono.png">
+<link rel="stylesheet" href="estilo.css">
 
 <meta property="og:type" content="website">
-<meta property="og:title" content="9x19 Score">
-<meta property="og:description" content="Organizá y puntuá matches de IDPA desde el celular, sin depender de papel.">
-<meta property="og:image" content="assets/destacado.png">
+<meta property="og:title" content="Club 9x19 Shooting">
+<meta property="og:description" content="Tiro defensivo IDPA en Villa María, Córdoba. Club afiliado, CL100757.">
+<meta property="og:url" content="https://9x19shooting.com.ar/">
 <meta property="og:locale" content="es_AR">
-
-<style>
-/* ------------------------------------------------------------------
-   El sistema visual sale de src/theme.js de la app: las superficies
-   comparten el color del fondo y el volumen lo construyen dos sombras
-   opuestas, una clara arriba a la izquierda y una oscura abajo a la
-   derecha. Los valores son los mismos.
-   ------------------------------------------------------------------ */
-:root {
-  --fondo: #EFEBE4;
-  --texto: #221E17;
-  --texto-suave: #6A6155;
-  --sombra: #BFB8AB;
-  --luz: #FFFFFF;
-  --borde: rgba(120, 110, 92, 0.22);
-  --acento: #8A6A1E;
-  --acento-texto: #FFF8E8;
-  --ok: #2F6B3A;
-
-  --relieve: 7px 7px 14px var(--sombra), -7px -7px 14px var(--luz);
-  --relieve-chico: 4px 4px 9px var(--sombra), -4px -4px 9px var(--luz);
-  --hundido: inset 6px 6px 11px var(--sombra), inset -6px -6px 11px var(--luz);
-}
-
-/* La misma lógica con la luz al revés: el fondo oscuro recibe una sombra
-   más negra y un reflejo apenas visible. */
-@media (prefers-color-scheme: dark) {
-  :root {
-    --fondo: #24211C;
-    --texto: #EDE8DE;
-    --texto-suave: #A79E90;
-    --sombra: #14120F;
-    --luz: #34302A;
-    --borde: rgba(220, 210, 190, 0.16);
-    --acento: #D8B458;
-    --acento-texto: #221E17;
-    --ok: #7FB98A;
-  }
-}
-:root[data-theme="dark"] {
-  --fondo: #24211C;
-  --texto: #EDE8DE;
-  --texto-suave: #A79E90;
-  --sombra: #14120F;
-  --luz: #34302A;
-  --borde: rgba(220, 210, 190, 0.16);
-  --acento: #D8B458;
-  --acento-texto: #221E17;
-  --ok: #7FB98A;
-}
-:root[data-theme="light"] {
-  --fondo: #EFEBE4;
-  --texto: #221E17;
-  --texto-suave: #6A6155;
-  --sombra: #BFB8AB;
-  --luz: #FFFFFF;
-  --borde: rgba(120, 110, 92, 0.22);
-  --acento: #8A6A1E;
-  --acento-texto: #FFF8E8;
-  --ok: #2F6B3A;
-}
-
-* { box-sizing: border-box; }
-
-body {
-  margin: 0;
-  background: var(--fondo);
-  color: var(--texto);
-  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto,
-               "Helvetica Neue", Arial, sans-serif;
-  line-height: 1.6;
-  -webkit-font-smoothing: antialiased;
-}
-
-.envoltorio { max-width: 940px; margin: 0 auto; padding: 0 20px; }
-
-section { padding: 56px 0; }
-section + section { border-top: 1px solid var(--borde); }
-
-h1, h2, h3 { line-height: 1.2; margin: 0 0 16px; }
-h2 { font-size: 26px; letter-spacing: -0.01em; }
-h3 { font-size: 17px; }
-p { margin: 0 0 16px; }
-a { color: var(--acento); }
-
-/* ---------------------------------- portada */
-
-.portada { padding: 64px 0 56px; text-align: center; }
-
-.icono {
-  width: 116px; height: 116px;
-  border-radius: 26px;
-  box-shadow: var(--relieve);
-  display: block; margin: 0 auto 26px;
-}
-
-.portada h1 {
-  font-size: clamp(34px, 7vw, 52px);
-  letter-spacing: -0.02em;
-  margin-bottom: 10px;
-}
-
-.bajada {
-  font-size: clamp(17px, 2.4vw, 21px);
-  color: var(--texto-suave);
-  max-width: 30ch;
-  margin: 0 auto 30px;
-}
-
-.acciones {
-  display: flex; flex-wrap: wrap;
-  gap: 14px; justify-content: center;
-}
-
-.boton {
-  display: inline-block;
-  padding: 14px 26px;
-  border-radius: 15px;
-  border: 1px solid var(--borde);
-  background: var(--fondo);
-  color: var(--texto);
-  font-size: 16px; font-weight: 600;
-  text-decoration: none;
-  box-shadow: var(--relieve);
-  transition: box-shadow .15s ease, transform .15s ease;
-}
-.boton:hover { transform: translateY(-1px); }
-.boton:active { box-shadow: var(--hundido); transform: translateY(0); }
-
-.boton.principal { color: var(--acento); }
-
-/* El estado mientras la app está en prueba cerrada: se ve, se lee, no se
-   toca. Al publicarse en Producción se le saca la clase y listo. */
-.boton.pendiente {
-  box-shadow: var(--hundido);
-  color: var(--texto-suave);
-  cursor: default;
-  font-weight: 500;
-}
-
-.aviso-play {
-  margin-top: 22px;
-  font-size: 14px;
-  color: var(--texto-suave);
-}
-
-/* ---------------------------------- tarjetas */
-
-.grilla {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-  gap: 18px;
-}
-
-.tarjeta {
-  padding: 24px;
-  border-radius: 12px;
-  border: 1px solid var(--borde);
-  box-shadow: var(--relieve-chico);
-}
-.tarjeta h3 { margin-bottom: 8px; }
-.tarjeta p { margin: 0; color: var(--texto-suave); font-size: 15px; }
-
-/* ---------------------------------- capturas */
-
-.capturas {
-  display: flex;
-  gap: 18px;
-  overflow-x: auto;
-  padding-bottom: 12px;
-  scroll-snap-type: x mandatory;
-}
-.capturas figure {
-  margin: 0;
-  flex: 0 0 232px;
-  scroll-snap-align: start;
-}
-.capturas img {
-  width: 100%;
-  border-radius: 14px;
-  border: 1px solid var(--borde);
-  box-shadow: var(--relieve-chico);
-  display: block;
-}
-.capturas figcaption {
-  margin-top: 10px;
-  font-size: 14px;
-  color: var(--texto-suave);
-  text-align: center;
-}
-/* Marco vacío mientras no estén sacadas las capturas del teléfono. */
-.captura-pendiente {
-  aspect-ratio: 9 / 19.5;
-  border-radius: 14px;
-  border: 1px dashed var(--borde);
-  box-shadow: var(--hundido);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  padding: 20px;
-  text-align: center;
-  font-size: 14px;
-  color: var(--texto-suave);
-}
-
-/* ---------------------------------- privacidad */
-
-.privacidad ul {
-  list-style: none;
-  padding: 0;
-  margin: 0 0 22px;
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(230px, 1fr));
-  gap: 12px 26px;
-}
-.privacidad li {
-  padding-left: 28px;
-  position: relative;
-  color: var(--texto-suave);
-}
-.privacidad li::before {
-  content: "✓";
-  position: absolute; left: 0; top: 0;
-  color: var(--ok);
-  font-weight: 700;
-}
-
-/* ---------------------------------- pie */
-
-footer {
-  border-top: 1px solid var(--borde);
-  padding: 34px 0 44px;
-  font-size: 14px;
-  color: var(--texto-suave);
-}
-footer p { margin: 0 0 8px; }
-.no-oficial { font-style: italic; }
-
-@media (max-width: 600px) {
-  section { padding: 42px 0; }
-  .portada { padding: 44px 0 40px; }
-  .boton { width: 100%; text-align: center; }
-}
-</style>
 </head>
 <body>
+
+<div class="envoltorio">
+  <div class="barra">
+    <a class="marca" href="/">9x19 Shooting</a>
+    <nav>
+      <a href="#actividades">Actividades</a>
+      <a href="#donde">Dónde</a>
+      <a href="#app">La app</a>
+      <a href="#contacto">Contacto</a>
+    </nav>
+  </div>
+</div>
 
 <main class="envoltorio">
 
   <header class="portada">
-    <img class="icono" src="assets/icono.png" alt="Ícono de 9x19 Score" width="116" height="116">
-    <h1>9x19 Score</h1>
-    <p class="bajada">Organizá y puntuá matches de IDPA desde el celular, sin depender de papel.</p>
+    <h1>Club 9x19 Shooting</h1>
+    <p class="bajada">Tiro defensivo IDPA en Villa María, provincia de Córdoba.</p>
+
+    <p class="sello">
+      Club afiliado a IDPA · <strong>CL100757</strong>
+    </p>
 
     <div class="acciones">
-      <!-- Cuando la app salga a Producción: cambiar <span> por
-           <a class="boton principal" href="https://play.google.com/store/apps/details?id=com.shooting9x19.puntaje">
-           y borrar el párrafo .aviso-play de abajo. -->
-      <span class="boton pendiente">En revisión para Google Play</span>
-      <a class="boton" href="#funciones">Qué hace</a>
+      <a class="boton principal" href="#contacto">Quiero tirar</a>
+      <a class="boton" href="https://www.idpa.com/clubs/9x19-shooting/">Ficha oficial en idpa.com</a>
     </div>
-
-    <p class="aviso-play">
-      La app está en prueba cerrada. Escribinos a
-      <a href="mailto:9x19shooting@gmail.com">9x19shooting@gmail.com</a>
-      si organizás matches y querés probarla.
-    </p>
   </header>
 
-  <section id="funciones">
-    <h2>Un match completo, de principio a fin</h2>
+  <section id="que-es">
+    <h2>Qué es IDPA</h2>
     <p>
-      9x19 Score organiza y puntúa competencias de IDPA
-      (International Defensive Pistol Association) desde el teléfono y sin
-      necesidad de internet.
+      La <strong>International Defensive Pistol Association</strong> es una
+      disciplina de tiro con pistola que se corre sobre escenarios armados
+      para representar situaciones de defensa: se usa el equipo que uno
+      llevaría todos los días, se dispara desde posiciones y coberturas que
+      cambian en cada etapa, y el reglamento premia la precisión tanto como
+      la velocidad, porque cada punto por debajo suma un segundo al tiempo
+      final.
     </p>
+    <p>
+      Los tiradores compiten por <strong>división</strong> —según el tipo de
+      arma— y por <strong>clase</strong>, que se obtiene con un
+      clasificador oficial. Así cada uno corre contra gente de su mismo
+      nivel, y arrancar no exige experiencia previa.
+    </p>
+  </section>
 
+  <section id="actividades">
+    <h2>Qué hacemos</h2>
     <div class="grilla">
       <div class="tarjeta">
-        <h3>Etapas y competidores</h3>
-        <p>Creá el torneo con sus etapas, briefings y cantidad de amenazas. Cargá competidores a mano o en lote desde una planilla de Excel.</p>
+        <h3>Matches de IDPA</h3>
+        <p>Competencias sobre escenarios armados para la ocasión, corridas con el reglamento vigente y árbitros del club.</p>
       </div>
       <div class="tarjeta">
-        <h3>Puntaje por escuadra</h3>
-        <p>Tiempo, puntos por debajo, Miss, No-Shoot, errores de procedimiento y penalidades nombradas. Cada puntaje se revisa antes de confirmarse.</p>
+        <h3>Clasificaciones oficiales</h3>
+        <p>Jornadas de clasificador IDPA para todas las divisiones: es lo que asigna la clase con la que después se compite.</p>
       </div>
       <div class="tarjeta">
-        <h3>La regla del dedo</h3>
-        <p>Con descalificación automática a la segunda advertencia en el torneo, como manda el reglamento.</p>
+        <h3>Clínica y clasificación</h3>
+        <p>Una jornada que junta las dos cosas: se enseña el reglamento y la forma de correr las etapas, y después se corre el clasificador.</p>
       </div>
       <div class="tarjeta">
-        <h3>Resultados que ya vienen armados</h3>
-        <p>Generales, por división, por división y clase, combinando clases, por etapa y de asociados IDPA. Más el mejor de cada categoría especial y el tirador más preciso.</p>
-      </div>
-      <div class="tarjeta">
-        <h3>Exportar sin retipear</h3>
-        <p>Resultados en PDF y HTML, y el archivo CSV con el formato de carga masiva de idpa.com.</p>
-      </div>
-      <div class="tarjeta">
-        <h3>Varios árbitros a la vez</h3>
-        <p>Sincronizá el mismo torneo entre varios celulares con un código, para que se cargue en paralelo. Los cambios se combinan, no se pisan.</p>
+        <h3>El circuito argentino</h3>
+        <p>Coordinamos con los demás clubes de IDPA del país: el calendario, los torneos y la comunidad se arman entre todos.</p>
       </div>
     </div>
   </section>
 
-  <section>
-    <h2>Pensada para la cancha</h2>
+  <section id="donde">
+    <h2>Dónde competimos</h2>
     <p>
-      Funciona sin conexión: solo hace falta internet para sincronizar entre
-      dispositivos. Los controles son grandes, con buen contraste para leerse
-      a pleno sol, y cada puntaje se revisa antes de confirmarse.
+      El club tiene su base en Villa María, y lleva sus torneos a polígonos
+      de otras provincias.
     </p>
-    <p>
-      En IDPA el puntaje es tiempo: cada punto por debajo suma un segundo y
-      gana el tiempo final más bajo. La app hace esa cuenta por vos.
-    </p>
+    <dl class="datos">
+      <div>
+        <dt>Córdoba</dt>
+        <dd>Villa María<br>La sede del club</dd>
+      </div>
+      <div>
+        <dt>Santa Fe</dt>
+        <dd>Tiro Federal de Esperanza</dd>
+      </div>
+      <div>
+        <dt>Tucumán</dt>
+        <dd>Tiro Federal de Tucumán<br>San Miguel de Tucumán</dd>
+      </div>
+      <div>
+        <dt>Entre Ríos</dt>
+        <dd>Tiro Federal de Paraná<br><span style="font-weight:400;font-size:15px;color:var(--texto-suave)">Próximamente</span></dd>
+      </div>
+    </dl>
+  </section>
 
-    <!-- Reemplazar cada .captura-pendiente por:
-         <figure><img src="assets/captura-1.png" alt="…"><figcaption>…</figcaption></figure>
-         Las mismas capturas sirven para la ficha de Play. -->
-    <div class="capturas">
-      <figure>
-        <div class="captura-pendiente">Menú principal</div>
-      </figure>
-      <figure>
-        <div class="captura-pendiente">Puntuar una etapa</div>
-      </figure>
-      <figure>
-        <div class="captura-pendiente">Tabla de resultados</div>
-      </figure>
+  <section id="app">
+    <h2>9x19 Score</h2>
+    <p>
+      El club desarrolló su propia aplicación para organizar y puntuar
+      matches de IDPA desde el celular, y la publica para que la use
+      cualquier club que la necesite.
+    </p>
+    <div class="destacada">
+      <img src="assets/icono.png" alt="Ícono de la app 9x19 Score" width="84" height="84">
+      <div>
+        <h3>Un match completo, sin planillas de papel</h3>
+        <p>
+          Etapas, competidores, puntajes por escuadra y resultados por
+          división y clase. Funciona sin conexión y varios árbitros pueden
+          cargar en paralelo sobre el mismo torneo.
+        </p>
+        <a href="score/">Conocer la app →</a>
+      </div>
     </div>
   </section>
 
-  <section class="privacidad">
-    <h2>Los datos de tus competidores</h2>
-    <ul>
-      <li>Sin publicidad</li>
-      <li>Sin analítica ni rastreadores</li>
-      <li>Sin cuentas ni registro</li>
-      <li>Nada se vende ni se cede a terceros</li>
-      <li>Si no sincronizás, nada sale del teléfono</li>
-      <li>Los torneos se borran solos a los 45 días</li>
-    </ul>
+  <section id="contacto">
+    <h2>Contacto</h2>
     <p>
-      Los torneos se eliminan automáticamente a los 45 días de creados, con
-      aviso previo, tanto del teléfono como de la nube; antes de eso se pueden
-      exportar como copia de seguridad. El organizador también puede borrar un
-      torneo, o a un competidor, cuando quiera.
+      Si querés tirar con nosotros, sumarte a un match o consultar por el
+      calendario, escribinos.
     </p>
-    <p>
-      <a href="https://jchiavazza.github.io/politica-9x19/">Leer la política de privacidad completa</a>
-    </p>
-  </section>
 
-  <section id="soporte">
-    <h2>Soporte</h2>
-    <p>
-      Dudas, problemas o pedidos sobre los datos de un competidor:
-      <a href="mailto:9x19shooting@gmail.com">9x19shooting@gmail.com</a>.
-    </p>
-    <p>
-      La app trae el manual de uso completo adentro, en Utilidades → Manual de
-      uso.
-    </p>
+    <dl class="datos">
+      <div>
+        <dt>Correo</dt>
+        <dd><a href="mailto:9x19shooting@gmail.com">9x19shooting@gmail.com</a></dd>
+      </div>
+      <div>
+        <dt>Dónde</dt>
+        <dd>Villa María, Córdoba<br>Argentina (CP 5900)</dd>
+      </div>
+      <div>
+        <dt>Afiliación</dt>
+        <dd><a href="https://www.idpa.com/clubs/9x19-shooting/">IDPA CL100757</a></dd>
+      </div>
+    </dl>
   </section>
 
 </main>
 
 <footer>
   <div class="envoltorio">
-    <p>9x19 Score — versión 1.2.1 · <a href="mailto:9x19shooting@gmail.com">9x19shooting@gmail.com</a></p>
-    <p class="no-oficial">Aplicación no oficial, sin relación con IDPA.</p>
+    <p>
+      Club 9x19 Shooting · Villa María, Córdoba, Argentina ·
+      <a href="mailto:9x19shooting@gmail.com">9x19shooting@gmail.com</a>
+    </p>
+    <p>
+      <a href="score/">9x19 Score</a> ·
+      <a href="https://jchiavazza.github.io/politica-9x19/">Política de privacidad de la app</a>
+    </p>
   </div>
 </footer>
 
