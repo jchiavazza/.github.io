@@ -242,6 +242,22 @@ a { color: var(--acento); }
 .datos dd a { text-decoration: none; }
 .datos dd a:hover { text-decoration: underline; }
 
+/* Las sedes: cada bloque es una provincia y puede llevar varios clubes,
+   separados por una línea fina para que no se lean como uno solo. */
+.sedes dd { font-size: 16px; line-height: 1.35; }
+.sedes dd + dd {
+  margin-top: 12px;
+  padding-top: 12px;
+  border-top: 1px solid var(--borde);
+}
+.detalle {
+  display: block;
+  font-weight: 400;
+  font-size: 14px;
+  color: var(--texto-suave);
+  margin-top: 2px;
+}
+
 /* El número de asociado, debajo del nombre: se lee si se busca, pero no
    compite con él. */
 .matricula {
