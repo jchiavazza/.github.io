@@ -319,6 +319,9 @@ a { color: var(--acento); }
 }
 .capturas img {
   width: 100%;
+  /* Sin esto, el atributo height del HTML manda y la captura sale
+     estirada a lo alto. */
+  height: auto;
   border-radius: 14px;
   border: 1px solid var(--borde);
   box-shadow: var(--relieve-chico);
