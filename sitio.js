@@ -51,6 +51,36 @@
 })();
 
 
+// El formulario, a la altura que ocupa de verdad. JotForm le avisa al sitio
+// que lo incrusta cuánto mide, con un mensaje "setHeight:<px>". Escuchándolo
+// acá evitamos cargar su script y el formulario entra entero, sin barra de
+// desplazamiento adentro del recuadro. Si el mensaje no llega, queda la
+// altura fija del CSS.
+
+(function () {
+  const marco = document.getElementById('form-contacto');
+  if (!marco) return;
+  const caja = marco.parentElement;
+
+  // Lo que JotForm agrega abajo y no queremos mostrar.
+  const PIE = 70;
+
+  window.addEventListener('message', (e) => {
+    if (typeof e.data !== 'string') return;
+    if (!/(^|\.)jotform\.com$/.test(new URL(e.origin).hostname)) return;
+
+    const partes = e.data.split(':');
+    if (partes[0] !== 'setHeight') return;
+
+    const alto = parseInt(partes[1], 10);
+    if (!alto || alto < 200) return;
+
+    marco.style.height = alto + 'px';
+    caja.style.height = Math.max(alto - PIE, 200) + 'px';
+  });
+})();
+
+
 // Cualquier enlace con data-imagen abre esa imagen en un emergente, a su
 // tamaño real mientras entre en la pantalla. Se cierra con Esc, con la X o
 // tocando el fondo. Si no hay JavaScript, el enlace abre la imagen sola.
