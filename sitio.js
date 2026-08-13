@@ -43,6 +43,43 @@
 })();
 
 
+// Las próximas fechas: cuántos días faltan, y esconder la que ya pasó.
+// El data-hasta de cada tarjeta es el último día del torneo; desde el día
+// siguiente la tarjeta desaparece sola, así no queda anunciado un torneo
+// viejo si nadie lo saca a mano. Si no queda ninguna, se va la sección.
+
+(function () {
+  const seccion = document.getElementById('proximas');
+  if (!seccion) return;
+
+  const hoy = new Date();
+  hoy.setHours(0, 0, 0, 0);
+  let quedan = 0;
+
+  seccion.querySelectorAll('[data-hasta]').forEach((tarjeta) => {
+    const partes = tarjeta.dataset.hasta.split('-').map(Number);
+    const fin = new Date(partes[0], partes[1] - 1, partes[2]);
+    fin.setHours(0, 0, 0, 0);
+
+    if (fin < hoy) {
+      tarjeta.hidden = true;
+      return;
+    }
+    quedan++;
+
+    const dias = Math.round((fin - hoy) / 86400000);
+    const cartel = tarjeta.querySelector('.faltan');
+    if (!cartel) return;
+
+    if (dias === 0) cartel.textContent = '¡Es hoy!';
+    else if (dias === 1) cartel.textContent = 'Es mañana';
+    else if (dias <= 60) cartel.textContent = 'Faltan ' + dias + ' días';
+  });
+
+  if (quedan === 0) seccion.hidden = true;
+})();
+
+
 // El formulario de contacto. Se manda sin recargar la página, así el
 // visitante ve la respuesta en el mismo lugar donde escribió. Si no hay
 // JavaScript, el formulario se envía solo con el navegador y Web3Forms

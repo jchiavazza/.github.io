@@ -6,7 +6,7 @@
 <title>Club 9x19 Shooting — Organizamos torneos de IDPA</title>
 <meta name="description" content="Club organizador de eventos de tiro defensivo IDPA en la Argentina, afiliado a la International Defensive Pistol Association con el número CL100757. Matches, clasificaciones oficiales y clínicas.">
 <link rel="icon" href="assets/icono.png">
-<link rel="stylesheet" href="estilo.css?v=30">
+<link rel="stylesheet" href="estilo.css?v=31">
 
 <meta property="og:type" content="website">
 <meta property="og:title" content="Club 9x19 Shooting">
@@ -76,6 +76,56 @@
       <a class="boton" href="https://www.idpa.com/clubs/9x19-shooting/" target="_blank" rel="noopener">Ficha oficial en idpa.com ↗</a>
     </div>
   </header>
+
+  <!-- Próximas fechas. Cuando una pasa, el JavaScript la esconde sola: la
+       fecha de corte es el data-hasta, que es el último día del torneo.
+       Al cargarle las fotos, el torneo se muda a "Nuestros torneos". -->
+  <section id="proximas">
+    <h2>Próximas fechas</h2>
+
+    <div class="grilla-proximas">
+      <article class="proxima-fecha" data-hasta="2026-08-23">
+        <a class="afiche" href="assets/afiches/tucuman.jpg"
+           data-imagen="assets/afiches/tucuman.jpg"
+           data-texto-imagen="Afiche del Torneo Oficial IDPA en el Tiro Federal de Tucumán, 22 y 23 de agosto de 2026">
+          <img src="assets/afiches/tucuman-mini.jpg" alt="Afiche del torneo" loading="lazy">
+        </a>
+
+        <div class="cuando">
+          <span class="dia">22 y 23</span>
+          <span class="mes">de agosto</span>
+          <span class="faltan"></span>
+        </div>
+
+        <div class="que">
+          <p class="hito">El primer torneo de IDPA en Tucumán</p>
+          <h3>Torneo Oficial IDPA</h3>
+          <p class="donde">
+            <img src="assets/logos/tucuman.png" alt="" loading="lazy">
+            Tiro Federal de Tucumán<br>
+            <span class="direccion">Av. Silvano Bores 585, San Miguel de Tucumán</span>
+          </p>
+          <p class="detalle-torneo">
+            Dos días de competencia · 5 escenarios · 78 disparos<br>
+            Divisiones SSP, CDP, ESP, CCP, REV, BUG, CO y LO ·
+            Novatos, Damas, Senior y Junior
+          </p>
+          <p class="detalle-torneo">
+            Match Director: <strong>Maximiliano Pastor</strong> ·
+            Consultas: Instructor César Castro
+          </p>
+
+          <div class="acciones">
+            <a class="boton principal" href="https://form.jotform.com/260535458428665"
+               target="_blank" rel="noopener">Inscribirme ↗</a>
+            <a class="boton" href="https://wa.me/5493816350121" target="_blank" rel="noopener">
+              Informes: 381 635 0121
+            </a>
+          </div>
+        </div>
+      </article>
+    </div>
+  </section>
 
   <section id="que-es">
     <h2>Qué es IDPA</h2>
@@ -390,6 +440,6 @@
   </div>
 </footer>
 
-<script src="sitio.js?v=17"></script>
+<script src="sitio.js?v=18"></script>
 </body>
 </html>

@@ -292,6 +292,119 @@ a { color: var(--acento); }
   color: var(--texto-suave);
 }
 
+/* ---------------------------------- próximas fechas */
+
+.grilla-proximas {
+  display: grid;
+  gap: 18px;
+}
+
+.proxima-fecha {
+  display: flex;
+  gap: 24px;
+  padding: 24px;
+  border-radius: 12px;
+  border: 1px solid var(--borde);
+  box-shadow: var(--relieve-chico);
+}
+
+/* El afiche, en chico: se toca y se abre entero, como el calendario. */
+.proxima-fecha .afiche {
+  flex-shrink: 0;
+  display: block;
+  width: 150px;
+  border-radius: 10px;
+  overflow: hidden;
+  border: 1px solid var(--borde);
+  box-shadow: var(--relieve-chico);
+  transition: transform .15s ease;
+}
+.proxima-fecha .afiche:hover { transform: translateY(-2px); }
+.proxima-fecha .afiche img { width: 100%; height: auto; display: block; }
+
+/* La fecha, como el bloque de un almanaque. */
+.proxima-fecha .cuando {
+  flex-shrink: 0;
+  width: 148px;
+  padding: 18px 12px;
+  border-radius: 12px;
+  box-shadow: var(--hundido);
+  text-align: center;
+  align-self: flex-start;
+}
+.proxima-fecha .dia {
+  display: block;
+  font-size: 30px;
+  font-weight: 800;
+  line-height: 1.05;
+  letter-spacing: -0.02em;
+  color: var(--acento);
+}
+.proxima-fecha .mes {
+  display: block;
+  font-size: 15px;
+  color: var(--texto-suave);
+  margin-top: 2px;
+}
+.proxima-fecha .faltan {
+  display: block;
+  margin-top: 10px;
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--ok);
+}
+
+.proxima-fecha .que { min-width: 0; }
+
+/* Lo que hace especial a esta fecha, arriba del título. */
+.proxima-fecha .hito {
+  display: inline-block;
+  margin: 0 0 8px;
+  padding: 5px 12px;
+  border-radius: 999px;
+  background: var(--acento);
+  color: var(--acento-texto);
+  font-size: 12px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.proxima-fecha h3 { font-size: 21px; margin-bottom: 10px; }
+.proxima-fecha .donde {
+  margin-bottom: 10px;
+  font-weight: 600;
+}
+.proxima-fecha .donde img {
+  height: 34px;
+  width: 34px;
+  object-fit: contain;
+  background: #FFFFFF;
+  border: 1px solid var(--borde);
+  border-radius: 8px;
+  padding: 3px;
+  vertical-align: -11px;
+  margin-right: 8px;
+}
+.proxima-fecha .direccion,
+.proxima-fecha .detalle-torneo {
+  font-weight: 400;
+  font-size: 14px;
+  color: var(--texto-suave);
+}
+.proxima-fecha .detalle-torneo { margin-bottom: 8px; }
+.proxima-fecha .acciones {
+  justify-content: flex-start;
+  margin-top: 18px;
+}
+.proxima-fecha .boton { padding: 12px 22px; font-size: 15px; }
+
+@media (max-width: 620px) {
+  .proxima-fecha { flex-direction: column; gap: 18px; }
+  .proxima-fecha .cuando { width: 100%; padding: 14px; }
+  .proxima-fecha .dia { font-size: 26px; }
+}
+
 /* ---------------------------------- tarjetas */
 
 .grilla {
