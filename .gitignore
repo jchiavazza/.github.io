@@ -1,3 +1,7 @@
 # Los originales de las fotos (341 MB) no van al repo: al sitio suben
 # las versiones reducidas de galeria/, que genera scripts/fotos.ps1
 /Fotos/
+
+# La conversación en la que se armó el sitio: es una copia local, no va
+# publicada.
+/chat-armado-del-sitio.txt
