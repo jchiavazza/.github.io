@@ -400,6 +400,41 @@ a { color: var(--acento); }
   margin-top: 2px;
 }
 
+/* ---------------------------------- los del club */
+
+.personas {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: 18px;
+}
+.persona {
+  display: flex;
+  align-items: center;
+  gap: 18px;
+  padding: 20px;
+  border-radius: 12px;
+  border: 1px solid var(--borde);
+  box-shadow: var(--relieve-chico);
+}
+/* El retrato redondo, con el mismo relieve que las demás superficies. */
+.persona img {
+  width: 84px;
+  height: 84px;
+  border-radius: 50%;
+  object-fit: cover;
+  flex-shrink: 0;
+  box-shadow: var(--relieve-chico);
+}
+.persona h3 { font-size: 17px; margin: 0 0 2px; }
+.persona .rol {
+  margin: 0 0 4px;
+  font-size: 13px;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: var(--texto-suave);
+}
+.persona .matricula { margin: 0; }
+
 /* El número de asociado, debajo del nombre: se lee si se busca, pero no
    compite con él. */
 .matricula {
