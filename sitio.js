@@ -62,15 +62,21 @@
   if (!marco) return;
   const caja = marco.parentElement;
 
-  // Sin recorte: recortar el pie tapaba el botón de enviar cuando JotForm
-  // reacomoda el formulario. Preferimos que se vea entero.
+  // La franja de publicidad de JotForm va pegada al pie del recuadro, no al
+  // final del formulario: si el recuadro termina donde termina el
+  // formulario, la franja se le sienta encima al botón de enviar.
+  //
+  // Por eso el marco se hace más alto que el formulario —la franja baja con
+  // él y deja los botones a la vista— y el recuadro recorta esa franja.
+  const AIRE = 120;   // lo que el marco crece de más
+  const FRANJA = 76;  // lo que mide la barra de JotForm
   let ajustado = false;
 
   function ajustar(alto) {
     if (!alto || alto < 300) return;
     ajustado = true;
-    marco.style.height = alto + 'px';
-    caja.style.height = alto + 'px';
+    marco.style.height = (alto + AIRE) + 'px';
+    caja.style.height = (alto + AIRE - FRANJA) + 'px';
   }
 
   window.addEventListener('message', (e) => {

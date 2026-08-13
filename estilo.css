@@ -599,7 +599,7 @@ a { color: var(--acento); }
    El pie no se recorta: taparlo también tapaba el botón de enviar cuando
    JotForm reacomoda el formulario. */
 .formulario {
-  height: 980px;
+  height: 1024px;
   transition: height .2s ease;
   /* El ancho del formulario embebido de JotForm. */
   max-width: 752px;
@@ -613,7 +613,7 @@ a { color: var(--acento); }
 .formulario iframe {
   display: block;
   width: 100%;
-  height: 1000px;
+  height: 1100px;
   border: 0;
 }
 
@@ -631,8 +631,8 @@ a { color: var(--acento); }
 }
 
 @media (max-width: 600px) {
-  .formulario { height: 1150px; }
-  .formulario iframe { height: 1150px; }
+  .formulario { height: 1180px; }
+  .formulario iframe { height: 1256px; }
 }
 
 /* ---------------------------------- páginas de texto */
