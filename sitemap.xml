@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- La lista de páginas del sitio, para que los buscadores las encuentren
+     todas. Al agregar una fecha de torneo, sumar acá su dirección. -->
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
+  <url>
+    <loc>https://9x19shooting.com.ar/</loc>
+    <changefreq>weekly</changefreq>
+    <priority>1.0</priority>
+  </url>
+  <url>
+    <loc>https://9x19shooting.com.ar/score/</loc>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://9x19shooting.com.ar/torneos/</loc>
+    <changefreq>monthly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url><loc>https://9x19shooting.com.ar/torneos/tercera-fecha-esperanza/</loc></url>
+  <url><loc>https://9x19shooting.com.ar/torneos/segunda-fecha-santa-fe/</loc></url>
+  <url><loc>https://9x19shooting.com.ar/torneos/primera-fecha-esperanza/</loc></url>
+  <url><loc>https://9x19shooting.com.ar/torneos/clinica-tucuman/</loc></url>
+  <url><loc>https://9x19shooting.com.ar/torneos/primera-fecha-fenix/</loc></url>
+  <url><loc>https://9x19shooting.com.ar/torneos/torneo-santa-fe-marzo/</loc></url>
+  <url><loc>https://9x19shooting.com.ar/torneos/clinica-san-luis/</loc></url>
+  <url><loc>https://9x19shooting.com.ar/torneos/clinica-esperanza/</loc></url>
+  <url>
+    <loc>https://9x19shooting.com.ar/privacidad/</loc>
+    <changefreq>yearly</changefreq>
+    <priority>0.2</priority>
+  </url>
+</urlset>
