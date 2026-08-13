@@ -169,12 +169,19 @@ a { color: var(--acento); }
 .barra nav a:hover { transform: translateY(-1px); }
 .barra nav a:active { box-shadow: var(--hundido); transform: translateY(0); }
 
-/* El logo de IDPA en lugar de la palabra, a la altura de la línea. */
+/* El logo de IDPA en lugar de la palabra. Los botones se miden con flex y
+   todos comparten la misma altura de línea, así el logo puede ser más alto
+   que el texto sin estirar el botón. */
+.barra nav a {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 20px;
+}
 .barra nav a img {
-  height: 13px;
+  height: 20px;
   width: auto;
-  vertical-align: -2px;
-  margin-left: 4px;
+  margin-left: 5px;
 }
 /* Sobre fondo oscuro el contorno negro del logo se pierde: un halo claro
    lo despega. */
