@@ -44,7 +44,7 @@ $brochaFondo = New-Object System.Drawing.Drawing2D.LinearGradientBrush(
 $g.FillRectangle($brochaFondo, 0, 0, $W, $H)
 $brochaFondo.Dispose()
 
-$gif = [System.Drawing.Image]::FromFile((Join-Path $assets 'Bandera Argentina.gif'))
+$gif = [System.Drawing.Image]::FromFile((Join-Path $raiz 'originales/bandera-argentina.gif'))
 $dim = New-Object System.Drawing.Imaging.FrameDimension $gif.FrameDimensionsList[0]
 $gif.SelectActiveFrame($dim, 12) | Out-Null
 
