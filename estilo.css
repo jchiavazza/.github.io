@@ -320,6 +320,10 @@ a { color: var(--acento); }
 .proxima-fecha .afiche {
   flex-shrink: 0;
   display: block;
+  /* Sin esto el recuadro se estira al alto de la tarjeta y queda un hueco
+     debajo del afiche. */
+  align-self: flex-start;
+  line-height: 0;
   width: 150px;
   border-radius: 10px;
   overflow: hidden;
