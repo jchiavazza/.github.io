@@ -35,79 +35,53 @@
 })();
 
 
-// Volver a cargar un recuadro incrustado. JotForm deja su confirmación
-// dentro del formulario y no vuelve solo: recargarlo es lo que permite
-// escribir una segunda consulta sin salir de la página.
+// El formulario de contacto. Se manda sin recargar la página, así el
+// visitante ve la respuesta en el mismo lugar donde escribió. Si no hay
+// JavaScript, el formulario se envía solo con el navegador y Web3Forms
+// muestra su propia página de confirmación.
 
 (function () {
-  document.querySelectorAll('[data-recargar]').forEach((b) => {
-    b.addEventListener('click', () => {
-      const marco = document.getElementById(b.dataset.recargar);
-      if (!marco) return;
-      marco.src = marco.src;
-      marco.scrollIntoView({ behavior: 'smooth', block: 'start' });
-    });
-  });
-})();
+  const form = document.getElementById('contacto-club');
+  if (!form) return;
 
+  const estado = form.querySelector('.estado');
+  const boton = form.querySelector('button[type="submit"]');
 
-// El formulario, a la altura que ocupa de verdad. JotForm le avisa al sitio
-// que lo incrusta cuánto mide, con un mensaje "setHeight:<px>". Escuchándolo
-// acá evitamos cargar su script y el formulario entra entero, sin barra de
-// desplazamiento adentro del recuadro. Si el mensaje no llega, queda la
-// altura fija del CSS.
-
-(function () {
-  const marco = document.querySelector('[id^="JotFormIFrame-"]');
-  if (!marco) return;
-  const caja = marco.parentElement;
-
-  // La franja de publicidad de JotForm va pegada al pie del recuadro, no al
-  // final del formulario: si el recuadro termina donde termina el
-  // formulario, la franja se le sienta encima al botón de enviar.
-  //
-  // Por eso el marco se hace más alto que el formulario —la franja baja con
-  // él y deja los botones a la vista— y el recuadro recorta esa franja.
-  const AIRE = 120;   // lo que el marco crece de más
-  const FRANJA = 76;  // lo que mide la barra de JotForm
-  let ajustado = false;
-
-  function ajustar(alto) {
-    if (!alto || alto < 300) return;
-    ajustado = true;
-    marco.style.height = (alto + AIRE) + 'px';
-    caja.style.height = (alto + AIRE - FRANJA) + 'px';
+  function decir(texto, clase) {
+    estado.textContent = texto;
+    estado.className = 'estado' + (clase ? ' ' + clase : '');
   }
 
-  window.addEventListener('message', (e) => {
-    let host = '';
-    try { host = new URL(e.origin).hostname; } catch (_) { return; }
-    if (!/(^|\.)jotform\.com$/.test(host)) return;
+  form.addEventListener('submit', async (e) => {
+    e.preventDefault();
+    boton.disabled = true;
+    decir('Enviando…');
 
-    // Llega como "setHeight:920:230316846755663" o como JSON.
-    if (typeof e.data === 'string') {
-      const partes = e.data.split(':');
-      if (partes[0] === 'setHeight') ajustar(parseInt(partes[1], 10));
-    } else if (e.data && e.data.type === 'setHeight') {
-      ajustar(parseInt(e.data.height, 10));
+    try {
+      const r = await fetch(form.action, {
+        method: 'POST',
+        headers: { 'Accept': 'application/json' },
+        body: new FormData(form),
+      });
+      const datos = await r.json();
+
+      if (r.ok && datos.success) {
+        form.reset();
+        decir('¡Listo! Recibimos tu consulta y te respondemos a la brevedad.', 'ok');
+      } else {
+        decir('No se pudo enviar. Escribinos a 9x19shooting@gmail.com.', 'mal');
+      }
+    } catch (_) {
+      decir('No se pudo enviar, puede ser la conexión. Probá de nuevo o escribinos a 9x19shooting@gmail.com.', 'mal');
+    } finally {
+      boton.disabled = false;
     }
   });
-
-  // Si el aviso no llega —según el navegador y la configuración del
-  // formulario a veces no sale—, cargamos el script de JotForm, que hace el
-  // mismo trabajo desde su lado.
-  setTimeout(() => {
-    if (ajustado) return;
-    const s = document.createElement('script');
-    s.src = 'https://form.jotform.com/s/umd/latest/for-form-embed-handler.js';
-    s.onload = () => {
-      if (window.jotformEmbedHandler) {
-        window.jotformEmbedHandler('iframe[id^="JotFormIFrame-"]', 'https://form.jotform.com/');
-      }
-    };
-    document.body.append(s);
-  }, 2500);
 })();
+
+
+
+
 
 
 // Cualquier enlace con data-imagen abre esa imagen en un emergente, a su

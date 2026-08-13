@@ -6,7 +6,7 @@
 <title>Club 9x19 Shooting — Tiro defensivo IDPA en Villa María, Córdoba</title>
 <meta name="description" content="Club de tiro afiliado a la International Defensive Pistol Association (IDPA), CL100757, en Villa María, provincia de Córdoba, Argentina. Entrenamientos, matches y clasificaciones oficiales de tiro defensivo.">
 <link rel="icon" href="assets/icono.png">
-<link rel="stylesheet" href="estilo.css?v=22">
+<link rel="stylesheet" href="estilo.css?v=23">
 
 <meta property="og:type" content="website">
 <meta property="og:title" content="Club 9x19 Shooting">
@@ -287,25 +287,55 @@
     </dl>
 
     <h3 class="sub">Escribinos desde acá</h3>
-    <div class="formulario">
-      <!-- El id tiene que ser JotFormIFrame-<id del formulario>: así lo
-           busca el script de JotForm cuando avisa cuánto mide. -->
-      <iframe id="JotFormIFrame-230316846755663"
-        title="Formulario de contacto del Club 9x19 Shooting"
-        src="https://form.jotform.com/230316846755663"
-        scrolling="no"
-        allowtransparency="true"></iframe>
-    </div>
+
+    <!-- Formulario propio. El envío lo hace Web3Forms: recibe los datos y
+         los reenvía por correo al club. La clave de abajo identifica a qué
+         casilla van; es pública por diseño, no da acceso a nada. -->
+    <form class="form-club" id="contacto-club"
+          action="https://api.web3forms.com/submit" method="POST">
+      <input type="hidden" name="access_key" value="e33691e5-e9db-4a69-9801-b5f6ba973a71">
+      <input type="hidden" name="subject" value="Consulta desde 9x19shooting.com.ar">
+      <input type="hidden" name="from_name" value="Sitio del Club 9x19 Shooting">
+      <!-- Trampa antispam: invisible para las personas, la completan los
+           robots y por eso el envío se descarta. -->
+      <input type="checkbox" name="botcheck" class="trampa" tabindex="-1" autocomplete="off">
+
+      <div class="campo">
+        <label for="c-nombre">Nombre y apellido</label>
+        <input id="c-nombre" name="Nombre y apellido" type="text" required autocomplete="name">
+      </div>
+
+      <div class="campo">
+        <label for="c-correo">Correo electrónico</label>
+        <input id="c-correo" name="Correo" type="email" required autocomplete="email">
+      </div>
+
+      <div class="campo">
+        <label for="c-celular">Celular</label>
+        <input id="c-celular" name="Celular" type="tel" required autocomplete="tel"
+               inputmode="tel" placeholder="Con característica, sin 0 ni 15">
+      </div>
+
+      <div class="campo">
+        <label for="c-ciudad">Ciudad</label>
+        <input id="c-ciudad" name="Ciudad" type="text" autocomplete="address-level2">
+      </div>
+
+      <div class="campo">
+        <label for="c-consulta">Tu consulta</label>
+        <textarea id="c-consulta" name="Consulta" rows="5" required
+                  placeholder="Contanos qué querés saber: cómo empezar, cuándo es la próxima fecha, qué equipo hace falta…"></textarea>
+      </div>
+
+      <div class="acciones-form">
+        <button type="submit" class="boton principal">Enviar consulta</button>
+        <p class="estado" role="status" aria-live="polite"></p>
+      </div>
+    </form>
+
     <p class="nota">
-      <!-- Al enviar, JotForm deja la confirmación en el recuadro y no vuelve
-           solo al formulario: este botón lo carga de nuevo. -->
-      <button type="button" class="boton chico" data-recargar="JotFormIFrame-230316846755663">
-        Enviar otra consulta
-      </button>
-    </p>
-    <p class="nota">
-      El formulario lo gestiona JotForm: lo que cargues ahí llega a nuestro
-      correo a través de ese servicio. Si preferís, escribinos directamente a
+      Lo que escribas nos llega por correo. Si preferís, escribinos
+      directamente a
       <a href="mailto:9x19shooting@gmail.com">9x19shooting@gmail.com</a>.
       Cómo tratamos tus datos está en la
       <a href="privacidad/">política de privacidad</a>.
@@ -328,6 +358,6 @@
   </div>
 </footer>
 
-<script src="sitio.js?v=15"></script>
+<script src="sitio.js?v=16"></script>
 </body>
 </html>
