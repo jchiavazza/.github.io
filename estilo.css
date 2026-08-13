@@ -119,6 +119,15 @@ a { color: var(--acento); }
   display: block;
 }
 
+/* La medalla del club, al lado del escudo. Va sin recuadro: su fondo es
+   transparente, así que se apoya sobre el beige. */
+.barra .medalla {
+  height: 128px;
+  width: auto;
+  display: block;
+  margin-left: 4px;
+}
+
 /* Los enlaces del menú son botones chicos, con el mismo relieve que los
    de la portada: se hunden al tocarlos igual que "Quiero tirar". */
 /* En bloque de tres por fila, no en una tira: con seis secciones, una
@@ -785,6 +794,7 @@ footer a:hover { text-decoration: underline; }
   /* Cuatro capturas en una pantalla angosta quedan ilegibles: dos y dos. */
   .capturas { grid-template-columns: repeat(2, 1fr); }
   .barra .marca img { height: 104px; }
+  .barra .medalla { height: 78px; }
   /* En el celular, de a dos: tres botones no entran sin achicar la letra. */
   .barra nav { grid-template-columns: repeat(2, 1fr); max-width: none; }
 }
