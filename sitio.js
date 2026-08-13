@@ -26,6 +26,14 @@
 
   document.body.append(boton);
 
+  // En un torneo el botón es para volver, y eso se puede querer desde la
+  // primera foto: queda siempre a la vista. En el resto del sitio sube al
+  // principio, así que aparece recién cuando ya se bajó.
+  if (enTorneos) {
+    boton.classList.add('visible');
+    return;
+  }
+
   const alturaMinima = 500;
   function revisar() {
     boton.classList.toggle('visible', window.scrollY > alturaMinima);
