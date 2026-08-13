@@ -34,22 +34,39 @@ $g.TextRenderingHint = 'ClearTypeGridFit'
 $g.InterpolationMode = 'HighQualityBicubic'
 $g.PixelOffsetMode = 'HighQuality'
 
-# Fondo: la bandera argentina puesta de pie, celeste-blanco-celeste en
-# franjas verticales.
-$celeste = New-Object System.Drawing.SolidBrush ([System.Drawing.Color]::FromArgb(117, 170, 219))
-$blancoBandera = New-Object System.Drawing.SolidBrush ([System.Drawing.Color]::White)
-$tercio = [int]($W / 3)
-$g.FillRectangle($celeste, 0, 0, $tercio, $H)
-$g.FillRectangle($blancoBandera, $tercio, 0, $tercio, $H)
-$g.FillRectangle($celeste, ($tercio * 2), 0, ($W - $tercio * 2), $H)
-$celeste.Dispose(); $blancoBandera.Dispose()
+# Fondo: la bandera del gif, puesta de pie —girada un cuarto de vuelta, así
+# las franjas quedan verticales— y estirada a todo el flyer. Encima va un
+# velo oscuro para que el texto claro se lea.
+$arriba = [System.Drawing.Color]::FromArgb(22, 26, 34)
+$abajo  = [System.Drawing.Color]::FromArgb(34, 38, 46)
+$brochaFondo = New-Object System.Drawing.Drawing2D.LinearGradientBrush(
+  (New-Object System.Drawing.Point 0, 0), (New-Object System.Drawing.Point 0, $H), $arriba, $abajo)
+$g.FillRectangle($brochaFondo, 0, 0, $W, $H)
+$brochaFondo.Dispose()
 
-# Velo oscuro encima: deja ver la bandera pero permite leer el texto claro.
-# Un poco más denso arriba y abajo, donde van el escudo y los logos.
+$gif = [System.Drawing.Image]::FromFile((Join-Path $assets 'Bandera Argentina.gif'))
+$dim = New-Object System.Drawing.Imaging.FrameDimension $gif.FrameDimensionsList[0]
+$gif.SelectActiveFrame($dim, 12) | Out-Null
+
+$plana = New-Object System.Drawing.Bitmap $gif.Width, $gif.Height
+$gp = [System.Drawing.Graphics]::FromImage($plana)
+$gp.DrawImage($gif, 0, 0, $gif.Width, $gif.Height)
+$gp.Dispose(); $gif.Dispose()
+$plana.RotateFlip([System.Drawing.RotateFlipType]::Rotate90FlipNone)
+
+$matriz = New-Object System.Drawing.Imaging.ColorMatrix
+$matriz.Matrix33 = 0.55
+$atrib = New-Object System.Drawing.Imaging.ImageAttributes
+$atrib.SetColorMatrix($matriz)
+$todo = New-Object System.Drawing.Rectangle 0, 0, $W, $H
+$g.DrawImage($plana, $todo, 0, 0, $plana.Width, $plana.Height, [System.Drawing.GraphicsUnit]::Pixel, $atrib)
+$atrib.Dispose(); $plana.Dispose()
+
+# Velo oscuro encima
 $velo = New-Object System.Drawing.Drawing2D.LinearGradientBrush(
   (New-Object System.Drawing.Point 0, 0), (New-Object System.Drawing.Point 0, $H),
-  ([System.Drawing.Color]::FromArgb(178, 16, 18, 24)),
-  ([System.Drawing.Color]::FromArgb(178, 36, 33, 29)))
+  ([System.Drawing.Color]::FromArgb(170, 16, 18, 24)),
+  ([System.Drawing.Color]::FromArgb(170, 34, 31, 27)))
 $g.FillRectangle($velo, 0, 0, $W, $H)
 $velo.Dispose()
 
@@ -105,14 +122,14 @@ $y += 34
 
 # --- las fechas
 
-$fMes = Fuente 'Segoe UI Semibold' 34 ([System.Drawing.FontStyle]::Bold)
+$fMes = Fuente 'Segoe UI Semibold' 31 ([System.Drawing.FontStyle]::Bold)
 $fDia = Fuente 'Segoe UI' 42 ([System.Drawing.FontStyle]::Bold)
-$fSede = Fuente 'Segoe UI' 28 ([System.Drawing.FontStyle]::Regular)
+$fSede = Fuente 'Segoe UI' 26 ([System.Drawing.FontStyle]::Regular)
 $fTipo = Fuente 'Segoe UI' 22 ([System.Drawing.FontStyle]::Italic)
 
-$xMes = 336      # los meses terminan acá
-$xDia = 524      # los días terminan acá
-$xSede = 548     # las sedes empiezan acá
+$xMes = 380      # los meses terminan acá
+$xDia = 560      # los días terminan acá
+$xSede = 584     # las sedes empiezan acá
 $paso = 76
 
 $derecha = New-Object System.Drawing.StringFormat
@@ -121,7 +138,7 @@ $derecha.Alignment = [System.Drawing.StringAlignment]::Far
 foreach ($f in $fechas) {
   # punto rojo
   $r = 13
-  $cx = 104; $cy = $y + 26
+  $cx = 150; $cy = $y + 26
   $brochaPunto = New-Object System.Drawing.Drawing2D.LinearGradientBrush(
     (New-Object System.Drawing.Point ($cx - $r), ($cy - $r)),
     (New-Object System.Drawing.Point ($cx + $r), ($cy + $r)),
