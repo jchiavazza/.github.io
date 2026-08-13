@@ -135,6 +135,10 @@ a { color: var(--acento); }
    una línea que lo separa del menú, y con el color del acento. */
 .barra .aparte {
   margin-left: auto;
+  /* Alineado con la parte de abajo del escudo, no con el menú: así el
+     bloque de secciones respira y el calendario se lee como algo aparte. */
+  align-self: flex-end;
+  margin-bottom: 6px;
   padding: 11px 18px;
   border-radius: 14px;
   border: 1px solid var(--borde);
@@ -500,6 +504,24 @@ a { color: var(--acento); }
   max-height: calc(100vh - 110px);
   border-radius: 8px;
   object-fit: contain;
+}
+
+/* Caja con la imagen del calendario: al tocarla se amplía a tamaño real y
+   la caja pasa a desplazarse, que es como se lee la letra chica de las
+   fechas en un teléfono. */
+.visor-caja {
+  max-width: 100%;
+  max-height: calc(100vh - 110px);
+  overflow: auto;
+  border-radius: 8px;
+  -webkit-overflow-scrolling: touch;
+}
+.visor-caja img { cursor: zoom-in; display: block; }
+.visor-caja img.zoom {
+  max-width: none;
+  max-height: none;
+  width: auto;
+  cursor: zoom-out;
 }
 .visor-cerrar, .visor-nav {
   background: rgba(255, 255, 255, 0.12);

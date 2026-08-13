@@ -44,23 +44,66 @@
   if (!enlaces.length) return;
 
   let capa = null;
+  let caja = null;
+  let img = null;
+  let normal = '';   // la que entra en pantalla
+  let grande = '';   // la de más resolución, para el zoom
 
-  function abrir(src, texto) {
-    if (!capa) {
-      capa = document.createElement('div');
-      capa.className = 'visor';
-      capa.innerHTML =
-        '<button class="visor-cerrar" type="button" aria-label="Cerrar">✕</button>' +
-        '<img alt="">';
-      document.body.append(capa);
+  function armar() {
+    capa = document.createElement('div');
+    capa.className = 'visor';
+    capa.innerHTML =
+      '<button class="visor-cerrar" type="button" aria-label="Cerrar">✕</button>' +
+      '<div class="visor-caja"><img alt=""></div>' +
+      '<p class="visor-pie">Tocá la imagen para ampliarla</p>';
+    document.body.append(capa);
 
-      capa.querySelector('.visor-cerrar').addEventListener('click', cerrar);
-      capa.addEventListener('click', (e) => { if (e.target === capa) cerrar(); });
-      document.addEventListener('keydown', (e) => {
-        if (!capa.hidden && e.key === 'Escape') cerrar();
+    caja = capa.querySelector('.visor-caja');
+    img = capa.querySelector('img');
+
+    capa.querySelector('.visor-cerrar').addEventListener('click', cerrar);
+    // Tocar el fondo cierra; tocar la imagen hace zoom.
+    capa.addEventListener('click', (e) => {
+      if (e.target === capa || e.target === caja) cerrar();
+    });
+    img.addEventListener('click', (e) => {
+      e.stopPropagation();
+      alternarZoom(e);
+    });
+    document.addEventListener('keydown', (e) => {
+      if (capa.hidden) return;
+      if (e.key === 'Escape') cerrar();
+      else if (e.key === '+' || e.key === '-') alternarZoom();
+    });
+  }
+
+  // Al ampliar se pasa a la imagen de más resolución y la caja habilita el
+  // desplazamiento, centrado en el punto donde se tocó.
+  function alternarZoom(evento) {
+    const ampliando = !img.classList.contains('zoom');
+    img.classList.toggle('zoom', ampliando);
+
+    const pie = capa.querySelector('.visor-pie');
+    if (pie) pie.textContent = ampliando ? 'Tocá de nuevo para achicarla' : 'Tocá la imagen para ampliarla';
+
+    if (ampliando) {
+      if (grande && img.src.indexOf(grande) === -1) img.src = grande;
+      requestAnimationFrame(() => {
+        const x = evento ? evento.offsetX / img.offsetWidth : 0.5;
+        const y = evento ? evento.offsetY / img.offsetHeight : 0.5;
+        caja.scrollLeft = x * (caja.scrollWidth - caja.clientWidth);
+        caja.scrollTop = y * (caja.scrollHeight - caja.clientHeight);
       });
+    } else if (normal) {
+      img.src = normal;
     }
-    const img = capa.querySelector('img');
+  }
+
+  function abrir(src, texto, srcGrande) {
+    if (!capa) armar();
+    normal = src;
+    grande = srcGrande || src;
+    img.classList.remove('zoom');
     img.src = src;
     img.alt = texto || '';
     capa.hidden = false;
@@ -69,14 +112,15 @@
 
   function cerrar() {
     capa.hidden = true;
-    capa.querySelector('img').removeAttribute('src');
+    img.classList.remove('zoom');
+    img.removeAttribute('src');
     document.body.style.overflow = '';
   }
 
   enlaces.forEach((a) => {
     a.addEventListener('click', (e) => {
       e.preventDefault();
-      abrir(a.dataset.imagen, a.dataset.textoImagen);
+      abrir(a.dataset.imagen, a.dataset.textoImagen, a.dataset.imagenGrande);
     });
   });
 
