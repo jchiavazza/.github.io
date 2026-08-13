@@ -3,16 +3,17 @@
 // Se arma desde acá para no repetir el mismo HTML en cada página.
 
 (function () {
-  // La galería es la excepción: se entra desde "Nuestros torneos", así que
-  // el botón devuelve a esa sección en vez de subir dentro de la galería.
-  const enGaleria = location.pathname.indexOf('/torneos') === 0;
+  // La galería de un torneo es la excepción: se entra desde la lista, así
+  // que el botón devuelve ahí en vez de subir dentro de las fotos. En la
+  // lista misma —/torneos/— vuelve a subir como en el resto del sitio.
+  const enUnTorneo = /^\/torneos\/.+/.test(location.pathname);
 
-  const boton = document.createElement(enGaleria ? 'a' : 'button');
+  const boton = document.createElement(enUnTorneo ? 'a' : 'button');
   boton.className = 'arriba';
 
-  if (enGaleria) {
-    boton.href = '/#torneos';
-    boton.setAttribute('aria-label', 'Volver a Nuestros torneos');
+  if (enUnTorneo) {
+    boton.href = '/torneos/';
+    boton.setAttribute('aria-label', 'Volver a la lista de torneos');
     boton.innerHTML = '<span aria-hidden="true">←</span> Torneos';
   } else {
     boton.type = 'button';
