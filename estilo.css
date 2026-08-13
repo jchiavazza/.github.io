@@ -331,6 +331,8 @@ a { color: var(--acento); }
   box-shadow: var(--relieve-chico);
   transition: transform .15s ease;
 }
+/* Los afiches apaisados necesitan más ancho para leerse. */
+.proxima-fecha .afiche.ancho { width: 280px; }
 .proxima-fecha .afiche:hover { transform: translateY(-2px); }
 .proxima-fecha .afiche img { width: 100%; height: auto; display: block; }
 
