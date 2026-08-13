@@ -87,7 +87,7 @@ foreach ($t in $torneos) {
 </div>
 
 <script src="/torneos/galeria.js?v=1"></script>
-<script src="/sitio.js?v=20"></script>
+<script src="/sitio.js?v=21"></script>
 </body>
 </html>
 "@

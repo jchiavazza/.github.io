@@ -142,6 +142,7 @@
   let img = null;
   let normal = '';   // la que entra en pantalla
   let grande = '';   // la de más resolución, para el zoom
+  let eraChico = false;  // si se abrió como ventanita, vuelve a serlo
 
   function armar() {
     capa = document.createElement('div');
@@ -177,9 +178,13 @@
     const ampliando = !img.classList.contains('zoom');
     img.classList.toggle('zoom', ampliando);
 
+    // Al ampliar ocupa la pantalla; al achicar vuelve a como se abrió.
     if (ampliando) {
       capa.classList.remove('chico');
       document.body.style.overflow = 'hidden';
+    } else if (eraChico) {
+      capa.classList.add('chico');
+      document.body.style.overflow = '';
     }
 
     const pie = capa.querySelector('.visor-pie');
@@ -207,7 +212,8 @@
     img.alt = texto || '';
     // En modo ventanita se abre en una esquina y deja ver la página; al
     // ampliar la imagen pasa a ocupar la pantalla, como el resto.
-    capa.classList.toggle('chico', !!chico);
+    eraChico = !!chico;
+    capa.classList.toggle('chico', eraChico);
     capa.hidden = false;
     document.body.style.overflow = chico ? '' : 'hidden';
   }
