@@ -209,7 +209,11 @@
     img.alt = texto || '';
     // En modo ventanita se abre en una esquina y deja ver la página; al
     // ampliar la imagen pasa a ocupar la pantalla, como el resto.
-    eraChico = !!chico;
+    // La ventanita es cosa de pantalla grande: en el celular tapar la
+    // pantalla no molesta y así la imagen se ve.
+    const anchaLaPantalla = window.matchMedia('(min-width: 621px)').matches;
+    chico = !!chico && anchaLaPantalla;
+    eraChico = chico;
     sinZoom = !!noAmpliar;
     capa.classList.toggle('chico', eraChico);
     const pie = capa.querySelector('.visor-pie');
