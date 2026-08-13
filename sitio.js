@@ -58,26 +58,49 @@
 // altura fija del CSS.
 
 (function () {
-  const marco = document.getElementById('form-contacto');
+  const marco = document.querySelector('[id^="JotFormIFrame-"]');
   if (!marco) return;
   const caja = marco.parentElement;
 
   // Lo que JotForm agrega abajo y no queremos mostrar.
   const PIE = 70;
+  let ajustado = false;
+
+  function ajustar(alto) {
+    if (!alto || alto < 300) return;
+    ajustado = true;
+    marco.style.height = alto + 'px';
+    caja.style.height = Math.max(alto - PIE, 300) + 'px';
+  }
 
   window.addEventListener('message', (e) => {
-    if (typeof e.data !== 'string') return;
-    if (!/(^|\.)jotform\.com$/.test(new URL(e.origin).hostname)) return;
+    let host = '';
+    try { host = new URL(e.origin).hostname; } catch (_) { return; }
+    if (!/(^|\.)jotform\.com$/.test(host)) return;
 
-    const partes = e.data.split(':');
-    if (partes[0] !== 'setHeight') return;
-
-    const alto = parseInt(partes[1], 10);
-    if (!alto || alto < 200) return;
-
-    marco.style.height = alto + 'px';
-    caja.style.height = Math.max(alto - PIE, 200) + 'px';
+    // Llega como "setHeight:920:230316846755663" o como JSON.
+    if (typeof e.data === 'string') {
+      const partes = e.data.split(':');
+      if (partes[0] === 'setHeight') ajustar(parseInt(partes[1], 10));
+    } else if (e.data && e.data.type === 'setHeight') {
+      ajustar(parseInt(e.data.height, 10));
+    }
   });
+
+  // Si el aviso no llega —según el navegador y la configuración del
+  // formulario a veces no sale—, cargamos el script de JotForm, que hace el
+  // mismo trabajo desde su lado.
+  setTimeout(() => {
+    if (ajustado) return;
+    const s = document.createElement('script');
+    s.src = 'https://form.jotform.com/s/umd/latest/for-form-embed-handler.js';
+    s.onload = () => {
+      if (window.jotformEmbedHandler) {
+        window.jotformEmbedHandler('iframe[id^="JotFormIFrame-"]', 'https://form.jotform.com/');
+      }
+    };
+    document.body.append(s);
+  }, 2500);
 })();
 
 
