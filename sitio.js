@@ -79,4 +79,16 @@
       abrir(a.dataset.imagen, a.dataset.textoImagen);
     });
   });
+
+  // La imagen se baja apenas la página queda libre, no al hacer clic: así
+  // el emergente abre con la imagen ya lista en vez de dejar el cuadro en
+  // blanco mientras carga.
+  function precargar() {
+    enlaces.forEach((a) => { new Image().src = a.dataset.imagen; });
+  }
+  if ('requestIdleCallback' in window) {
+    requestIdleCallback(precargar, { timeout: 3000 });
+  } else {
+    window.addEventListener('load', () => setTimeout(precargar, 800));
+  }
 })();

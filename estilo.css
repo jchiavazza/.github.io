@@ -125,11 +125,31 @@ a { color: var(--acento); }
    sola línea deja el menú más largo que el resto de la página. */
 .barra nav {
   display: grid;
-  grid-template-columns: repeat(4, 1fr);
+  grid-template-columns: repeat(3, 1fr);
   gap: 10px;
-  max-width: 570px;
-  flex: 1 1 420px;
+  max-width: 440px;
+  flex: 1 1 340px;
 }
+
+/* El calendario no es una sección más de la página: va suelto, después de
+   una línea que lo separa del menú, y con el color del acento. */
+.barra .aparte {
+  margin-left: auto;
+  padding: 11px 18px;
+  border-radius: 14px;
+  border: 1px solid var(--borde);
+  background: var(--acento);
+  color: var(--acento-texto);
+  font-weight: 700;
+  font-size: 15px;
+  text-decoration: none;
+  white-space: nowrap;
+  box-shadow: var(--relieve-chico);
+  transition: transform .15s ease, box-shadow .15s ease;
+}
+.barra .aparte:hover { transform: translateY(-1px); }
+.barra .aparte:active { box-shadow: var(--hundido); transform: none; }
+.barra .aparte span { margin-right: 5px; }
 .barra nav a {
   text-decoration: none;
   text-align: center;
