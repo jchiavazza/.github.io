@@ -42,6 +42,7 @@ foreach ($t in $torneos) {
 <div class="envoltorio">
   <div class="barra">
     <a class="marca" href="/"><img src="/assets/logo-club.png" alt="Club 9x19 Shooting"></a>
+    <img class="medalla" src="/assets/medalla.png" alt="Medalla del club: 9x19 Shooting, IDPA Argentina">
     <nav>
       <a href="/#contacto">Contacto</a>
     </nav>
