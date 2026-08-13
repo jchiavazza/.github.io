@@ -163,6 +163,8 @@
     });
     img.addEventListener('click', (e) => {
       e.stopPropagation();
+      // En la ventanita no se amplía: entra entera y con eso alcanza.
+      if (capa.classList.contains('chico')) return;
       alternarZoom(e);
     });
     document.addEventListener('keydown', (e) => {
@@ -208,6 +210,10 @@
     // ampliar la imagen pasa a ocupar la pantalla, como el resto.
     eraChico = !!chico;
     capa.classList.toggle('chico', eraChico);
+    const pie = capa.querySelector('.visor-pie');
+    if (pie) {
+      pie.textContent = chico ? '' : 'Tocá la imagen para ampliarla';
+    }
     capa.hidden = false;
     document.body.style.overflow = chico ? '' : 'hidden';
   }

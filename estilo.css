@@ -777,10 +777,8 @@ a { color: var(--acento); }
   overflow: hidden;
 }
 .visor.chico .visor-caja img { width: 100%; height: auto; max-height: none; }
-/* Ampliada dentro de la ventanita: crece a su tamaño y se recorre dentro
-   del mismo marco, sin taparle la página. */
-.visor.chico .visor-caja { overflow: auto; }
-.visor.chico .visor-caja img.zoom { width: auto; max-width: none; }
+/* En la ventanita la imagen no se amplía: se muestra entera. */
+.visor.chico .visor-caja img { cursor: default; }
 .visor.chico .visor-cerrar {
   pointer-events: auto;
   position: absolute;
