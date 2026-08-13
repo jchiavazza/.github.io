@@ -143,6 +143,7 @@
   let normal = '';   // la que entra en pantalla
   let grande = '';   // la de más resolución, para el zoom
   let eraChico = false;  // si se abrió como ventanita, vuelve a serlo
+  let sinZoom = false;   // los afiches se miran enteros, no se amplían
 
   function armar() {
     capa = document.createElement('div');
@@ -163,9 +164,8 @@
     });
     img.addEventListener('click', (e) => {
       e.stopPropagation();
-      // En la ventanita no se amplía: tocarla la cierra, que es lo que uno
-      // espera de algo que se abrió en un rincón.
-      if (capa.classList.contains('chico')) { cerrar(); return; }
+      // Ni la ventanita ni los afiches se amplían: tocarlos los cierra.
+      if (sinZoom || capa.classList.contains('chico')) { cerrar(); return; }
       alternarZoom(e);
     });
     document.addEventListener('keydown', (e) => {
@@ -200,7 +200,7 @@
     }
   }
 
-  function abrir(src, texto, srcGrande, chico) {
+  function abrir(src, texto, srcGrande, chico, noAmpliar) {
     if (!capa) armar();
     normal = src;
     grande = srcGrande || src;
@@ -210,10 +210,11 @@
     // En modo ventanita se abre en una esquina y deja ver la página; al
     // ampliar la imagen pasa a ocupar la pantalla, como el resto.
     eraChico = !!chico;
+    sinZoom = !!noAmpliar;
     capa.classList.toggle('chico', eraChico);
     const pie = capa.querySelector('.visor-pie');
     if (pie) {
-      pie.textContent = chico ? '' : 'Tocá la imagen para ampliarla';
+      pie.textContent = (chico || noAmpliar) ? '' : 'Tocá la imagen para ampliarla';
     }
     capa.hidden = false;
     document.body.style.overflow = chico ? '' : 'hidden';
@@ -230,7 +231,8 @@
   enlaces.forEach((a) => {
     a.addEventListener('click', (e) => {
       e.preventDefault();
-      abrir(a.dataset.imagen, a.dataset.textoImagen, a.dataset.imagenGrande, 'chico' in a.dataset);
+      abrir(a.dataset.imagen, a.dataset.textoImagen, a.dataset.imagenGrande,
+            'chico' in a.dataset, 'sinZoom' in a.dataset);
     });
   });
 
