@@ -128,18 +128,20 @@ a { color: var(--acento); }
   grid-template-columns: repeat(3, 1fr);
   gap: 10px;
   max-width: 440px;
-  flex: 1 1 340px;
+  flex: 0 1 440px;
+  /* Pegado a la derecha: deja aire entre el escudo y el bloque. */
+  margin-left: auto;
 }
 
 /* El calendario no es una sección más de la página: va suelto, después de
    una línea que lo separa del menú, y con el color del acento. */
 .barra .aparte {
-  margin-left: auto;
-  /* Alineado con la parte de abajo del escudo, no con el menú: así el
-     bloque de secciones respira y el calendario se lee como algo aparte. */
-  align-self: flex-end;
-  margin-bottom: 6px;
-  padding: 11px 18px;
+  /* Arranca debajo de "La App" y se extiende hasta el borde: en una sola
+     columna el texto no entra. Al ir en su propia fila sigue leyéndose
+     aparte de las secciones. */
+  grid-column: 2 / -1;
+  margin-top: 4px;
+  padding: 11px 14px;
   border-radius: 14px;
   border: 1px solid var(--borde);
   background: var(--acento);
