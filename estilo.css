@@ -125,10 +125,10 @@ a { color: var(--acento); }
    sola línea deja el menú más largo que el resto de la página. */
 .barra nav {
   display: grid;
-  grid-template-columns: repeat(3, 1fr);
+  grid-template-columns: repeat(4, 1fr);
   gap: 10px;
-  max-width: 440px;
-  flex: 1 1 340px;
+  max-width: 570px;
+  flex: 1 1 420px;
 }
 .barra nav a {
   text-decoration: none;

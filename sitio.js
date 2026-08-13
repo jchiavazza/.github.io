@@ -33,3 +33,50 @@
   window.addEventListener('scroll', revisar, { passive: true });
   revisar();
 })();
+
+
+// Cualquier enlace con data-imagen abre esa imagen en un emergente, a su
+// tamaño real mientras entre en la pantalla. Se cierra con Esc, con la X o
+// tocando el fondo. Si no hay JavaScript, el enlace abre la imagen sola.
+
+(function () {
+  const enlaces = document.querySelectorAll('[data-imagen]');
+  if (!enlaces.length) return;
+
+  let capa = null;
+
+  function abrir(src, texto) {
+    if (!capa) {
+      capa = document.createElement('div');
+      capa.className = 'visor';
+      capa.innerHTML =
+        '<button class="visor-cerrar" type="button" aria-label="Cerrar">✕</button>' +
+        '<img alt="">';
+      document.body.append(capa);
+
+      capa.querySelector('.visor-cerrar').addEventListener('click', cerrar);
+      capa.addEventListener('click', (e) => { if (e.target === capa) cerrar(); });
+      document.addEventListener('keydown', (e) => {
+        if (!capa.hidden && e.key === 'Escape') cerrar();
+      });
+    }
+    const img = capa.querySelector('img');
+    img.src = src;
+    img.alt = texto || '';
+    capa.hidden = false;
+    document.body.style.overflow = 'hidden';
+  }
+
+  function cerrar() {
+    capa.hidden = true;
+    capa.querySelector('img').removeAttribute('src');
+    document.body.style.overflow = '';
+  }
+
+  enlaces.forEach((a) => {
+    a.addEventListener('click', (e) => {
+      e.preventDefault();
+      abrir(a.dataset.imagen, a.dataset.textoImagen);
+    });
+  });
+})();
