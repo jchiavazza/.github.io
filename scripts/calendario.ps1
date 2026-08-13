@@ -55,7 +55,7 @@ $gp.Dispose(); $gif.Dispose()
 $plana.RotateFlip([System.Drawing.RotateFlipType]::Rotate90FlipNone)
 
 $matriz = New-Object System.Drawing.Imaging.ColorMatrix
-$matriz.Matrix33 = 0.55
+$matriz.Matrix33 = 0.92
 $atrib = New-Object System.Drawing.Imaging.ImageAttributes
 $atrib.SetColorMatrix($matriz)
 $todo = New-Object System.Drawing.Rectangle 0, 0, $W, $H
@@ -65,8 +65,8 @@ $atrib.Dispose(); $plana.Dispose()
 # Velo oscuro encima
 $velo = New-Object System.Drawing.Drawing2D.LinearGradientBrush(
   (New-Object System.Drawing.Point 0, 0), (New-Object System.Drawing.Point 0, $H),
-  ([System.Drawing.Color]::FromArgb(170, 16, 18, 24)),
-  ([System.Drawing.Color]::FromArgb(170, 34, 31, 27)))
+  ([System.Drawing.Color]::FromArgb(96, 14, 16, 22)),
+  ([System.Drawing.Color]::FromArgb(96, 30, 28, 24)))
 $g.FillRectangle($velo, 0, 0, $W, $H)
 $velo.Dispose()
 
@@ -88,6 +88,17 @@ $y = 70 + $altoLogo + 34
 
 # --- título
 
+
+# Sobre la bandera hace falta sombra: si no, el texto claro desaparece en la
+# franja blanca.
+function ConSombra($g, $texto, $fuente, $brocha, $caja, $formato) {
+  $sombra = New-Object System.Drawing.SolidBrush ([System.Drawing.Color]::FromArgb(170, 0, 0, 0))
+  $corrida = New-Object System.Drawing.RectangleF ($caja.X + 2), ($caja.Y + 2), $caja.Width, $caja.Height
+  $g.DrawString($texto, $fuente, $sombra, $corrida, $formato)
+  $sombra.Dispose()
+  $g.DrawString($texto, $fuente, $brocha, $caja, $formato)
+}
+
 function Fuente($nombre, $tam, $estilo) {
   New-Object System.Drawing.Font $nombre, $tam, $estilo, ([System.Drawing.GraphicsUnit]::Pixel)
 }
@@ -105,13 +116,17 @@ $t2 = '2026'
 $a1 = $g.MeasureString($t1, $fTitulo).Width
 $a2 = $g.MeasureString($t2, $fTitulo).Width
 $x = ($W - ($a1 + $a2)) / 2
+$sombraTitulo = New-Object System.Drawing.SolidBrush ([System.Drawing.Color]::FromArgb(150, 0, 0, 0))
+$g.DrawString($t1, $fTitulo, $sombraTitulo, ($x + 3), ($y + 3))
+$g.DrawString($t2, $fTitulo, $sombraTitulo, ($x + $a1 + 3), ($y + 3))
+$sombraTitulo.Dispose()
 $g.DrawString($t1, $fTitulo, $blanco, $x, $y)
 $g.DrawString($t2, $fTitulo, $brochaDorado, ($x + $a1), $y)
 $y += 108
 
 $fSub = Fuente 'Segoe UI' 34 ([System.Drawing.FontStyle]::Regular)
 $gris = New-Object System.Drawing.SolidBrush ([System.Drawing.Color]::FromArgb(168, 160, 148))
-$g.DrawString('Fechas tentativas año 2026', $fSub, $gris, (New-Object System.Drawing.RectangleF 0, $y, $W, 44), $centro)
+ConSombra $g 'Fechas tentativas año 2026' $fSub $blanco (New-Object System.Drawing.RectangleF 0, $y, $W, 44) $centro
 $y += 62
 
 # Línea separadora
@@ -134,6 +149,13 @@ $paso = 76
 
 $derecha = New-Object System.Drawing.StringFormat
 $derecha.Alignment = [System.Drawing.StringAlignment]::Far
+
+# Panel oscuro detrás de las fechas: la bandera se ve entera alrededor y el
+# texto igual se lee.
+$altoPanel = $fechas.Count * $paso + 26
+$panel = New-Object System.Drawing.SolidBrush ([System.Drawing.Color]::FromArgb(168, 12, 14, 20))
+$g.FillRectangle($panel, 64, ($y - 14), ($W - 128), $altoPanel)
+$panel.Dispose()
 
 foreach ($f in $fechas) {
   # punto rojo
@@ -174,10 +196,10 @@ $idpa.Dispose()
 $y += $altoIdpa + 30
 
 $fWeb = Fuente 'Segoe UI' 36 ([System.Drawing.FontStyle]::Bold)
-$g.DrawString('9x19shooting.com.ar', $fWeb, $brochaDorado, (New-Object System.Drawing.RectangleF 0, $y, $W, 48), $centro)
+ConSombra $g '9x19shooting.com.ar' $fWeb $brochaDorado (New-Object System.Drawing.RectangleF 0, $y, $W, 48) $centro
 $y += 52
 $fRed = Fuente 'Segoe UI' 30 ([System.Drawing.FontStyle]::Regular)
-$g.DrawString('@9x19_shooting', $fRed, $gris, (New-Object System.Drawing.RectangleF 0, $y, $W, 42), $centro)
+ConSombra $g '@9x19_shooting' $fRed $blanco (New-Object System.Drawing.RectangleF 0, $y, $W, 42) $centro
 
 $g.Dispose()
 $bmp.Save($salida, [System.Drawing.Imaging.ImageFormat]::Png)

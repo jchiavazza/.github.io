@@ -17,6 +17,7 @@ fechas = [
     ('tucuman',  'https://form.jotform.com/260535458428665'),
     ('santa-fe', 'https://form.jotform.com/260783817028665'),
     ('parana',   'https://form.jotform.com/253155748498674'),
+    ('esperanza','https://form.jotform.com/262246237073657'),
 ]
 
 for nombre, url in fechas:
