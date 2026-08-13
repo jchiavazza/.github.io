@@ -4,9 +4,9 @@
 $raiz = "$env:USERPROFILE\Downloads\sitio-9x19\torneos"
 
 $torneos = @(
-  @{ slug='primera-fecha-fenix';     titulo='Primera Fecha'; sede='Polígono de Tiro Fénix';        lugar='San Luis';           fecha='11 de abril de 2026'; fotos=28 },
-  @{ slug='primera-fecha-esperanza'; titulo='Primera Fecha'; sede='Tiro Federal de Esperanza';     lugar='Esperanza, Santa Fe'; fecha='30 de mayo de 2026';  fotos=28 },
-  @{ slug='segunda-fecha-santa-fe';  titulo='Segunda Fecha'; sede='Tiro Federal Argentino';        lugar='Santa Fe';            fecha='13 de junio de 2026'; fotos=20 },
+  @{ slug='primera-fecha-fenix';     titulo='Primera Fecha'; sede='Polígono de Tiro Fénix';        lugar='San Luis';           fecha='12 de abril de 2026'; fotos=28 },
+  @{ slug='primera-fecha-esperanza'; titulo='Primera Fecha'; sede='Tiro Federal de Esperanza';     lugar='Esperanza, Santa Fe'; fecha='31 de mayo de 2026';  fotos=28 },
+  @{ slug='segunda-fecha-santa-fe';  titulo='Segunda Fecha'; sede='Tiro Federal Argentino';        lugar='Santa Fe';            fecha='14 de junio de 2026'; fotos=20 },
   @{ slug='tercera-fecha-esperanza'; titulo='Tercera Fecha'; sede='Tiro Federal de Esperanza';     lugar='Esperanza, Santa Fe'; fecha='12 de julio de 2026'; fotos=31 }
 )
 
