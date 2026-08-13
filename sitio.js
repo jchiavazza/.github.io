@@ -12,8 +12,8 @@
   boton.className = 'arriba';
 
   if (enUnTorneo) {
-    boton.href = '/torneos/';
-    boton.setAttribute('aria-label', 'Volver a la lista de torneos');
+    boton.href = '/#torneos';
+    boton.setAttribute('aria-label', 'Volver a Nuestros torneos');
     boton.innerHTML = '<span aria-hidden="true">←</span> Torneos';
   } else {
     boton.type = 'button';

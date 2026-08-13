@@ -38,7 +38,6 @@ foreach ($t in $torneos) {
   <div class="barra">
     <a class="marca" href="/"><img src="/assets/logo-club.png" alt="Club 9x19 Shooting"></a>
     <nav>
-      <a href="/torneos/">Todos los torneos</a>
       <a href="/#contacto">Contacto</a>
     </nav>
   </div>
