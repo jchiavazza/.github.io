@@ -200,7 +200,7 @@
     }
   }
 
-  function abrir(src, texto, srcGrande, chico, noAmpliar) {
+  function abrir(src, texto, srcGrande, chico, noAmpliar, izquierda) {
     if (!capa) armar();
     normal = src;
     grande = srcGrande || src;
@@ -216,6 +216,9 @@
     eraChico = chico;
     sinZoom = !!noAmpliar;
     capa.classList.toggle('chico', eraChico);
+    // Del lado donde está la imagen en la página: el afiche vive a la
+    // izquierda de su tarjeta y ahí conviene que se abra.
+    capa.classList.toggle('izquierda', eraChico && !!izquierda);
     const pie = capa.querySelector('.visor-pie');
     if (pie) {
       pie.textContent = (chico || noAmpliar) ? '' : 'Tocá la imagen para ampliarla';
@@ -227,6 +230,7 @@
   function cerrar() {
     capa.hidden = true;
     capa.classList.remove('chico');
+    capa.classList.remove('izquierda');
     img.classList.remove('zoom');
     img.removeAttribute('src');
     document.body.style.overflow = '';
@@ -236,7 +240,8 @@
     a.addEventListener('click', (e) => {
       e.preventDefault();
       abrir(a.dataset.imagen, a.dataset.textoImagen, a.dataset.imagenGrande,
-            'chico' in a.dataset, 'sinZoom' in a.dataset);
+            'chico' in a.dataset, 'sinZoom' in a.dataset,
+            'izquierda' in a.dataset);
     });
   });
 

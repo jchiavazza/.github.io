@@ -838,6 +838,11 @@ a { color: var(--acento); }
   padding: 18px;
   pointer-events: none;
 }
+
+/* Del lado donde vive la imagen en la página: el afiche está a la izquierda
+   de su tarjeta, así que ahí se abre. */
+.visor.chico.izquierda { justify-content: flex-start; }
+.visor.chico.izquierda .visor-pie { left: 18px; right: auto; text-align: left; }
 /* La ventanita se ajusta sola: se achica por el ancho o por el alto, el que
    apriete primero, así la imagen entra entera en cualquier pantalla. */
 .visor.chico .visor-caja {
