@@ -366,6 +366,10 @@ a { color: var(--acento); }
   color: var(--ok);
 }
 
+/* Mientras no hay afiche, la fecha ocupa ese lugar y la tarjeta no queda
+   con un hueco a la izquierda. */
+.proxima-fecha.sin-afiche .cuando { width: 190px; }
+
 .proxima-fecha .que { min-width: 0; }
 
 /* Lo que hace especial a esta fecha, arriba del título. */
