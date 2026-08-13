@@ -62,15 +62,15 @@
   if (!marco) return;
   const caja = marco.parentElement;
 
-  // Lo que JotForm agrega abajo y no queremos mostrar.
-  const PIE = 70;
+  // Sin recorte: recortar el pie tapaba el botón de enviar cuando JotForm
+  // reacomoda el formulario. Preferimos que se vea entero.
   let ajustado = false;
 
   function ajustar(alto) {
     if (!alto || alto < 300) return;
     ajustado = true;
     marco.style.height = alto + 'px';
-    caja.style.height = Math.max(alto - PIE, 300) + 'px';
+    caja.style.height = alto + 'px';
   }
 
   window.addEventListener('message', (e) => {

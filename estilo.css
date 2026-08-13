@@ -592,20 +592,17 @@ a { color: var(--acento); }
 
 /* ---------------------------------- formulario de contacto */
 
-/* El formulario lo sirve JotForm dentro de un recuadro. Sin su script de
-   ajuste automático la altura la fijamos acá; si el formulario crece, el
-   recuadro se desplaza por dentro. */
-/* El recuadro recorta: se ve alto fijo y el iframe es más alto que él, así
-   la franja de publicidad que JotForm pega al pie en el plan gratuito queda
-   fuera de la parte visible. */
+/* El formulario lo sirve JotForm dentro de este recuadro. El alto lo pone
+   el JavaScript con la medida que informa JotForm; el valor de acá es el
+   punto de partida hasta que ese aviso llega.
+
+   El pie no se recorta: taparlo también tapaba el botón de enviar cuando
+   JotForm reacomoda el formulario. */
 .formulario {
-  /* Punto de partida: apenas carga, el JavaScript la ajusta a lo que mide
-     el formulario para que no haya que desplazarse adentro. */
   height: 980px;
   transition: height .2s ease;
-  /* 690 px es lo que mide la hoja blanca del formulario en JotForm: con el
-     recuadro más ancho quedaban franjas a los costados. */
-  max-width: 690px;
+  /* El ancho del formulario embebido de JotForm. */
+  max-width: 752px;
   margin: 0 auto;
   border: 1px solid var(--borde);
   border-radius: 12px;
@@ -616,7 +613,7 @@ a { color: var(--acento); }
 .formulario iframe {
   display: block;
   width: 100%;
-  height: 1050px;
+  height: 1000px;
   border: 0;
 }
 
@@ -634,8 +631,8 @@ a { color: var(--acento); }
 }
 
 @media (max-width: 600px) {
-  .formulario { height: 1100px; }
-  .formulario iframe { height: 1170px; }
+  .formulario { height: 1150px; }
+  .formulario iframe { height: 1150px; }
 }
 
 /* ---------------------------------- páginas de texto */
