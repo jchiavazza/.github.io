@@ -779,16 +779,8 @@ a { color: var(--acento); }
 .visor.chico .visor-caja img { width: 100%; height: auto; max-height: none; }
 /* En la ventanita la imagen no se amplía: se muestra entera. */
 .visor.chico .visor-caja img { cursor: pointer; }
-.visor.chico .visor-cerrar {
-  pointer-events: auto;
-  position: absolute;
-  top: auto;
-  bottom: calc(76vh + 26px);
-  right: 22px;
-  width: 34px; height: 34px;
-  font-size: 15px;
-  background: rgba(20, 18, 15, .8);
-}
+/* Sin la X: en la ventanita se cierra tocando la imagen, el fondo o Esc. */
+.visor.chico .visor-cerrar { display: none; }
 .visor.chico .visor-pie {
   pointer-events: none;
   bottom: 6px;
