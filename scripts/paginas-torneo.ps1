@@ -69,7 +69,7 @@ foreach ($t in $torneos) {
 <footer>
   <div class="envoltorio">
     <p>
-      Club 9x19 Shooting · Villa María, Córdoba, Argentina ·
+      Club 9x19 Shooting · Club organizador de eventos de IDPA ·
       <a href="mailto:9x19shooting@gmail.com">9x19shooting@gmail.com</a>
     </p>
   </div>
