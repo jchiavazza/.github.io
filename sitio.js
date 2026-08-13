@@ -163,8 +163,9 @@
     });
     img.addEventListener('click', (e) => {
       e.stopPropagation();
-      // En la ventanita no se amplía: entra entera y con eso alcanza.
-      if (capa.classList.contains('chico')) return;
+      // En la ventanita no se amplía: tocarla la cierra, que es lo que uno
+      // espera de algo que se abrió en un rincón.
+      if (capa.classList.contains('chico')) { cerrar(); return; }
       alternarZoom(e);
     });
     document.addEventListener('keydown', (e) => {

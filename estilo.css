@@ -778,7 +778,7 @@ a { color: var(--acento); }
 }
 .visor.chico .visor-caja img { width: 100%; height: auto; max-height: none; }
 /* En la ventanita la imagen no se amplía: se muestra entera. */
-.visor.chico .visor-caja img { cursor: default; }
+.visor.chico .visor-caja img { cursor: pointer; }
 .visor.chico .visor-cerrar {
   pointer-events: auto;
   position: absolute;
