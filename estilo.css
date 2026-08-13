@@ -535,6 +535,9 @@ a { color: var(--acento); }
 .datos dd a { text-decoration: none; }
 .datos dd a:hover { text-decoration: underline; }
 
+/* El ícono al lado de un dato de contacto. */
+.datos .ico { width: 16px; height: 16px; margin-left: 4px; vertical-align: -3px; }
+
 /* ---------------------------------- sedes */
 
 /* Ocho sedes en una sola franja: los escudos chicos y en fila ocupan una

@@ -28,7 +28,7 @@ foreach ($t in $torneos) {
 <title>$($t.titulo) en $($t.sede) — Club 9x19 Shooting</title>
 <meta name="description" content="Fotos de la $($t.titulo.ToLower()) de IDPA que organizó el Club 9x19 Shooting en $($t.sede), $($t.lugar), el $($t.fecha).">
 <link rel="icon" href="/assets/icono.png">
-<link rel="stylesheet" href="/estilo.css?v=38">
+<link rel="stylesheet" href="/estilo.css?v=39">
 
 <meta property="og:type" content="website">
 <meta property="og:title" content="$($t.titulo) — $($t.sede)">
@@ -70,7 +70,8 @@ foreach ($t in $torneos) {
   <div class="envoltorio">
     <p>
       Club 9x19 Shooting · Club organizador de eventos de IDPA ·
-      <a href="mailto:9x19shooting@gmail.com">9x19shooting@gmail.com</a>
+      <a href="mailto:9x19shooting@gmail.com">9x19shooting@gmail.com</a> ·
+      <a href="https://www.instagram.com/9x19_shooting/" target="_blank" rel="noopener">@9x19_shooting</a>
     </p>
   </div>
 </footer>
