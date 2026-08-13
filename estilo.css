@@ -603,6 +603,10 @@ a { color: var(--acento); }
      el formulario para que no haya que desplazarse adentro. */
   height: 980px;
   transition: height .2s ease;
+  /* Al ancho del formulario y centrado: más ancho deja franjas blancas a
+     los costados, porque JotForm no estira sus campos. */
+  max-width: 720px;
+  margin: 0 auto;
   border: 1px solid var(--borde);
   border-radius: 12px;
   overflow: hidden;
