@@ -838,23 +838,32 @@ a { color: var(--acento); }
   padding: 18px;
   pointer-events: none;
 }
+/* La ventanita se ajusta sola: se achica por el ancho o por el alto, el que
+   apriete primero, así la imagen entra entera en cualquier pantalla. */
 .visor.chico .visor-caja {
   pointer-events: auto;
-  width: min(330px, 62vw);
-  max-height: 76vh;
+  width: auto;
+  max-width: min(340px, 58vw);
+  max-height: 78vh;
   border: 1px solid var(--borde);
   border-radius: 14px;
   box-shadow: 0 18px 44px rgba(0, 0, 0, .45);
   overflow: hidden;
 }
-.visor.chico .visor-caja img { width: 100%; height: auto; max-height: none; }
+.visor.chico .visor-caja img {
+  display: block;
+  width: auto;
+  height: auto;
+  max-width: min(340px, 58vw);
+  max-height: 78vh;
+}
 /* En la ventanita la imagen no se amplía: se muestra entera. */
 .visor.chico .visor-caja img { cursor: pointer; }
 /* Sin la X: en la ventanita se cierra tocando la imagen, el fondo o Esc. */
 .visor.chico .visor-cerrar { display: none; }
 .visor.chico .visor-pie {
   pointer-events: none;
-  bottom: 6px;
+  bottom: 4px;
   right: 18px;
   left: auto;
   text-align: right;
