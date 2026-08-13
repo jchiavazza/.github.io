@@ -229,6 +229,15 @@ a { color: var(--acento); }
 
 .boton.principal { color: var(--acento); }
 
+/* Rótulo hundido para el estado de la app en Play: se ve y se lee, pero no
+   se toca porque todavía no hay adónde ir. */
+.boton.pendiente {
+  box-shadow: var(--hundido);
+  color: var(--texto-suave);
+  cursor: default;
+  font-weight: 500;
+}
+
 .aviso-play {
   margin-top: 22px;
   font-size: 14px;
@@ -279,7 +288,7 @@ a { color: var(--acento); }
 .destacada h3 { margin-bottom: 6px; }
 .destacada p { color: var(--texto-suave); font-size: 15px; margin-bottom: 12px; }
 .destacada a { font-weight: 600; text-decoration: none; }
-.destacada a.secundario { display: inline-block; margin-left: 18px; font-weight: 500; }
+
 .destacada a:hover { text-decoration: underline; }
 
 /* ---------------------------------- datos del club */
