@@ -459,22 +459,46 @@ a { color: var(--acento); }
 /* En el celular la tarjeta se apila: el afiche arriba y centrado, después
    la fecha con el código al lado —así no se come media pantalla de alto— y
    al final los datos. */
+/* En el celular, con afiche vertical: la foto a la izquierda y la fecha con
+   su código a la derecha, y debajo los datos a todo lo ancho. Con afiche
+   apaisado se apila, porque de costado no entraría. */
 @media (max-width: 620px) {
   .proxima-fecha {
-    flex-direction: column;
-    align-items: center;
-    gap: 16px;
-    padding: 18px;
+    display: grid;
+    grid-template-columns: auto 1fr;
+    column-gap: 14px;
+    row-gap: 14px;
+    align-items: start;
+    padding: 16px;
   }
 
   .proxima-fecha .afiche {
-    align-self: center;
-    width: min(230px, 66%);
+    grid-column: 1;
+    grid-row: 1;
+    width: 134px;
   }
-  .proxima-fecha .afiche.ancho { width: min(330px, 94%); }
-
-  /* La fecha a la izquierda y el QR a la derecha, en la misma franja. */
   .proxima-fecha .cuando {
+    grid-column: 2;
+    grid-row: 1;
+    width: auto;
+    padding: 12px 10px;
+  }
+  .proxima-fecha .que { grid-column: 1 / -1; grid-row: 2; }
+
+  .proxima-fecha .dia { font-size: 25px; }
+  .proxima-fecha .mes { font-size: 14px; }
+  .proxima-fecha .qr { margin-top: 10px; }
+  .proxima-fecha .qr img { width: 76px; height: 76px; }
+  .proxima-fecha .qr span { font-size: 11px; text-align: center; }
+
+  .proxima-fecha h3 { font-size: 19px; }
+  .proxima-fecha .tier { vertical-align: 2px; }
+  .proxima-fecha .acciones { margin-top: 14px; }
+
+  /* Afiche apaisado: arriba y centrado, con la fecha y el código al lado. */
+  .proxima-fecha.apaisado { display: flex; flex-direction: column; align-items: center; }
+  .proxima-fecha.apaisado .afiche { align-self: center; width: min(330px, 94%); }
+  .proxima-fecha.apaisado .cuando {
     width: 100%;
     display: grid;
     grid-template-columns: 1fr auto;
@@ -483,21 +507,12 @@ a { color: var(--acento); }
     text-align: left;
     padding: 14px 16px;
   }
-  .proxima-fecha .dia { font-size: 27px; }
-  .proxima-fecha .faltan { margin-top: 4px; }
-  .proxima-fecha .qr {
+  .proxima-fecha.apaisado .qr {
     grid-column: 2;
     grid-row: 1 / span 3;
     margin-top: 0;
-    max-width: 108px;
   }
-  .proxima-fecha .qr img { width: 82px; height: 82px; }
-  .proxima-fecha .qr span { font-size: 11px; text-align: center; }
-
-  .proxima-fecha .que { width: 100%; }
-  .proxima-fecha h3 { font-size: 19px; }
-  .proxima-fecha .tier { vertical-align: 2px; }
-  .proxima-fecha .acciones { margin-top: 14px; }
+  .proxima-fecha.apaisado .que { width: 100%; }
 }
 
 /* ---------------------------------- tarjetas */
