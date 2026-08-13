@@ -1,4 +1,4 @@
-Add-Type -AssemblyName System.Drawing
+﻿Add-Type -AssemblyName System.Drawing
 
 $raiz  = "$env:USERPROFILE\Downloads\sitio-9x19"
 $orig  = "$raiz\Fotos"

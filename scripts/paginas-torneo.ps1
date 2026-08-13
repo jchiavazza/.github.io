@@ -1,13 +1,18 @@
-# Genera una página por torneo a partir de la lista. Correr de nuevo si se
+﻿# Genera una página por torneo a partir de la lista. Correr de nuevo si se
 # agrega una fecha; las páginas se sobrescriben.
 
 $raiz = "$env:USERPROFILE\Downloads\sitio-9x19\torneos"
 
+# En orden cronológico. Las páginas y las listas se arman desde acá.
 $torneos = @(
-  @{ slug='primera-fecha-fenix';     titulo='Primera Fecha'; sede='Polígono de Tiro Fénix';        lugar='San Luis';           fecha='12 de abril de 2026'; fotos=28 },
-  @{ slug='primera-fecha-esperanza'; titulo='Primera Fecha'; sede='Tiro Federal de Esperanza';     lugar='Esperanza, Santa Fe'; fecha='31 de mayo de 2026';  fotos=28 },
-  @{ slug='segunda-fecha-santa-fe';  titulo='Segunda Fecha'; sede='Tiro Federal Argentino';        lugar='Santa Fe';            fecha='14 de junio de 2026'; fotos=20 },
-  @{ slug='tercera-fecha-esperanza'; titulo='Tercera Fecha'; sede='Tiro Federal de Esperanza';     lugar='Esperanza, Santa Fe'; fecha='12 de julio de 2026'; fotos=31 }
+  @{ slug='clinica-esperanza';       titulo='Clínica y Clasificación'; sede='Tiro Federal de Esperanza';  lugar='Esperanza, Santa Fe'; fecha='21 y 22 de febrero de 2026'; fotos=18 },
+  @{ slug='clinica-san-luis';        titulo='Clínica y Clasificación'; sede='Polígono de Tiro Fénix';     lugar='San Luis';            fecha='1 de marzo de 2026';         fotos=37 },
+  @{ slug='torneo-santa-fe-marzo';   titulo='Torneo';                  sede='Tiro Federal Argentino';     lugar='Santa Fe';            fecha='22 de marzo de 2026';        fotos=29 },
+  @{ slug='primera-fecha-fenix';     titulo='Primera Fecha';           sede='Polígono de Tiro Fénix';     lugar='San Luis';            fecha='12 de abril de 2026';        fotos=28 },
+  @{ slug='clinica-tucuman';         titulo='Clínica y Clasificación'; sede='Tiro Federal de Tucumán';    lugar='San Miguel de Tucumán'; fecha='23 de mayo de 2026';       fotos=20 },
+  @{ slug='primera-fecha-esperanza'; titulo='Primera Fecha';           sede='Tiro Federal de Esperanza';  lugar='Esperanza, Santa Fe'; fecha='31 de mayo de 2026';         fotos=28 },
+  @{ slug='segunda-fecha-santa-fe';  titulo='Segunda Fecha';           sede='Tiro Federal Argentino';     lugar='Santa Fe';            fecha='14 de junio de 2026';        fotos=20 },
+  @{ slug='tercera-fecha-esperanza'; titulo='Tercera Fecha';           sede='Tiro Federal de Esperanza';  lugar='Esperanza, Santa Fe'; fecha='12 de julio de 2026';        fotos=31 }
 )
 
 foreach ($t in $torneos) {
@@ -23,7 +28,7 @@ foreach ($t in $torneos) {
 <title>$($t.titulo) en $($t.sede) — Club 9x19 Shooting</title>
 <meta name="description" content="Fotos de la $($t.titulo.ToLower()) de IDPA que organizó el Club 9x19 Shooting en $($t.sede), $($t.lugar), el $($t.fecha).">
 <link rel="icon" href="/assets/icono.png">
-<link rel="stylesheet" href="/estilo.css?v=7">
+<link rel="stylesheet" href="/estilo.css?v=14">
 
 <meta property="og:type" content="website">
 <meta property="og:title" content="$($t.titulo) — $($t.sede)">
@@ -80,7 +85,7 @@ foreach ($t in $torneos) {
 </div>
 
 <script src="/torneos/galeria.js?v=1"></script>
-<script src="/sitio.js?v=4"></script>
+<script src="/sitio.js?v=10"></script>
 </body>
 </html>
 "@
@@ -89,3 +94,36 @@ foreach ($t in $torneos) {
   [System.IO.File]::WriteAllText($ruta, $html, (New-Object System.Text.UTF8Encoding $false))
   "$($t.slug)/index.html  ($($t.fotos) fotos)"
 }
+
+# --- las tarjetas, de la fecha más reciente a la más vieja
+
+$tarjetas = ($torneos.Clone() | Sort-Object { $torneos.IndexOf($_) } -Descending | ForEach-Object {
+@"
+      <a class="torneo" href="/torneos/$($_.slug)/">
+        <img src="/galeria/$($_.slug)/mini/01.jpg" alt="$($_.titulo) en $($_.sede), $($_.lugar)" loading="lazy">
+        <div>
+          <h3>$($_.titulo)</h3>
+          <p>$($_.sede), $($_.lugar)<br>$($_.fecha) · $($_.fotos) fotos</p>
+        </div>
+      </a>
+"@
+}) -join "`n"
+
+# En la portada las rutas van sin la barra inicial, como el resto del archivo.
+$tarjetasPortada = $tarjetas -replace 'href="/torneos/', 'href="torneos/' -replace 'src="/galeria/', 'src="galeria/'
+
+# El cierre se ancla en </section>: las tarjetas llevan </div> adentro, así
+# que buscar el primero cortaría en la mitad de la primera tarjeta.
+function ReemplazarGrilla($archivo, $bloque) {
+  $texto = [System.IO.File]::ReadAllText($archivo)
+  $patron = '(?s)<div class="grilla-torneos">.*?\r?\n\s*</div>\r?\n\s*</section>'
+  if ($texto -notmatch $patron) { "OJO: no se encontro la grilla en $archivo"; return }
+  $reemplazo = "<div class=`"grilla-torneos`">`r`n" + $bloque + "`r`n    </div>`r`n  </section>"
+  $nuevo = [regex]::Replace($texto, $patron, { $reemplazo }, 1)
+  [System.IO.File]::WriteAllText($archivo, $nuevo, (New-Object System.Text.UTF8Encoding $false))
+  "actualizado: $archivo"
+}
+
+ReemplazarGrilla (Join-Path $raiz 'index.html') $tarjetas
+ReemplazarGrilla "$env:USERPROFILE\Downloads\sitio-9x19\index.html" $tarjetasPortada
+"lista de torneos y portada actualizadas con $($torneos.Count) fechas"
