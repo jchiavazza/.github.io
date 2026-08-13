@@ -1,4 +1,11 @@
-﻿Add-Type -AssemblyName System.Drawing
+﻿# Uso: sin parametros genera el flyer con un fotograma fijo. Con -Frame y
+# -Destino se puede pedir cualquier otro, que es lo que usa el animado.
+param(
+  [int]$Frame = 12,
+  [string]$Destino = "$env:TEMP\calendario-nuevo.png"
+)
+
+Add-Type -AssemblyName System.Drawing
 
 # Arma el flyer del calendario anual desde cero, con el escudo del club y el
 # logo de IDPA. Para cambiar una fecha se edita la lista de abajo y se corre
@@ -6,7 +13,7 @@
 
 $raiz = "$env:USERPROFILE\Downloads\sitio-9x19"
 $assets = Join-Path $raiz 'assets'
-$salida = "$env:TEMP\calendario-nuevo.png"
+$salida = $Destino
 
 # --- las fechas del año
 
@@ -46,7 +53,7 @@ $brochaFondo.Dispose()
 
 $gif = [System.Drawing.Image]::FromFile((Join-Path $raiz 'originales/bandera-argentina.gif'))
 $dim = New-Object System.Drawing.Imaging.FrameDimension $gif.FrameDimensionsList[0]
-$gif.SelectActiveFrame($dim, 12) | Out-Null
+$gif.SelectActiveFrame($dim, $Frame) | Out-Null
 
 $plana = New-Object System.Drawing.Bitmap $gif.Width, $gif.Height
 $gp = [System.Drawing.Graphics]::FromImage($plana)

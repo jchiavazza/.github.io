@@ -222,7 +222,11 @@
   // el emergente abre con la imagen ya lista en vez de dejar el cuadro en
   // blanco mientras carga.
   function precargar() {
-    enlaces.forEach((a) => { new Image().src = a.dataset.imagen; });
+    enlaces.forEach((a) => {
+      // Los animados no: pesan de más y no vale bajarlos por las dudas.
+      if (/\.gif(\?|$)/i.test(a.dataset.imagen)) return;
+      new Image().src = a.dataset.imagen;
+    });
   }
   if ('requestIdleCallback' in window) {
     requestIdleCallback(precargar, { timeout: 3000 });
