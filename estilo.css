@@ -179,6 +179,13 @@ a { color: var(--acento); }
 .barra nav a:hover { transform: translateY(-1px); }
 .barra nav a:active { box-shadow: var(--hundido); transform: translateY(0); }
 
+/* El botón que hay que mirar primero, con el mismo dorado del calendario. */
+.barra nav a.destacado {
+  background: var(--acento);
+  color: var(--acento-texto);
+  font-weight: 700;
+}
+
 /* El logo de IDPA en lugar de la palabra. Los botones se miden con flex y
    todos comparten la misma altura de línea, así el logo puede ser más alto
    que el texto sin estirar el botón. */
@@ -372,6 +379,20 @@ a { color: var(--acento); }
 }
 
 .proxima-fecha h3 { font-size: 21px; margin-bottom: 10px; }
+
+/* El nivel del match, al lado del nombre. */
+.proxima-fecha .tier {
+  display: inline-block;
+  margin-left: 6px;
+  padding: 3px 10px;
+  border-radius: 999px;
+  border: 1px solid var(--borde);
+  box-shadow: var(--relieve-chico);
+  font-size: 13px;
+  font-weight: 700;
+  color: var(--texto-suave);
+  vertical-align: 3px;
+}
 .proxima-fecha .donde {
   margin-bottom: 10px;
   font-weight: 600;
