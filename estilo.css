@@ -335,6 +335,24 @@ a { color: var(--acento); }
 .proxima-fecha .afiche.ancho { width: 280px; }
 .proxima-fecha .afiche:hover { transform: translateY(-2px); }
 .proxima-fecha .afiche img { width: 100%; height: auto; display: block; }
+/* Aclaración al pie del afiche: va dentro del recuadro, sobre una franja
+   oscura, así no corre nada de lo que ya está acomodado. */
+.proxima-fecha .afiche {
+  position: relative;
+}
+.proxima-fecha .ver-mas {
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  padding: 5px 4px;
+  background: rgba(16, 14, 12, .68);
+  color: rgba(255, 255, 255, .92);
+  font-size: 11px;
+  line-height: 1.2;
+  text-align: center;
+  letter-spacing: .02em;
+}
 
 /* La fecha, como el bloque de un almanaque. */
 .proxima-fecha .cuando {
