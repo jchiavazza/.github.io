@@ -35,6 +35,22 @@
 })();
 
 
+// Volver a cargar un recuadro incrustado. JotForm deja su confirmación
+// dentro del formulario y no vuelve solo: recargarlo es lo que permite
+// escribir una segunda consulta sin salir de la página.
+
+(function () {
+  document.querySelectorAll('[data-recargar]').forEach((b) => {
+    b.addEventListener('click', () => {
+      const marco = document.getElementById(b.dataset.recargar);
+      if (!marco) return;
+      marco.src = marco.src;
+      marco.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    });
+  });
+})();
+
+
 // Cualquier enlace con data-imagen abre esa imagen en un emergente, a su
 // tamaño real mientras entre en la pantalla. Se cierra con Esc, con la X o
 // tocando el fondo. Si no hay JavaScript, el enlace abre la imagen sola.
