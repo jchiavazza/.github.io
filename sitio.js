@@ -177,6 +177,11 @@
     const ampliando = !img.classList.contains('zoom');
     img.classList.toggle('zoom', ampliando);
 
+    if (ampliando) {
+      capa.classList.remove('chico');
+      document.body.style.overflow = 'hidden';
+    }
+
     const pie = capa.querySelector('.visor-pie');
     if (pie) pie.textContent = ampliando ? 'Tocá de nuevo para achicarla' : 'Tocá la imagen para ampliarla';
 
@@ -193,19 +198,23 @@
     }
   }
 
-  function abrir(src, texto, srcGrande) {
+  function abrir(src, texto, srcGrande, chico) {
     if (!capa) armar();
     normal = src;
     grande = srcGrande || src;
     img.classList.remove('zoom');
     img.src = src;
     img.alt = texto || '';
+    // En modo ventanita se abre en una esquina y deja ver la página; al
+    // ampliar la imagen pasa a ocupar la pantalla, como el resto.
+    capa.classList.toggle('chico', !!chico);
     capa.hidden = false;
-    document.body.style.overflow = 'hidden';
+    document.body.style.overflow = chico ? '' : 'hidden';
   }
 
   function cerrar() {
     capa.hidden = true;
+    capa.classList.remove('chico');
     img.classList.remove('zoom');
     img.removeAttribute('src');
     document.body.style.overflow = '';
@@ -214,7 +223,7 @@
   enlaces.forEach((a) => {
     a.addEventListener('click', (e) => {
       e.preventDefault();
-      abrir(a.dataset.imagen, a.dataset.textoImagen, a.dataset.imagenGrande);
+      abrir(a.dataset.imagen, a.dataset.textoImagen, a.dataset.imagenGrande, 'chico' in a.dataset);
     });
   });
 
