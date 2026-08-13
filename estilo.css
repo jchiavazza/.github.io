@@ -136,10 +136,8 @@ a { color: var(--acento); }
 /* El calendario no es una sección más de la página: va suelto, después de
    una línea que lo separa del menú, y con el color del acento. */
 .barra .aparte {
-  /* Arranca debajo de "La App" y se extiende hasta el borde: en una sola
-     columna el texto no entra. Al ir en su propia fila sigue leyéndose
-     aparte de las secciones. */
-  grid-column: 2 / -1;
+  /* Ocupa la fila entera, alineado con las tres columnas de arriba. */
+  grid-column: 1 / -1;
   margin-top: 4px;
   padding: 11px 14px;
   border-radius: 14px;
