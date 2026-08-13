@@ -81,6 +81,16 @@ section + section { border-top: 1px solid var(--borde); }
 h1, h2, h3 { line-height: 1.2; margin: 0 0 16px; }
 h2 { font-size: 26px; letter-spacing: -0.01em; }
 h3 { font-size: 17px; }
+
+/* Subtítulo dentro de una sección: en versalitas, para que separe sin
+   competir con el h2 de arriba. */
+.sub {
+  margin-top: 32px;
+  font-size: 14px;
+  text-transform: uppercase;
+  letter-spacing: 0.07em;
+  color: var(--texto-suave);
+}
 p { margin: 0 0 16px; }
 a { color: var(--acento); }
 
