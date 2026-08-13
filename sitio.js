@@ -3,16 +3,27 @@
 // Se arma desde acá para no repetir el mismo HTML en cada página.
 
 (function () {
-  const boton = document.createElement('button');
-  boton.type = 'button';
-  boton.className = 'arriba';
-  boton.setAttribute('aria-label', 'Volver al principio de la página');
-  boton.innerHTML = '<span aria-hidden="true">↑</span> Inicio';
-  document.body.append(boton);
+  // La galería es la excepción: se entra desde "Nuestros torneos", así que
+  // el botón devuelve a esa sección en vez de subir dentro de la galería.
+  const enGaleria = location.pathname.indexOf('/torneos') === 0;
 
-  boton.addEventListener('click', () => {
-    window.scrollTo({ top: 0, behavior: 'smooth' });
-  });
+  const boton = document.createElement(enGaleria ? 'a' : 'button');
+  boton.className = 'arriba';
+
+  if (enGaleria) {
+    boton.href = '/#torneos';
+    boton.setAttribute('aria-label', 'Volver a Nuestros torneos');
+    boton.innerHTML = '<span aria-hidden="true">←</span> Torneos';
+  } else {
+    boton.type = 'button';
+    boton.setAttribute('aria-label', 'Volver al principio de la página');
+    boton.innerHTML = '<span aria-hidden="true">↑</span> Inicio';
+    boton.addEventListener('click', () => {
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    });
+  }
+
+  document.body.append(boton);
 
   const alturaMinima = 500;
   function revisar() {
