@@ -121,12 +121,21 @@ a { color: var(--acento); }
 
 /* Los enlaces del menú son botones chicos, con el mismo relieve que los
    de la portada: se hunden al tocarlos igual que "Quiero tirar". */
-.barra nav { display: flex; flex-wrap: wrap; gap: 10px; }
+/* En bloque de tres por fila, no en una tira: con seis secciones, una
+   sola línea deja el menú más largo que el resto de la página. */
+.barra nav {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 10px;
+  max-width: 440px;
+  flex: 1 1 340px;
+}
 .barra nav a {
   text-decoration: none;
+  text-align: center;
   color: var(--acento);
   font-weight: 600;
-  padding: 9px 16px;
+  padding: 9px 14px;
   border-radius: 12px;
   border: 1px solid var(--borde);
   background: var(--fondo);
@@ -560,4 +569,6 @@ footer a:hover { text-decoration: underline; }
   /* Cuatro capturas en una pantalla angosta quedan ilegibles: dos y dos. */
   .capturas { grid-template-columns: repeat(2, 1fr); }
   .barra .marca img { height: 104px; }
+  /* En el celular, de a dos: tres botones no entran sin achicar la letra. */
+  .barra nav { grid-template-columns: repeat(2, 1fr); max-width: none; }
 }
