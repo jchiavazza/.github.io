@@ -178,14 +178,8 @@
     const ampliando = !img.classList.contains('zoom');
     img.classList.toggle('zoom', ampliando);
 
-    // Al ampliar ocupa la pantalla; al achicar vuelve a como se abrió.
-    if (ampliando) {
-      capa.classList.remove('chico');
-      document.body.style.overflow = 'hidden';
-    } else if (eraChico) {
-      capa.classList.add('chico');
-      document.body.style.overflow = '';
-    }
+    // La ventanita no cambia de tamaño al ampliar: la imagen crece adentro
+    // y se recorre desplazándola.
 
     const pie = capa.querySelector('.visor-pie');
     if (pie) pie.textContent = ampliando ? 'Tocá de nuevo para achicarla' : 'Tocá la imagen para ampliarla';
