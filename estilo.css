@@ -169,6 +169,23 @@ a { color: var(--acento); }
 .barra nav a:hover { transform: translateY(-1px); }
 .barra nav a:active { box-shadow: var(--hundido); transform: translateY(0); }
 
+/* El logo de IDPA en lugar de la palabra, a la altura de la línea. */
+.barra nav a img {
+  height: 13px;
+  width: auto;
+  vertical-align: -2px;
+  margin-left: 4px;
+}
+/* Sobre fondo oscuro el contorno negro del logo se pierde: un halo claro
+   lo despega. */
+@media (prefers-color-scheme: dark) {
+  .barra nav a img { filter: drop-shadow(0 0 1px rgba(255, 255, 255, .75)); }
+}
+:root[data-theme="dark"] .barra nav a img {
+  filter: drop-shadow(0 0 1px rgba(255, 255, 255, .75));
+}
+:root[data-theme="light"] .barra nav a img { filter: none; }
+
 /* ---------------------------------- portada */
 
 .portada { padding: 52px 0 48px; text-align: center; }
