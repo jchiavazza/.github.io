@@ -187,6 +187,18 @@ a { color: var(--acento); }
 .barra nav a:hover { transform: translateY(-1px); }
 .barra nav a:active { box-shadow: var(--hundido); transform: translateY(0); }
 
+/* Las páginas de adentro tienen uno o dos botones: no necesitan la grilla
+   de tres columnas y quedan centrados, sobre todo cuando el menú baja a su
+   propia línea debajo del escudo. */
+.barra nav.corto {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  max-width: none;
+  flex: 1 1 auto;
+  margin: 0 auto;
+}
+
 /* El botón que hay que mirar primero, con el mismo dorado del calendario. */
 .barra nav a.destacado {
   background: var(--acento);
