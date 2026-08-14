@@ -285,7 +285,7 @@
     }
   }
 
-  function abrir(src, texto, srcGrande, chico, noAmpliar, izquierda) {
+  function abrir(src, texto, srcGrande, chico, noAmpliar, izquierda, siempre) {
     if (!capa) armar();
     normal = src;
     grande = srcGrande || src;
@@ -294,10 +294,11 @@
     img.alt = texto || '';
     // En modo ventanita se abre en una esquina y deja ver la página; al
     // ampliar la imagen pasa a ocupar la pantalla, como el resto.
-    // La ventanita es cosa de pantalla grande: en el celular tapar la
-    // pantalla no molesta y así la imagen se ve.
+    // La ventanita, en general, es cosa de pantalla grande: en el celular
+    // un afiche tapando todo se lee mejor. El calendario es la excepción y
+    // va en ventanita siempre, marcado con data-siempre-chico.
     const anchaLaPantalla = window.matchMedia('(min-width: 621px)').matches;
-    chico = !!chico && anchaLaPantalla;
+    chico = !!chico && (anchaLaPantalla || siempre);
     eraChico = chico;
     sinZoom = !!noAmpliar;
     capa.classList.toggle('chico', eraChico);
@@ -326,7 +327,7 @@
       e.preventDefault();
       abrir(a.dataset.imagen, a.dataset.textoImagen, a.dataset.imagenGrande,
             'chico' in a.dataset, 'sinZoom' in a.dataset,
-            'izquierda' in a.dataset);
+            'izquierda' in a.dataset, 'siempreChico' in a.dataset);
     });
   });
 

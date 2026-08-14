@@ -870,6 +870,17 @@ a { color: var(--acento); }
   pointer-events: none;
 }
 
+/* En el celular la ventanita puede ser más ancha: la pantalla es angosta y
+   con 58vw quedaría diminuta. */
+@media (max-width: 620px) {
+  .visor.chico .visor-caja,
+  .visor.chico .visor-caja img {
+    max-width: min(340px, 80vw);
+    max-height: 66vh;
+  }
+  .visor.chico { padding: 14px; }
+}
+
 /* Del lado donde vive la imagen en la página: el afiche está a la izquierda
    de su tarjeta, así que ahí se abre. */
 .visor.chico.izquierda { justify-content: flex-start; }
