@@ -27,7 +27,7 @@ cuadros[0].save(
     destino,
     save_all=True,
     append_images=cuadros[1:],
-    duration=260,     # cámara lenta: casi tres veces más que el original
+    duration=430,     # bien lento: un ciclo completo lleva unos 16 segundos
     loop=0,
     transparency=255,
     disposal=2,
