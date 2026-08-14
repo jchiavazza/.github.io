@@ -125,7 +125,7 @@ a { color: var(--acento); }
   height: 128px;
   width: auto;
   display: block;
-  margin-left: 4px;
+  margin-left: -6px;
 }
 
 /* La bandera flameando, a la misma altura que la medalla. */
@@ -133,7 +133,7 @@ a { color: var(--acento); }
   height: 128px;
   width: auto;
   display: block;
-  margin-left: 10px;
+  margin-left: -6px;
 }
 
 /* Los enlaces del menú son botones chicos, con el mismo relieve que los
@@ -1095,7 +1095,7 @@ footer a:hover { text-decoration: underline; }
   .capturas { grid-template-columns: repeat(2, 1fr); }
   .barra .marca img { height: 104px; }
   .barra .medalla { height: 78px; }
-  .barra .bandera { height: 78px; margin-left: 6px; }
+  .barra .bandera { height: 78px; margin-left: -4px; }
   /* En el celular, de a dos: tres botones no entran sin achicar la letra. */
   .barra nav { grid-template-columns: repeat(2, 1fr); max-width: none; }
 }
