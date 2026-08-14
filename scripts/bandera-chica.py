@@ -14,13 +14,11 @@ alto = 132
 ancho = int(gif.width * (alto / gif.height))
 
 cuadros = []
-# uno de cada dos: el flameo se sigue viendo igual y pesa la mitad
-for i, cuadro in enumerate(ImageSequence.Iterator(gif)):
-    if i % 2:
-        continue
+# todos los cuadros: en cámara lenta, saltearlos se notaría como tirones
+for cuadro in ImageSequence.Iterator(gif):
     c = cuadro.convert('RGBA').resize((ancho, alto), Image.LANCZOS)
     # de vuelta a paleta, dejando transparente lo que lo era
-    p = c.convert('RGB').convert('P', palette=Image.ADAPTIVE, colors=255)
+    p = c.convert('RGB').convert('P', palette=Image.ADAPTIVE, colors=127)
     mascara = c.split()[3].point(lambda a: 255 if a <= 128 else 0)
     p.paste(255, mascara)
     cuadros.append(p)
@@ -29,7 +27,7 @@ cuadros[0].save(
     destino,
     save_all=True,
     append_images=cuadros[1:],
-    duration=gif.info.get('duration', 80) * 2,
+    duration=260,     # cámara lenta: casi tres veces más que el original
     loop=0,
     transparency=255,
     disposal=2,
