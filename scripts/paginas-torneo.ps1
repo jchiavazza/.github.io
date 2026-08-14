@@ -1,4 +1,4 @@
-﻿# Genera una página por torneo a partir de la lista. Correr de nuevo si se
+# Genera una página por torneo a partir de la lista. Correr de nuevo si se
 # agrega una fecha; las páginas se sobrescriben.
 
 $raiz = "$env:USERPROFILE\Downloads\sitio-9x19\torneos"
@@ -28,7 +28,7 @@ foreach ($t in $torneos) {
 <title>$($t.titulo) en $($t.sede) — Club 9x19 Shooting</title>
 <meta name="description" content="Fotos de la $($t.titulo.ToLower()) de IDPA que organizó el Club 9x19 Shooting en $($t.sede), $($t.lugar), el $($t.fecha).">
 <link rel="icon" href="/assets/icono.png">
-<link rel="stylesheet" href="/estilo.css?v=54">
+<link rel="stylesheet" href="/estilo.css?v=55">
 
 <meta property="og:type" content="website">
 <meta property="og:title" content="$($t.titulo) — $($t.sede)">

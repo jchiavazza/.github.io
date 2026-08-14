@@ -299,6 +299,13 @@ a { color: var(--acento); }
   gap: 14px; justify-content: center;
 }
 
+/* Botones sueltos dentro de una sección de texto: acompañan al párrafo, así
+   que van alineados con él y no centrados como los de la portada. */
+section > .acciones {
+  margin-top: 20px;
+  justify-content: flex-start;
+}
+
 .boton {
   display: inline-block;
   padding: 14px 26px;
