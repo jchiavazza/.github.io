@@ -1,3 +1,63 @@
+// La portada funciona como pantallas: se ve una sección por vez y el menú
+// cambia cuál, sin recargar. La dirección se actualiza igual (#donde,
+// #contacto…), así el botón atrás del navegador y los enlaces compartidos
+// siguen funcionando. Sin JavaScript se ven todas seguidas, como antes.
+
+(function () {
+  const principal = document.querySelector('main');
+  if (!principal || !document.getElementById('inicio')) return;
+
+  const pantallas = Array.from(principal.children).filter((n) => n.id);
+  const menu = document.querySelectorAll('.barra nav a[href^="#"]');
+  if (!pantallas.length) return;
+
+  document.body.classList.add('por-pantallas');
+
+  function mostrar(id, mover) {
+    const hay = pantallas.some((p) => p.id === id);
+    const elegida = hay ? id : 'inicio';
+
+    pantallas.forEach((p) => {
+      p.hidden = p.id !== elegida;
+    });
+    menu.forEach((a) => {
+      a.classList.toggle('actual', a.getAttribute('href') === '#' + elegida);
+    });
+    // Que la sección nueva se lea desde arriba, no desde donde se venía.
+    if (mover) window.scrollTo({ top: 0, behavior: 'instant' in window ? 'instant' : 'auto' });
+    return elegida;
+  }
+
+  menu.forEach((a) => {
+    a.addEventListener('click', (e) => {
+      const id = a.getAttribute('href').slice(1);
+      if (!pantallas.some((p) => p.id === id)) return;
+      e.preventDefault();
+      history.pushState({ pantalla: id }, '', '#' + id);
+      mostrar(id, true);
+    });
+  });
+
+  // Cualquier otro enlace de la propia página —"Quiero tirar", por ejemplo—
+  // también cambia de pantalla en vez de desplazarse.
+  document.addEventListener('click', (e) => {
+    const a = e.target.closest('a[href^="#"]');
+    if (!a || a.closest('.barra')) return;
+    const id = a.getAttribute('href').slice(1);
+    if (!pantallas.some((p) => p.id === id)) return;
+    e.preventDefault();
+    history.pushState({ pantalla: id }, '', '#' + id);
+    mostrar(id, true);
+  });
+
+  window.addEventListener('popstate', () => {
+    mostrar(location.hash.slice(1), true);
+  });
+
+  mostrar(location.hash.slice(1), false);
+})();
+
+
 // Botón para volver al principio de la página en la que se está. Para ir
 // a la portada del club están el escudo de la barra y el botón "El club".
 // Se arma desde acá para no repetir el mismo HTML en cada página.
@@ -31,6 +91,31 @@
   // principio, así que aparece recién cuando ya se bajó.
   if (enTorneos) {
     boton.classList.add('visible');
+    return;
+  }
+
+  // En la portada por pantallas, el botón lleva a la de inicio si se está
+  // en otra, y sube si ya se está en ella.
+  if (document.body.classList.contains('por-pantallas')) {
+    boton.addEventListener('click', () => {
+      const inicio = document.getElementById('inicio');
+      if (inicio && inicio.hidden) {
+        history.pushState({ pantalla: 'inicio' }, '', '#inicio');
+        window.dispatchEvent(new PopStateEvent('popstate'));
+      }
+    });
+    function revisarPortada() {
+      const inicio = document.getElementById('inicio');
+      const enOtra = inicio && inicio.hidden;
+      boton.innerHTML = enOtra
+        ? '<span aria-hidden="true">←</span> Inicio'
+        : '<span aria-hidden="true">↑</span> Inicio';
+      boton.classList.toggle('visible', enOtra || window.scrollY > 500);
+    }
+    window.addEventListener('scroll', revisarPortada, { passive: true });
+    window.addEventListener('popstate', revisarPortada);
+    document.addEventListener('click', () => setTimeout(revisarPortada, 0));
+    revisarPortada();
     return;
   }
 

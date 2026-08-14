@@ -199,6 +199,17 @@ a { color: var(--acento); }
   margin: 0 auto;
 }
 
+/* La opción en la que se está: hundida, como un botón apretado. */
+.barra nav a.actual {
+  box-shadow: var(--hundido);
+  color: var(--texto);
+}
+.barra nav a.destacado.actual {
+  box-shadow: var(--hundido);
+  color: var(--acento-texto);
+  filter: brightness(.88);
+}
+
 /* El botón que hay que mirar primero, con el mismo dorado del calendario. */
 .barra nav a.destacado {
   background: var(--acento);
