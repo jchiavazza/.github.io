@@ -639,6 +639,19 @@ section > .acciones {
 
 .destacada a:hover { text-decoration: underline; }
 
+/* Dos apps en la misma pantalla: el título de la segunda necesita aire para
+   que no se lea como parte de la tarjeta de arriba. */
+.destacada + h2 { margin-top: 46px; }
+
+/* Los pasos para instalar un APK: numerados, con aire entre uno y otro
+   porque se leen con el teléfono en la mano. */
+.pasos {
+  margin: 0 0 16px;
+  padding-left: 22px;
+  max-width: 640px;
+}
+.pasos li { margin-bottom: 10px; }
+
 /* ---------------------------------- datos del club */
 
 .datos {
