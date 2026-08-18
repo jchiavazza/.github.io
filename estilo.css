@@ -17,6 +17,7 @@
   --acento: #8A6A1E;
   --acento-texto: #FFF8E8;
   --ok: #2F6B3A;
+  --peligro: #8A2018;
 
   --relieve: 7px 7px 14px var(--sombra), -7px -7px 14px var(--luz);
   --relieve-chico: 4px 4px 9px var(--sombra), -4px -4px 9px var(--luz);
@@ -36,6 +37,7 @@
     --acento: #D8B458;
     --acento-texto: #221E17;
     --ok: #7FB98A;
+    --peligro: #E08C7E;
   }
 }
 :root[data-theme="dark"] {
@@ -48,6 +50,7 @@
   --acento: #D8B458;
   --acento-texto: #221E17;
   --ok: #7FB98A;
+  --peligro: #E08C7E;
 }
 :root[data-theme="light"] {
   --fondo: #EFEBE4;
@@ -59,6 +62,7 @@
   --acento: #8A6A1E;
   --acento-texto: #FFF8E8;
   --ok: #2F6B3A;
+  --peligro: #8A2018;
 }
 
 * { box-sizing: border-box; }
@@ -330,6 +334,15 @@ section > .acciones {
   color: var(--texto-suave);
   cursor: default;
   font-weight: 500;
+}
+
+.boton.suspendido {
+  box-shadow: var(--hundido);
+  color: var(--peligro, #8A2018);
+  cursor: default;
+  text-transform: uppercase;
+  letter-spacing: .04em;
+  font-size: 15px;
 }
 
 .aviso-play {
