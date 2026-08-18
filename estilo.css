@@ -415,6 +415,14 @@ section > .acciones {
   text-align: center;
   align-self: flex-start;
 }
+/* Sin fecha (torneo suspendido): se conserva el lugar en la fila para que
+   el texto no se corra, pero sin el recuadro hundido, que vacío se leería
+   como un error. */
+.proxima-fecha .cuando:empty {
+  box-shadow: none;
+  padding: 0;
+}
+
 .proxima-fecha .dia {
   display: block;
   font-size: 30px;
