@@ -369,6 +369,7 @@
         // keepalive: el pedido sobrevive aunque la página se vaya.
         fetch(AVISO + '?f=' + encodeURIComponent(b.dataset.descarga), {
           method: 'POST',
+          body: '',
           keepalive: true,
           mode: 'cors',
         }).catch(() => {});
