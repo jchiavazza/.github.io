@@ -1,15 +1,31 @@
 # 9x19shooting.com.ar
 
-Sitio del **Club 9x19 Shooting**, de Villa María, Córdoba: club de tiro
-afiliado a IDPA con el número CL100757. Páginas estáticas, sin
+Sitio del **Club 9x19 Shooting**, club organizador de eventos de IDPA en
+la Argentina, afiliado con el número CL100757. Páginas estáticas, sin
 dependencias ni build.
 
+> **En el sitio no se nombra ninguna ciudad como sede del club.** Se sacó
+> a propósito: el club organiza en polígonos de todo el país y decir que
+> es de un lugar lo achica. Las ciudades aparecen solo como sedes de cada
+> torneo.
+
 ```
-index.html        el club: qué es IDPA, actividades, sedes, contacto
-score/index.html  la app 9x19 Score
-estilo.css        el sistema visual, compartido por las dos
-assets/           iconos e imagenes
+index.html               el club: IDPA, qué hacemos, sedes, torneos, contacto
+score/index.html         la App 9x19 Score
+clasificador/index.html  la App 9x19 Clasificador
+torneos/                 una página por fecha, con su galería
+privacidad/index.html    la política de privacidad del sitio
+panel/index.html         registro de descargas (interno, pide clave)
+descargas/               el APK del Clasificador
+estilo.css               el sistema visual, compartido por todas
+sitio.js                 pantallas, visor de imágenes, formulario, contador
+assets/                  íconos, imágenes, afiches, manuales en PDF
 ```
+
+La portada funciona **por pantallas**: cada opción del menú muestra su
+sección y esconde las demás, sin recargar (ver el primer bloque de
+`sitio.js`). Todo el contenido está igual en el HTML, así que los
+buscadores lo leen entero.
 
 El diseño replica el sistema de relieve de la app (`src/theme.js` en
 `PuntajeApp`): mismos colores, mismas sombras. Si cambia la paleta de la
@@ -28,6 +44,24 @@ ahí a GitHub Pages.
 ```bash
 git add -A && git commit -m "..." && git push
 ```
+
+## El contador de descargas vive en el repositorio de la App
+
+Los botones que bajan el APK o un manual le avisan a una Cloud Function,
+que anota fecha, archivo, IP, ciudad y navegador; `/panel/` es lo que
+muestra ese registro, con una clave.
+
+**El código de esas dos funciones está en `PuntajeApp/functions/index.js`,
+no acá**, y no es por descuido: un proyecto de Firebase despliega sus
+funciones desde una sola carpeta, y ahí ya vivía `borrarMatchesVencidos`,
+la que borra de la nube los matches vencidos. Desplegar desde este
+repositorio haría que Firebase diera por sentado que las del sitio son
+todas las que hay y **borraría esa otra**, que es la que sostiene lo que
+promete la política de privacidad de la App.
+
+De este lado quedan el aviso (último bloque de `sitio.js`), la página
+`/panel/` y lo que declara la política de privacidad. Si cambia lo que se
+guarda, hay que actualizar `privacidad/index.html`.
 
 Tarda un par de minutos en verse. Después de pushear conviene abrir el
 sitio, no solo confiar en que el push salió bien.
