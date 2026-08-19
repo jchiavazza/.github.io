@@ -347,3 +347,34 @@
     window.addEventListener('load', () => setTimeout(precargar, 800));
   }
 })();
+
+
+// Cuántas veces se bajan la App y los manuales. El sitio es estático y no
+// puede anotar nada, así que al tocar un botón de descarga se le avisa a
+// una función de Firebase, que guarda la fecha, el archivo y de dónde vino
+// el pedido (ver functions/index.js en el repo de 9x19 Score).
+//
+// El aviso NO es parte de la descarga: se manda y la descarga sigue su
+// camino. Si Firebase no contesta, o si alguien bloquea el pedido, el
+// archivo se baja igual y lo único que se pierde es el registro.
+
+(function () {
+  const AVISO = 'https://us-central1-x19shooting-sync.cloudfunctions.net/registrarDescarga';
+  const botones = document.querySelectorAll('[data-descarga]');
+  if (!botones.length) return;
+
+  botones.forEach((b) => {
+    b.addEventListener('click', () => {
+      try {
+        // keepalive: el pedido sobrevive aunque la página se vaya.
+        fetch(AVISO + '?f=' + encodeURIComponent(b.dataset.descarga), {
+          method: 'POST',
+          keepalive: true,
+          mode: 'cors',
+        }).catch(() => {});
+      } catch (e) {
+        /* si algo falla, la descarga sigue igual */
+      }
+    });
+  });
+})();

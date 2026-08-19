@@ -1,4 +1,6 @@
 User-agent: *
 Allow: /
 
+Disallow: /panel/
+
 Sitemap: https://9x19shooting.com.ar/sitemap.xml

@@ -1,0 +1,188 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Descargas — Club 9x19 Shooting</title>
+<meta name="robots" content="noindex, nofollow">
+<link rel="icon" href="/assets/icono.png">
+<link rel="stylesheet" href="/estilo.css?v=59">
+<style>
+  /* Estilos propios: esta página es interna y no comparte nada con el
+     resto del sitio salvo los colores. */
+  .clave-caja { display: flex; gap: 12px; flex-wrap: wrap; align-items: center; margin-bottom: 24px; }
+  .clave-caja input {
+    padding: 12px 16px; border-radius: 12px; border: 1px solid var(--borde);
+    background: var(--fondo); color: var(--texto); font-size: 16px;
+    box-shadow: var(--hundido); font-family: inherit; min-width: 220px;
+  }
+  .resumen { display: flex; gap: 14px; flex-wrap: wrap; margin-bottom: 26px; }
+  .resumen div {
+    padding: 14px 18px; border-radius: 12px; border: 1px solid var(--borde);
+    box-shadow: var(--relieve-chico); min-width: 150px;
+  }
+  .resumen b { display: block; font-size: 26px; line-height: 1.1; }
+  .resumen span { font-size: 13px; color: var(--texto-suave); }
+  .tabla-envoltorio { overflow-x: auto; }
+  table { border-collapse: collapse; width: 100%; font-size: 14px; }
+  th, td { text-align: left; padding: 9px 12px; border-bottom: 1px solid var(--borde); white-space: nowrap; }
+  th { font-size: 12px; text-transform: uppercase; letter-spacing: .05em; color: var(--texto-suave); }
+  td.ip { font-family: ui-monospace, Consolas, monospace; }
+</style>
+</head>
+<body>
+
+<div class="envoltorio">
+  <div class="barra">
+    <a class="marca" href="/"><img src="/assets/logo-club.png" alt="Club 9x19 Shooting"></a>
+    <nav class="corto">
+      <a href="/">← Volver al inicio</a>
+    </nav>
+  </div>
+</div>
+
+<main class="envoltorio texto">
+
+  <header class="portada">
+    <h1>Descargas</h1>
+    <p class="bajada">Quién se bajó la App y los manuales. Uso interno del club.</p>
+  </header>
+
+  <section>
+    <div class="clave-caja">
+      <input id="clave" type="password" placeholder="Clave" autocomplete="current-password">
+      <button class="boton chico" id="entrar" type="button">Ver</button>
+      <p class="estado" id="estado"></p>
+    </div>
+
+    <div class="resumen" id="resumen" hidden></div>
+
+    <div class="tabla-envoltorio">
+      <table id="tabla" hidden>
+        <thead>
+          <tr>
+            <th>Cuándo</th>
+            <th>Qué se bajó</th>
+            <th>Dónde</th>
+            <th>IP</th>
+            <th>Con qué</th>
+          </tr>
+        </thead>
+        <tbody></tbody>
+      </table>
+    </div>
+  </section>
+
+</main>
+
+<footer>
+  <div class="envoltorio">
+    <p>Club 9x19 Shooting · página interna, no indexada</p>
+  </div>
+</footer>
+
+<script>
+(function () {
+  const PANEL = 'https://us-central1-x19shooting-sync.cloudfunctions.net/panelDescargas';
+  const clave = document.getElementById('clave');
+  const estado = document.getElementById('estado');
+  const resumen = document.getElementById('resumen');
+  const tabla = document.getElementById('tabla');
+
+  // Un resumen legible del navegador, que en crudo es ilegible.
+  function conQue(ua) {
+    if (!ua) return '';
+    const sistema = /Android/i.test(ua) ? 'Android'
+      : /iPhone|iPad|iOS/i.test(ua) ? 'iPhone o iPad'
+      : /Windows/i.test(ua) ? 'Windows'
+      : /Mac OS/i.test(ua) ? 'Mac'
+      : /Linux/i.test(ua) ? 'Linux' : 'otro';
+    const nav = /Edg\//.test(ua) ? 'Edge'
+      : /OPR\//.test(ua) ? 'Opera'
+      : /Chrome\//.test(ua) ? 'Chrome'
+      : /Firefox\//.test(ua) ? 'Firefox'
+      : /Safari\//.test(ua) ? 'Safari' : '';
+    return nav ? sistema + ' · ' + nav : sistema;
+  }
+
+  function cuando(ts) {
+    return new Date(ts).toLocaleString('es-AR', {
+      day: '2-digit', month: '2-digit', year: '2-digit',
+      hour: '2-digit', minute: '2-digit',
+    });
+  }
+
+  function donde(f) {
+    return [f.ciudad, f.provincia, f.pais].filter(Boolean).join(', ');
+  }
+
+  async function pedir() {
+    const valor = clave.value.trim();
+    if (!valor) { clave.focus(); return; }
+
+    estado.className = 'estado';
+    estado.textContent = 'Buscando…';
+
+    try {
+      const r = await fetch(PANEL + '?clave=' + encodeURIComponent(valor));
+      const d = await r.json();
+
+      if (!d.ok) {
+        estado.className = 'estado mal';
+        estado.textContent = r.status === 401 ? 'Clave incorrecta.' : 'No se pudo consultar.';
+        return;
+      }
+
+      // La clave queda solo mientras dure la pestaña.
+      sessionStorage.setItem('panel9x19', valor);
+
+      const nombres = {
+        'score-manual': 'Manual de Score',
+        'score-apk': 'APK de Score',
+        'clasificador-manual': 'Manual del Clasificador',
+        'clasificador-apk': 'APK del Clasificador',
+      };
+
+      resumen.innerHTML = '';
+      const total = document.createElement('div');
+      total.innerHTML = '<b>' + d.total + '</b><span>descargas en total</span>';
+      resumen.appendChild(total);
+      Object.keys(d.porArchivo || {}).forEach((k) => {
+        const caja = document.createElement('div');
+        caja.innerHTML = '<b>' + d.porArchivo[k] + '</b><span>' + (nombres[k] || k) + '</span>';
+        resumen.appendChild(caja);
+      });
+      resumen.hidden = false;
+
+      const cuerpo = tabla.querySelector('tbody');
+      cuerpo.innerHTML = '';
+      d.filas.forEach((f) => {
+        const tr = document.createElement('tr');
+        const celdas = [cuando(f.ts), nombres[f.archivo] || f.archivo, donde(f), f.ip, conQue(f.ua)];
+        celdas.forEach((texto, i) => {
+          const td = document.createElement('td');
+          if (i === 3) td.className = 'ip';
+          td.textContent = texto || '—';
+          tr.appendChild(td);
+        });
+        cuerpo.appendChild(tr);
+      });
+      tabla.hidden = false;
+
+      estado.className = 'estado ok';
+      estado.textContent = d.total ? '' : 'Todavía no bajó nadie.';
+    } catch (e) {
+      estado.className = 'estado mal';
+      estado.textContent = 'No se pudo conectar.';
+    }
+  }
+
+  document.getElementById('entrar').addEventListener('click', pedir);
+  clave.addEventListener('keydown', (e) => { if (e.key === 'Enter') pedir(); });
+
+  const guardada = sessionStorage.getItem('panel9x19');
+  if (guardada) { clave.value = guardada; pedir(); }
+})();
+</script>
+</body>
+</html>
