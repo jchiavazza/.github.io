@@ -25,9 +25,40 @@
   .resumen span { font-size: 13px; color: var(--texto-suave); }
   .tabla-envoltorio { overflow-x: auto; }
   table { border-collapse: collapse; width: 100%; font-size: 14px; }
-  th, td { text-align: left; padding: 9px 12px; border-bottom: 1px solid var(--borde); white-space: nowrap; }
-  th { font-size: 12px; text-transform: uppercase; letter-spacing: .05em; color: var(--texto-suave); }
-  td.ip { font-family: ui-monospace, Consolas, monospace; }
+  th, td { text-align: left; padding: 9px 12px; border-bottom: 1px solid var(--borde); vertical-align: top; }
+  th { font-size: 12px; text-transform: uppercase; letter-spacing: .05em; color: var(--texto-suave); white-space: nowrap; }
+  /* La IP es lo más largo de la fila y lo que empujaba la tabla fuera de
+     la pantalla: se la deja cortar donde haga falta. */
+  td.ip { font-family: ui-monospace, Consolas, monospace; font-size: 13px; word-break: break-all; }
+  td.cuando, td.que { white-space: nowrap; }
+
+  /* En el celular la tabla no entra de ninguna manera: cada descarga pasa
+     a ser una tarjeta con el nombre del dato al lado del valor. El título
+     de cada campo sale del data-campo que pone el JS. */
+  @media (max-width: 640px) {
+    .tabla-envoltorio { overflow-x: visible; }
+    table, tbody, tr, td { display: block; width: 100%; }
+    thead { display: none; }
+    tr {
+      border: 1px solid var(--borde);
+      border-radius: 12px;
+      box-shadow: var(--relieve-chico);
+      padding: 12px 14px;
+      margin-bottom: 14px;
+    }
+    td { border: 0; padding: 3px 0; white-space: normal; }
+    td::before {
+      content: attr(data-campo) ': ';
+      color: var(--texto-suave);
+      font-size: 12px;
+      text-transform: uppercase;
+      letter-spacing: .04em;
+    }
+    /* La primera línea de la tarjeta es qué se bajó, en grande y sin
+       rótulo: es lo que se busca de un vistazo. */
+    td.que { font-weight: 600; font-size: 16px; padding-bottom: 6px; }
+    td.que::before { content: none; }
+  }
 </style>
 </head>
 <body>
@@ -61,8 +92,8 @@
       <table id="tabla" hidden>
         <thead>
           <tr>
-            <th>Cuándo</th>
             <th>Qué se bajó</th>
+            <th>Cuándo</th>
             <th>Dónde</th>
             <th>IP</th>
             <th>Con qué</th>
@@ -158,11 +189,18 @@
       cuerpo.innerHTML = '';
       d.filas.forEach((f) => {
         const tr = document.createElement('tr');
-        const celdas = [cuando(f.ts), nombres[f.archivo] || f.archivo, donde(f), f.ip, conQue(f.ua)];
-        celdas.forEach((texto, i) => {
+        const celdas = [
+          { clase: 'que', campo: 'Qué se bajó', texto: nombres[f.archivo] || f.archivo },
+          { clase: 'cuando', campo: 'Cuándo', texto: cuando(f.ts) },
+          { clase: 'donde', campo: 'Dónde', texto: donde(f) },
+          { clase: 'ip', campo: 'IP', texto: f.ip },
+          { clase: 'con', campo: 'Con qué', texto: conQue(f.ua) },
+        ];
+        celdas.forEach((c) => {
           const td = document.createElement('td');
-          if (i === 3) td.className = 'ip';
-          td.textContent = texto || '—';
+          td.className = c.clase;
+          td.dataset.campo = c.campo;
+          td.textContent = c.texto || '—';
           tr.appendChild(td);
         });
         cuerpo.appendChild(tr);
