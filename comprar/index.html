@@ -1,0 +1,208 @@
+<!DOCTYPE html>
+<!--
+  La compra de 9x19 Club.
+
+  El formulario le pide el nombre del club y el correo a `comprarLicencia`,
+  que arma el pago en Mercado Pago y devuelve adónde mandarlo. Cuando el
+  pago se acredita, `avisoDePagoDeLicencia` emite la clave firmada y se la
+  manda por correo. Las dos funciones viven en el repositorio de PuntajeApp,
+  en `functions/tienda-club.js`.
+
+  El original de esta página está ahí también, en `licencias/comprar.html`,
+  para que quede al lado de la función que la atiende.
+-->
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Comprar 9x19 Club — Club 9x19 Shooting</title>
+<meta name="description" content="Licencia de 9x19 Club, el programa de gestión para clubes de tiro: socios, cuotas, polígono, caja y listados. Un pago, una vez, y queda para siempre.">
+<link rel="icon" href="../assets/icono.png">
+<link rel="stylesheet" href="../estilo.css?v=59">
+
+<meta property="og:type" content="website">
+<meta property="og:title" content="Comprar 9x19 Club">
+<meta property="og:description" content="La licencia del programa de gestión del club. Un pago, una vez.">
+<meta property="og:url" content="https://9x19shooting.com.ar/comprar/">
+<meta property="og:locale" content="es_AR">
+
+<style>
+  .compra {
+    max-width: 560px;
+    border: 1px solid var(--borde);
+    border-radius: 14px;
+    padding: 22px;
+    box-shadow: var(--relieve-chico);
+    margin-bottom: 30px;
+  }
+  .compra label { display: block; margin-bottom: 6px; font-size: 14px; }
+  .compra input {
+    width: 100%; padding: 12px 16px; border-radius: 12px;
+    border: 1px solid var(--borde); background: var(--fondo);
+    color: var(--texto); font-size: 16px; box-shadow: var(--hundido);
+    font-family: inherit; margin-bottom: 6px;
+  }
+  .compra .ayuda { font-size: 13px; color: var(--texto-suave); margin: 0 0 18px; }
+  .compra .precio { font-size: 26px; font-weight: 700; margin: 0 0 4px; }
+  .compra .precio-detalle { font-size: 13px; color: var(--texto-suave); margin: 0 0 20px; }
+  .cartel {
+    border-radius: 12px; padding: 14px 18px; margin: 0 0 18px;
+    border: 1px solid var(--borde);
+  }
+  .cartel.mal { border-color: #b3261e; }
+  .cartel.bien { border-color: #2e7d32; }
+  .pasos { line-height: 1.8; }
+</style>
+</head>
+<body>
+
+<div class="envoltorio">
+  <div class="barra">
+    <a class="marca" href="/"><img src="../assets/logo-club.png" alt="Club 9x19 Shooting"></a>
+    <img class="bandera" src="../assets/bandera.gif?v=3" alt="Bandera argentina" width="191" height="132">
+    <img class="medalla" src="../assets/medalla.png" alt="Medalla del club: 9x19 Shooting, IDPA Argentina">
+    <nav class="corto">
+      <a href="/">← Volver al inicio</a>
+      <a href="mailto:9x19shooting@gmail.com">Escribinos</a>
+    </nav>
+  </div>
+</div>
+
+<main class="envoltorio">
+
+  <h1>Comprar 9x19 Club</h1>
+  <p class="bajada">La licencia del programa de gestión del club. Un pago, una
+     vez, y queda para siempre.</p>
+
+  <!-- La vuelta de Mercado Pago cae acá, con ?estado=… -->
+  <div id="vuelta" hidden></div>
+
+  <div class="compra" id="formulario">
+    <p class="precio">$ 150.000</p>
+    <p class="precio-detalle">Pago único. Sin vencimiento, sin abono mensual.</p>
+
+    <label for="club">Nombre del club</label>
+    <input id="club" type="text" placeholder="CLUB DE TIRO TAL" maxlength="60" autocomplete="organization">
+    <p class="ayuda">Como quieras que salga impreso al pie de los listados.</p>
+
+    <label for="correo">Correo</label>
+    <input id="correo" type="email" placeholder="club@correo.com" maxlength="120" autocomplete="email">
+    <p class="ayuda">Ahí te mandamos la clave apenas se acredite el pago.</p>
+
+    <div id="error" class="cartel mal" hidden></div>
+
+    <button class="boton principal" id="pagar">Pagar con Mercado Pago</button>
+  </div>
+
+  <section>
+    <h2>Qué pasa después</h2>
+    <ol class="pasos">
+      <li>Pagás en Mercado Pago: tarjeta, transferencia o dinero en cuenta.</li>
+      <li>Apenas se acredita te llega <b>la clave por correo</b>. Suele ser en
+          el momento; con algunos medios de pago tarda un rato.</li>
+      <li>En la computadora principal del club: <b>Ayuda → Licencia</b>, pegás
+          la clave y tocás <b>Activar</b>.</li>
+    </ol>
+
+    <p>Se activa ahí mismo y <b>no hace falta internet</b>. La licencia no
+       vence. Si algún día cambiás la computadora principal, copiás la carpeta
+       de datos y la licencia se va con ella.</p>
+  </section>
+
+  <section>
+    <h2>Antes de comprar</h2>
+    <p>El programa se prueba <b>60 días completo y gratis</b> desde que se
+       instala. Si todavía no lo bajaste, probalo primero: esta página va a
+       seguir acá.</p>
+    <p>Cualquier duda, escribinos a
+       <a href="mailto:9x19shooting@gmail.com">9x19shooting@gmail.com</a>.</p>
+  </section>
+
+</main>
+
+<footer>
+  <div class="envoltorio">
+    <p>
+      9x19 Club · Desarrollado por el
+      <a href="/">Club 9x19 Shooting</a> ·
+      <a href="mailto:9x19shooting@gmail.com">9x19shooting@gmail.com</a> ·
+      <a href="https://www.instagram.com/9x19_shooting/" target="_blank" rel="noopener">@9x19_shooting</a>
+    </p>
+    <p><a href="/privacidad/">Política de privacidad del sitio</a></p>
+  </div>
+</footer>
+
+<script>
+  const COMPRAR = 'https://us-central1-x19shooting-sync.cloudfunctions.net/comprarLicencia';
+
+  const $ = (id) => document.getElementById(id);
+
+  // La vuelta de Mercado Pago.
+  //
+  // "success" no quiere decir que la plata esté acreditada —con algunos
+  // medios de pago tarda—, así que el cartel no promete más de lo que se
+  // sabe: el correo sale cuando se acredita, y eso lo decide el aviso que
+  // recibe la función, no esta página.
+  const estado = new URLSearchParams(location.search).get('estado');
+  if (estado) {
+    const caja = $('vuelta');
+    caja.hidden = false;
+
+    if (estado === 'listo') {
+      caja.className = 'cartel bien';
+      caja.innerHTML =
+        '<b>Listo, el pago salió.</b> La clave te llega por correo apenas se ' +
+        'acredite, normalmente en el momento. Si en un rato no llegó, mirá el ' +
+        'correo no deseado y escribinos.';
+      $('formulario').hidden = true;
+    } else if (estado === 'pendiente') {
+      caja.className = 'cartel';
+      caja.innerHTML =
+        '<b>El pago quedó pendiente.</b> Pasa con el efectivo y con algunas ' +
+        'transferencias. Cuando se acredite te mandamos la clave por correo, ' +
+        'sin que tengas que hacer nada más.';
+      $('formulario').hidden = true;
+    } else {
+      caja.className = 'cartel mal';
+      caja.innerHTML = '<b>El pago no se completó.</b> Podés intentarlo de nuevo acá abajo.';
+    }
+  }
+
+  $('pagar').addEventListener('click', async () => {
+    const club = $('club').value.trim();
+    const correo = $('correo').value.trim();
+
+    $('error').hidden = true;
+
+    if (!club) return mostrarError('Poné el nombre del club.');
+    if (!correo.includes('@')) return mostrarError('Poné un correo válido.');
+
+    $('pagar').disabled = true;
+    $('pagar').textContent = 'Abriendo el pago…';
+
+    try {
+      const r = await fetch(COMPRAR, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ club, correo }),
+      });
+      const d = await r.json();
+
+      if (!d.ok || !d.adonde) throw new Error(d.error || 'No se pudo abrir el pago.');
+      location.href = d.adonde;
+    } catch (e) {
+      mostrarError(e.message);
+      $('pagar').disabled = false;
+      $('pagar').textContent = 'Pagar con Mercado Pago';
+    }
+  });
+
+  function mostrarError(texto) {
+    $('error').textContent = texto;
+    $('error').hidden = false;
+  }
+</script>
+
+<script src="../sitio.js?v=31"></script>
+</body>
+</html>
