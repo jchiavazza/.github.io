@@ -1,0 +1,241 @@
+<!DOCTYPE html>
+<!--
+  9x19 Club: el programa de escritorio para administrar el club.
+
+  A diferencia de Score y Clasificador, éste no es una App de Android ni
+  pasa por Play: es un programa de Windows que se instala en las
+  computadoras del club, se prueba 60 días y después se compra en
+  /comprar/.
+
+  Las capturas son del programa andando con la base de prueba: el club es
+  el nuestro, los socios son inventados.
+-->
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>9x19 Club — Socios, cuotas y caja del club de tiro</title>
+<meta name="description" content="Programa para administrar un club de tiro: padrón de socios, vencimientos de CLU y apto médico, cuota social, polígono, pagos, caja y listados. Funciona en la red del club, sin internet. 60 días de prueba.">
+<link rel="icon" href="../assets/icono.png">
+<link rel="stylesheet" href="../estilo.css?v=59">
+
+<style>
+  /* Las capturas de acá son de una pantalla de computadora, anchas, y la
+     grilla del sitio está pensada para las de celular, que son altas: de a
+     cuatro por renglón no se lee nada. De a dos, se leen los títulos y los
+     números, que es lo que tienen que mostrar. */
+  .capturas { grid-template-columns: repeat(2, 1fr); gap: 22px; }
+  @media (max-width: 700px) {
+    .capturas { grid-template-columns: 1fr; }
+  }
+</style>
+
+<meta property="og:type" content="website">
+<meta property="og:title" content="9x19 Club">
+<meta property="og:description" content="Socios, cuotas, polígono y caja del club de tiro, en las computadoras del club.">
+<meta property="og:image" content="https://9x19shooting.com.ar/assets/capturas-club/menu.jpg">
+<meta property="og:url" content="https://9x19shooting.com.ar/club/">
+<meta property="og:locale" content="es_AR">
+</head>
+<body>
+
+<div class="envoltorio">
+  <div class="barra">
+    <a class="marca" href="/"><img src="../assets/logo-club.png" alt="Club 9x19 Shooting"></a>
+    <img class="bandera" src="../assets/bandera.gif?v=3" alt="Bandera argentina" width="191" height="132">
+    <img class="medalla" src="../assets/medalla.png" alt="Medalla del club: 9x19 Shooting, IDPA Argentina">
+    <nav class="corto">
+      <a href="/">← Volver al inicio</a>
+      <a href="/score/">9x19 Score</a>
+      <a href="#soporte">Soporte</a>
+    </nav>
+  </div>
+</div>
+
+<main class="envoltorio">
+
+  <header class="portada">
+    <h1>9x19 Club</h1>
+    <p class="bajada">Los socios, las cuotas y la caja del club, en las
+       computadoras del club.</p>
+
+    <div class="acciones">
+      <a class="boton principal" href="/comprar/">Comprar la licencia</a>
+      <a class="boton" href="#funciones">Qué hace</a>
+      <a class="boton" href="../assets/Manual_de_Uso_9x19_Club.pdf" data-descarga="club-manual"
+         download="Manual_de_Uso_9x19_Club.pdf">Manual de uso (PDF)</a>
+    </div>
+
+    <p class="aviso-play">
+      Se prueba <b>60 días completo y gratis</b>. Después se activa con una
+      clave, con un solo pago y sin abono mensual. Para bajar el instalador,
+      escribinos a
+      <a href="mailto:9x19shooting@gmail.com">9x19shooting@gmail.com</a>.
+    </p>
+  </header>
+
+  <section id="funciones">
+    <h2>Todo el club en un solo lugar</h2>
+    <p>
+      9x19 Club es un programa de Windows para administrar un club de tiro
+      de punta a punta: quiénes son los socios, qué papeles tienen
+      vencidos, quién pagó la cuota, qué se consumió en el polígono, qué
+      paga el club y cómo queda la caja. Lo desarrolló el
+      <a href="/">Club 9x19 Shooting</a> para su propia administración.
+    </p>
+    <p>
+      No es una App de celular: se instala en las computadoras del club y
+      trabaja en la red interna, <b>sin depender de internet</b>.
+    </p>
+
+    <div class="grilla">
+      <div class="tarjeta">
+        <h3>El padrón</h3>
+        <p>Cada socio con sus datos, sus armas, sus disciplinas y sus
+           papeles. Se busca por apellido, número de socio o DNI.</p>
+      </div>
+      <div class="tarjeta">
+        <h3>Vencimientos</h3>
+        <p>Quién debe la cuota y a quién se le vence el CLU o el apto
+           médico, con el teléfono al lado para llamarlo.</p>
+      </div>
+      <div class="tarjeta">
+        <h3>La cuota social</h3>
+        <p>Se cobra y sale el recibo numerado. Varias cuotas juntas, con
+           recargo si se paga fuera de término.</p>
+      </div>
+      <div class="tarjeta">
+        <h3>El polígono</h3>
+        <p>Lo que consume el que vino a tirar —blancos, derecho de tiro—
+           se le anota y se le cobra todo junto al irse. Sea socio o no.</p>
+      </div>
+      <div class="tarjeta">
+        <h3>Lo que paga el club</h3>
+        <p>Luz, gas, insumos, sueldos. Con varias formas de pago en un
+           mismo pago, y los cheques propios y de terceros.</p>
+      </div>
+      <div class="tarjeta">
+        <h3>La caja</h3>
+        <p>Lo que entró, lo que salió y el saldo, entre dos fechas, con el
+           desglose por concepto y por forma de pago.</p>
+      </div>
+    </div>
+  </section>
+
+  <section>
+    <h2>Así se ve</h2>
+
+    <div class="capturas">
+      <figure>
+        <img src="../assets/capturas-club/menu.jpg" alt="Menú principal del programa, con los socios activos, los que deben la cuota y las cuentas abiertas del polígono" loading="lazy">
+        <figcaption>El menú, con los números del día</figcaption>
+      </figure>
+      <figure>
+        <img src="../assets/capturas-club/vencimientos.jpg" alt="Pantalla de vencimientos: socios al día, con la cuota atrasada y con papeles por vencer" loading="lazy">
+        <figcaption>Quién debe y a quién avisarle</figcaption>
+      </figure>
+      <figure>
+        <img src="../assets/capturas-club/cuota.jpg" alt="Pantalla para cobrar la cuota social de un socio" loading="lazy">
+        <figcaption>Cobrar la cuota</figcaption>
+      </figure>
+      <figure>
+        <img src="../assets/capturas-club/poligono.jpg" alt="La cuenta abierta de un socio en el polígono, con lo que consumió y el total a cobrar" loading="lazy">
+        <figcaption>La cuenta del polígono</figcaption>
+      </figure>
+      <figure>
+        <img src="../assets/capturas-club/caja.jpg" alt="Listado de caja con el total cobrado, el saldo inicial, lo pagado y el saldo" loading="lazy">
+        <figcaption>La caja del mes</figcaption>
+      </figure>
+      <figure>
+        <img src="../assets/capturas-club/cheques.jpg" alt="Listado de cheques de terceros en cartera, ordenados por vencimiento" loading="lazy">
+        <figcaption>Los cheques en cartera</figcaption>
+      </figure>
+    </div>
+  </section>
+
+  <section>
+    <h2>Pensado para un club de verdad</h2>
+
+    <ul class="checks">
+      <li><b>Varias computadoras a la vez.</b> Una guarda los datos y las
+          demás trabajan sobre ellos por la red del club: secretaría carga
+          un socio y en el mostrador ya está.</li>
+      <li><b>Sin internet.</b> Todo pasa adentro del club. Internet no hace
+          falta ni para usarlo ni para activarlo.</li>
+      <li><b>Cada uno hace lo suyo.</b> Los usuarios se crean con permisos:
+          el del mostrador cobra, la tesorería paga, la comisión configura.</li>
+      <li><b>Los recibos son numerados y correlativos.</b> Un recibo
+          equivocado no se borra: se anula y queda anulado a la vista.</li>
+      <li><b>Respaldo diario automático</b>, todas las mañanas, sin que
+          nadie tenga que acordarse.</li>
+      <li><b>Todo se imprime</b>: padrón, vencimientos, estado de cuenta de
+          un socio, caja, cheques y stock. En papel, en PDF o en Excel.</li>
+      <li><b>El padrón se trae de un Excel.</b> Si el club ya tenía su
+          lista en una planilla, se importa en un rato.</li>
+    </ul>
+  </section>
+
+  <section>
+    <h2>Cuánto sale</h2>
+    <p>
+      <b>60 días de prueba</b>, con todo funcionando y sin pedir datos de
+      pago. Cuando se terminan, para seguir cargando hace falta activarlo
+      con una clave.
+    </p>
+    <p>
+      Es <b>un solo pago</b>: la licencia no vence y no hay abono mensual.
+      Vale para todo el club —no se paga por computadora—, y si algún día
+      cambian la máquina principal, la licencia se va con los datos.
+    </p>
+    <p>
+      Y aunque no se active nunca, <b>el club sigue viendo, imprimiendo y
+      exportando todo lo que cargó</b>. Los datos son del club.
+    </p>
+
+    <div class="acciones">
+      <a class="boton principal" href="/comprar/">Comprar la licencia</a>
+    </div>
+  </section>
+
+  <section id="soporte">
+    <h2>Soporte</h2>
+    <p>
+      Escribinos a
+      <a href="mailto:9x19shooting@gmail.com">9x19shooting@gmail.com</a>
+      por cualquier consulta: instalación, importar el padrón o una duda
+      antes de comprar.
+    </p>
+
+    <h3>Manual de uso</h3>
+    <p>
+      Veinte capítulos con imágenes, desde cómo se instala y se deja
+      operativo el club hasta lo de todos los días. Va adentro del programa,
+      en <b>Ayuda → Manual de uso</b>, y también se puede bajar acá.
+    </p>
+
+    <div class="acciones">
+      <a class="boton principal" href="../assets/Manual_de_Uso_9x19_Club.pdf" data-descarga="club-manual"
+         download="Manual_de_Uso_9x19_Club.pdf">
+        Descargar el manual (PDF)
+      </a>
+    </div>
+  </section>
+
+</main>
+
+<footer>
+  <div class="envoltorio">
+    <p>
+      9x19 Club — Desarrollado por el
+      <a href="/">Club 9x19 Shooting</a> ·
+      <a href="mailto:9x19shooting@gmail.com">9x19shooting@gmail.com</a> ·
+      <a href="https://www.instagram.com/9x19_shooting/" target="_blank" rel="noopener">@9x19_shooting</a>
+    </p>
+    <p><a href="/privacidad/">Política de privacidad del sitio</a></p>
+    <p class="no-oficial">Aplicación no oficial, sin relación con IDPA.</p>
+  </div>
+</footer>
+
+<script src="../sitio.js?v=31"></script>
+</body>
+</html>
