@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Descargas — Club 9x19 Shooting</title>
+<title>Panel — Club 9x19 Shooting</title>
 <meta name="robots" content="noindex, nofollow">
 <link rel="icon" href="/assets/icono.png">
 <link rel="stylesheet" href="/estilo.css?v=59">
@@ -31,6 +31,29 @@
      la pantalla: se la deja cortar donde haga falta. */
   td.ip { font-family: ui-monospace, Consolas, monospace; font-size: 13px; word-break: break-all; }
   td.cuando, td.que { white-space: nowrap; }
+
+  /* Cada bloque de la página —descargas y ventas— con su título, para no
+     confundir una tabla con la otra al bajar. */
+  .bloque { margin-top: 40px; }
+  .bloque > h2 { margin-bottom: 4px; }
+  .bloque > p.aclaracion { color: var(--texto-suave); font-size: 14px; margin-top: 0; }
+
+  /* El estado de una venta, de un vistazo por el color. */
+  .marca-estado {
+    display: inline-block; padding: 2px 10px; border-radius: 999px;
+    font-size: 12px; white-space: nowrap; border: 1px solid var(--borde);
+  }
+  .marca-estado.bien { background: #1d3a24; color: #9be3a8; border-color: #2f5c3a; }
+  .marca-estado.espera { background: #3a331d; color: #e6d089; border-color: #5c522f; }
+  .marca-estado.mal { background: #3a1d1d; color: #e39b9b; border-color: #5c2f2f; }
+
+  .copiar {
+    font: inherit; font-size: 13px; cursor: pointer;
+    padding: 5px 12px; border-radius: 10px;
+    border: 1px solid var(--borde); background: var(--fondo); color: var(--texto);
+    box-shadow: var(--relieve-chico);
+  }
+  .copiar:active { box-shadow: var(--hundido); }
 
   /* En el celular la tabla no entra de ninguna manera: cada descarga pasa
      a ser una tarjeta con el nombre del dato al lado del valor. El título
@@ -75,8 +98,9 @@
 <main class="envoltorio texto">
 
   <header class="portada">
-    <h1>Descargas</h1>
-    <p class="bajada">Quién se bajó la App y los manuales. Uso interno del club.</p>
+    <h1>Panel</h1>
+    <p class="bajada">Quién se bajó las Apps y el programa, y qué licencias
+       de 9x19 Club se vendieron. Uso interno del club.</p>
   </header>
 
   <section>
@@ -84,6 +108,11 @@
       <input id="clave" type="password" placeholder="Clave" autocomplete="current-password">
       <button class="boton chico" id="entrar" type="button">Ver</button>
       <p class="estado" id="estado"></p>
+    </div>
+
+    <div class="bloque" id="bloque-descargas" hidden>
+      <h2>Descargas</h2>
+      <p class="aclaracion">Las apps, el programa y los manuales.</p>
     </div>
 
     <div class="resumen" id="resumen" hidden></div>
@@ -102,6 +131,31 @@
         <tbody></tbody>
       </table>
     </div>
+
+    <div class="bloque" id="bloque-ventas" hidden>
+      <h2>Licencias de 9x19 Club vendidas por la web</h2>
+      <p class="aclaracion">Las que se compran en <b>/comprar/</b> y se
+         entregan solas por correo. Las emitidas a mano —de la N° 900 para
+         arriba— no salen acá.</p>
+
+      <div class="resumen" id="resumen-ventas"></div>
+
+      <div class="tabla-envoltorio">
+        <table id="tabla-ventas">
+          <thead>
+            <tr>
+              <th>Club</th>
+              <th>Cuándo</th>
+              <th>Correo</th>
+              <th>Estado</th>
+              <th>Cobrado</th>
+              <th>Clave</th>
+            </tr>
+          </thead>
+          <tbody></tbody>
+        </table>
+      </div>
+    </div>
   </section>
 
 </main>
@@ -114,7 +168,9 @@
 
 <script>
 (function () {
-  const PANEL = 'https://us-central1-x19shooting-sync.cloudfunctions.net/panelDescargas';
+  const FUNCIONES = 'https://us-central1-x19shooting-sync.cloudfunctions.net';
+  const PANEL = FUNCIONES + '/panelDescargas';
+  const VENTAS = FUNCIONES + '/panelVentasClub';
   const clave = document.getElementById('clave');
   const estado = document.getElementById('estado');
   const resumen = document.getElementById('resumen');
@@ -172,6 +228,8 @@
         'score-apk': 'APK de Score',
         'clasificador-manual': 'Manual del Clasificador',
         'clasificador-apk': 'APK del Clasificador',
+        'club-instalador': 'Programa 9x19 Club',
+        'club-manual': 'Manual de 9x19 Club',
       };
 
       resumen.innerHTML = '';
@@ -206,13 +264,138 @@
         cuerpo.appendChild(tr);
       });
       tabla.hidden = false;
+      document.getElementById('bloque-descargas').hidden = false;
 
       estado.className = 'estado ok';
       estado.textContent = d.total ? '' : 'Todavía no bajó nadie.';
+
+      // Las ventas van aparte y no arrastran a las descargas: si esa
+      // consulta falla, lo de arriba ya está en pantalla.
+      pedirLasVentas(valor);
     } catch (e) {
       estado.className = 'estado mal';
       estado.textContent = 'No se pudo conectar.';
     }
+  }
+
+  // -------------------------------------------------------------------
+  // Las licencias vendidas por la página
+  // -------------------------------------------------------------------
+
+  const ESTADOS = {
+    'entregada': ['Entregada', 'bien'],
+    'pagado': ['Pagada, emitiendo', 'espera'],
+    'pagado-sin-mandar': ['PAGÓ Y NO LE LLEGÓ', 'mal'],
+    'esperando-pago': ['Esperando el pago', 'espera'],
+    'importe-corto': ['Pagó de menos', 'mal'],
+  };
+
+  function pesos(n) {
+    return '$ ' + Number(n || 0).toLocaleString('es-AR');
+  }
+
+  function caja(donde, numero, texto) {
+    const d = document.createElement('div');
+    d.innerHTML = '<b></b><span></span>';
+    d.querySelector('b').textContent = numero;
+    d.querySelector('span').textContent = texto;
+    donde.appendChild(d);
+  }
+
+  // La clave se guarda de corrido y se escribe en grupos de ocho, igual
+  // que en el correo que recibe el club: pegada de otra forma, el programa
+  // no la toma.
+  function comoSeEscribe(clave) {
+    const grupos = clave.match(/.{1,8}/g) || [];
+    const renglones = [];
+    for (let i = 0; i < grupos.length; i += 4) {
+      renglones.push(grupos.slice(i, i + 4).join('-'));
+    }
+    return renglones.join('\n');
+  }
+
+  async function pedirLasVentas(valor) {
+    const bloque = document.getElementById('bloque-ventas');
+    const resumenV = document.getElementById('resumen-ventas');
+    const tablaV = document.getElementById('tabla-ventas');
+
+    let d;
+    try {
+      const r = await fetch(VENTAS + '?clave=' + encodeURIComponent(valor));
+      d = await r.json();
+      if (!d.ok) return;
+    } catch (e) {
+      return;
+    }
+
+    resumenV.innerHTML = '';
+    caja(resumenV, d.vendidas, d.vendidas === 1 ? 'licencia vendida' : 'licencias vendidas');
+    caja(resumenV, pesos(d.total), 'cobrado');
+    if (d.esperando) caja(resumenV, d.esperando, 'esperando el pago');
+    if (d.sinMandar) caja(resumenV, d.sinMandar, 'pagadas sin entregar');
+    caja(resumenV, pesos(d.precio), 'precio de hoy');
+
+    const cuerpo = tablaV.querySelector('tbody');
+    cuerpo.innerHTML = '';
+
+    d.ventas.forEach((v) => {
+      const tr = document.createElement('tr');
+
+      const club = document.createElement('td');
+      club.className = 'que';
+      club.dataset.campo = 'Club';
+      club.textContent = v.club || '—';
+
+      const fecha = document.createElement('td');
+      fecha.className = 'cuando';
+      fecha.dataset.campo = 'Cuándo';
+      fecha.textContent = v.creadoEn ? cuando(v.creadoEn) : '—';
+
+      const mail = document.createElement('td');
+      mail.dataset.campo = 'Correo';
+      mail.textContent = v.correo || '—';
+
+      const est = document.createElement('td');
+      est.dataset.campo = 'Estado';
+      const marca = document.createElement('span');
+      const cual = ESTADOS[v.estado] || [v.estado || '—', 'espera'];
+      marca.className = 'marca-estado ' + cual[1];
+      marca.textContent = cual[0];
+      est.appendChild(marca);
+
+      const plata = document.createElement('td');
+      plata.dataset.campo = 'Cobrado';
+      plata.textContent = v.pagado ? pesos(v.pagado) : '—';
+
+      // La clave no se muestra entera: son cinco renglones y taparían la
+      // tabla. El botón la copia, que es lo único que se hace con ella
+      // —reenviársela al club si el correo no llegó.
+      const clave = document.createElement('td');
+      clave.dataset.campo = 'Clave';
+      if (v.clave) {
+        const boton = document.createElement('button');
+        boton.type = 'button';
+        boton.className = 'copiar';
+        boton.textContent = 'Copiar la clave';
+        boton.addEventListener('click', async () => {
+          try {
+            await navigator.clipboard.writeText(comoSeEscribe(v.clave));
+            boton.textContent = 'Copiada';
+            setTimeout(() => { boton.textContent = 'Copiar la clave'; }, 2000);
+          } catch (e) {
+            boton.textContent = 'No se pudo copiar';
+          }
+        });
+        clave.appendChild(boton);
+      } else {
+        clave.textContent = '—';
+      }
+
+      [club, fecha, mail, est, plata, clave].forEach((celda) => tr.appendChild(celda));
+      cuerpo.appendChild(tr);
+    });
+
+    bloque.hidden = false;
   }
 
   document.getElementById('entrar').addEventListener('click', pedir);
