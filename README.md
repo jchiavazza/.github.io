@@ -45,6 +45,40 @@ ahí a GitHub Pages.
 git add -A && git commit -m "..." && git push
 ```
 
+## El instalador de 9x19 Club sale de un release
+
+El programa de escritorio pesa 108 MB y **no está en este repositorio**:
+GitHub Pages no es lugar para eso. El botón de `/club/` apunta a
+
+    https://github.com/jchiavazza/.github.io/releases/latest/download/9x19-Club-instalador.exe
+
+Dos cosas de ahí importan:
+
+- **`latest`**, y no un release con número. Por eso publicar una versión
+  nueva no obliga a tocar el sitio: el mismo botón empieza a servirla sola.
+- **El archivo tiene que llamarse `9x19-Club-instalador.exe`**, sin la
+  versión. El nombre es parte de la dirección: si el que se sube se llama
+  `9x19-Club-4.1.41-instalador.exe`, el botón queda roto. El instalador se
+  compila con el número adentro del nombre, así que hay que copiarlo sin él
+  antes de subirlo.
+
+Para publicar una versión: en el repo, **Releases → Draft a new release**,
+tag `club-<versión>` creado al publicar, el archivo arrastrado al recuadro
+de abajo, **Set as the latest release** tildado y *Publish*.
+
+> **El programa no se actualiza solo.** No lleva `electron-updater`, así
+> que al club que ya lo tiene instalado no le llega nada: un release nuevo
+> lo ve únicamente el que entra a bajarlo desde el sitio.
+
+Para comprobar que quedó bien, sin bajar los 108 MB:
+
+```bash
+curl -s https://api.github.com/repos/jchiavazza/.github.io/releases/latest
+```
+
+Tiene que decir el tag nuevo y el archivo con el tamaño exacto del que se
+compiló.
+
 ## El contador de descargas vive en el repositorio de la App
 
 Los botones que bajan el APK o un manual le avisan a una Cloud Function,
