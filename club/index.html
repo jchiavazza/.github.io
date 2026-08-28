@@ -15,7 +15,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>9x19 Club — Socios, cuotas y caja del club de tiro</title>
-<meta name="description" content="Programa para administrar un club de tiro: padrón de socios, vencimientos de CLU y apto médico, cuota social, polígono, pagos, caja y listados. Funciona en la red del club, sin internet. 60 días de prueba.">
+<meta name="description" content="Programa para administrar un club de tiro: padrón de socios, vencimientos de CLU y apto médico, cuota social, polígono, pagos, caja, listados y facturación electrónica con ARCA. Funciona en la red del club, sin internet. 60 días de prueba.">
 <link rel="icon" href="../assets/icono.png">
 <link rel="stylesheet" href="../estilo.css?v=59">
 
@@ -84,12 +84,15 @@
       9x19 Club es un programa de Windows para administrar un club de tiro
       de punta a punta: quiénes son los socios, qué papeles tienen
       vencidos, quién pagó la cuota, qué se consumió en el polígono, qué
-      paga el club y cómo queda la caja. Lo desarrolló el
+      paga el club, cómo queda la caja y <b>las facturas electrónicas con
+      ARCA</b>. Lo desarrolló el
       <a href="/">Club 9x19 Shooting</a> para su propia administración.
     </p>
     <p>
       No es una App de celular: se instala en las computadoras del club y
-      trabaja en la red interna, <b>sin depender de internet</b>.
+      trabaja en la red interna, <b>sin depender de internet</b>. La
+      facturación electrónica es la excepción, y es opcional: el club que no
+      la use no necesita conexión para nada.
     </p>
 
     <div class="grilla">
@@ -119,9 +122,21 @@
            mismo pago, y los cheques propios y de terceros.</p>
       </div>
       <div class="tarjeta">
+        <h3>Los cheques</h3>
+        <p>Los de terceros que entraron y los propios que se entregaron,
+           ordenados por vencimiento, con la lista de los que hay que ir a
+           reclamar.</p>
+      </div>
+      <div class="tarjeta">
         <h3>La caja</h3>
         <p>Lo que entró, lo que salió y el saldo, entre dos fechas, con el
            desglose por concepto y por forma de pago.</p>
+      </div>
+      <div class="tarjeta">
+        <h3>Facturación electrónica</h3>
+        <p>Facturas A, B y C con <b>CAE de ARCA</b>, con su código QR y
+           numeradas por ARCA. Y las notas de crédito, atadas a la factura
+           que corrigen.</p>
       </div>
     </div>
   </section>
@@ -164,8 +179,11 @@
       <li><b>Varias computadoras a la vez.</b> Una guarda los datos y las
           demás trabajan sobre ellos por la red del club: secretaría carga
           un socio y en el mostrador ya está.</li>
-      <li><b>Sin internet.</b> Todo pasa adentro del club. Internet no hace
-          falta ni para usarlo ni para activarlo.</li>
+      <li><b>Sin internet.</b> Todo pasa adentro del club: no hace falta
+          para usarlo ni para activarlo. La única parte que necesita
+          conexión es la <b>facturación electrónica</b>, porque el CAE lo da
+          ARCA — y sólo si el club decide usarla. Sin eso, el programa
+          funciona igual que siempre, desconectado.</li>
       <li><b>Cada uno hace lo suyo.</b> Los usuarios se crean con permisos:
           el del mostrador cobra, la tesorería paga, la comisión configura.</li>
       <li><b>Los recibos son numerados y correlativos.</b> Un recibo
@@ -175,7 +193,15 @@
       <li><b>Todo se imprime</b>: padrón, vencimientos, estado de cuenta de
           un socio, caja, cheques y stock. En papel, en PDF o en Excel.</li>
       <li><b>El padrón se trae de un Excel.</b> Si el club ya tenía su
-          lista en una planilla, se importa en un rato.</li>
+          lista en una planilla, se importa en un rato — con el domicilio y
+          el CUIT, que es lo que la factura necesita.</li>
+      <li><b>La factura sale del cobro que ya se hizo.</b> Al facturarle a
+          un socio se eligen sus cobros sin facturar, así el mismo dinero
+          no se cuenta dos veces en la caja.</li>
+      <li><b>La conexión con ARCA la hace el club</b>, una sola vez, con su
+          clave fiscal. El programa lo acompaña paso por paso y da los pasos
+          en PDF para llevárselos. La clave del club se genera en su
+          computadora y no sale de ahí.</li>
     </ul>
   </section>
 
