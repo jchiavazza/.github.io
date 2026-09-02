@@ -23,6 +23,51 @@
   }
   .resumen b { display: block; font-size: 26px; line-height: 1.1; }
   .resumen span { font-size: 13px; color: var(--texto-suave); }
+
+  /* Cada número se toca y muestra su detalle. Se nota que se puede: el
+     cursor, y que la tarjeta se levanta al pasar por encima. Sin eso, un
+     número que abre algo al tocarlo no lo descubre nadie. */
+  .resumen div[role="button"] { cursor: pointer; }
+  .resumen div[role="button"]:hover,
+  .resumen div[role="button"]:focus-visible {
+    border-color: var(--texto-suave);
+    transform: translateY(-1px);
+  }
+  .resumen div[role="button"]:active { box-shadow: var(--hundido); transform: none; }
+
+  /* El detalle, encima de todo. */
+  .fondo-detalle {
+    position: fixed; inset: 0; background: rgba(0, 0, 0, .45);
+    display: flex; align-items: center; justify-content: center;
+    padding: 20px; z-index: 50;
+  }
+  .fondo-detalle[hidden] { display: none; }
+  .caja-detalle {
+    background: var(--fondo); color: var(--texto);
+    border: 1px solid var(--borde); border-radius: 14px;
+    box-shadow: 0 18px 50px rgba(0, 0, 0, .35);
+    width: min(900px, 100%); max-height: 86vh;
+    display: flex; flex-direction: column;
+  }
+  .caja-detalle > header {
+    display: flex; align-items: baseline; gap: 12px; flex-wrap: wrap;
+    padding: 16px 20px; border-bottom: 1px solid var(--borde);
+  }
+  .caja-detalle h3 { margin: 0; font-size: 19px; }
+  .caja-detalle .cuantas { color: var(--texto-suave); font-size: 14px; }
+  .caja-detalle .cerrar { margin-left: auto; }
+  /* Lo que crece es la lista, y el encabezado queda fijo arriba: con
+     cincuenta descargas, perder de vista de qué archivo son es perderse. */
+  .caja-detalle .adentro { overflow: auto; padding: 4px 20px 20px; }
+  .caja-detalle table { margin-top: 12px; }
+  .caja-detalle thead th {
+    position: sticky; top: 0; background: var(--fondo);
+  }
+  /* Con el detalle de un archivo, la primera columna repite el mismo
+     nombre en cada renglón: es el título de la ventana. Se saca y queda
+     el lugar para lo que cambia. */
+  #tablaDetalle.sin-la-columna th:first-child,
+  #tablaDetalle.sin-la-columna td.que { display: none; }
   .tabla-envoltorio { overflow-x: auto; }
   table { border-collapse: collapse; width: 100%; font-size: 14px; }
   th, td { text-align: left; padding: 9px 12px; border-bottom: 1px solid var(--borde); vertical-align: top; }
@@ -172,6 +217,35 @@
 
 </main>
 
+<!-- El detalle de un número del resumen: las descargas que lo forman.
+     Vive fuera de <main> para que quede por encima de todo. -->
+<div class="fondo-detalle" id="fondoDetalle" hidden role="dialog" aria-modal="true"
+     aria-labelledby="tituloDetalle">
+  <div class="caja-detalle">
+    <header>
+      <h3 id="tituloDetalle">Detalle</h3>
+      <span class="cuantas" id="cuantasDetalle"></span>
+      <button class="copiar cerrar" id="cerrarDetalle" type="button">Cerrar</button>
+    </header>
+    <div class="adentro">
+      <div class="tabla-envoltorio">
+        <table id="tablaDetalle">
+          <thead>
+            <tr>
+              <th>Qué se bajó</th>
+              <th>Cuándo</th>
+              <th>Dónde</th>
+              <th>IP</th>
+              <th>Con qué</th>
+            </tr>
+          </thead>
+          <tbody></tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+</div>
+
 <footer>
   <div class="envoltorio">
     <p>Club 9x19 Shooting · página interna, no indexada</p>
@@ -215,6 +289,102 @@
     return [f.ciudad, f.provincia, f.pais].filter(Boolean).join(', ');
   }
 
+  // Las descargas que se trajeron, para el detalle de cada número.
+  let loQueSeBajo = [];
+  let comoSeLlama = {};
+
+  // Una fila de la tabla de descargas. La arman los dos lados —la tabla
+  // grande y el detalle— para que digan exactamente lo mismo: dos copias
+  // de esto se separan el día que se agrega una columna.
+  function pintarLasFilas(cuerpo, filas) {
+    cuerpo.innerHTML = '';
+    filas.forEach((f) => {
+      const tr = document.createElement('tr');
+      const celdas = [
+        { clase: 'que', campo: 'Qué se bajó', texto: comoSeLlama[f.archivo] || f.archivo },
+        { clase: 'cuando', campo: 'Cuándo', texto: cuando(f.ts) },
+        { clase: 'donde', campo: 'Dónde', texto: donde(f) },
+        { clase: 'ip', campo: 'IP', texto: f.ip },
+        { clase: 'con', campo: 'Con qué', texto: conQue(f.ua) },
+      ];
+      celdas.forEach((c) => {
+        const td = document.createElement('td');
+        td.className = c.clase;
+        td.dataset.campo = c.campo;
+        td.textContent = c.texto || '—';
+        tr.appendChild(td);
+      });
+      cuerpo.appendChild(tr);
+    });
+  }
+
+  // Un número del resumen. `archivo` es cuál mostrar al tocarlo; null es
+  // el total, que muestra todas.
+  function unNumero(cuanto, texto, archivo, comoSeTitula) {
+    const caja = document.createElement('div');
+    caja.innerHTML = '<b></b><span></span>';
+    caja.querySelector('b').textContent = cuanto;
+    caja.querySelector('span').textContent = texto;
+
+    // Se toca con el dedo, con el mouse y con el teclado: es una tarjeta y
+    // no un botón, así que hay que decirle al navegador qué es.
+    caja.setAttribute('role', 'button');
+    caja.setAttribute('tabindex', '0');
+    caja.title = 'Ver el detalle';
+
+    const abrir = () => abrirElDetalle(comoSeTitula || texto, archivo);
+    caja.addEventListener('click', abrir);
+    caja.addEventListener('keydown', (e) => {
+      if (e.key === 'Enter' || e.key === ' ') {
+        e.preventDefault();
+        abrir();
+      }
+    });
+
+    resumen.appendChild(caja);
+  }
+
+  // -------------------------------------------------------------------
+  // El detalle de un número
+  // -------------------------------------------------------------------
+
+  const fondoDetalle = document.getElementById('fondoDetalle');
+  let loQueSeEstabaMirando = null;
+
+  function abrirElDetalle(titulo, archivo) {
+    const filas = archivo
+      ? loQueSeBajo.filter((f) => f.archivo === archivo)
+      : loQueSeBajo;
+
+    document.getElementById('tituloDetalle').textContent = titulo;
+    document.getElementById('cuantasDetalle').textContent =
+      filas.length + (filas.length === 1 ? ' descarga' : ' descargas');
+
+    const laTabla = document.getElementById('tablaDetalle');
+    laTabla.classList.toggle('sin-la-columna', !!archivo);
+    pintarLasFilas(laTabla.querySelector('tbody'), filas);
+
+    // Para devolver el foco a donde estaba al cerrar: quien vino con el
+    // teclado tiene que volver al número que tocó.
+    loQueSeEstabaMirando = document.activeElement;
+    fondoDetalle.hidden = false;
+    document.getElementById('cerrarDetalle').focus();
+  }
+
+  function cerrarElDetalle() {
+    fondoDetalle.hidden = true;
+    if (loQueSeEstabaMirando && loQueSeEstabaMirando.focus) loQueSeEstabaMirando.focus();
+  }
+
+  document.getElementById('cerrarDetalle').addEventListener('click', cerrarElDetalle);
+  // Tocar afuera cierra; tocar adentro, no.
+  fondoDetalle.addEventListener('click', (e) => {
+    if (e.target === fondoDetalle) cerrarElDetalle();
+  });
+  document.addEventListener('keydown', (e) => {
+    if (e.key === 'Escape' && !fondoDetalle.hidden) cerrarElDetalle();
+  });
+
   async function pedir() {
     const valor = clave.value.trim();
     if (!valor) { clave.focus(); return; }
@@ -244,37 +414,19 @@
         'club-manual': 'Manual de 9x19 Club',
       };
 
+      // Se guardan para poder mostrar el detalle de cada número sin
+      // volver a preguntarle al servidor: ya están todas acá.
+      loQueSeBajo = d.filas || [];
+      comoSeLlama = nombres;
+
       resumen.innerHTML = '';
-      const total = document.createElement('div');
-      total.innerHTML = '<b>' + d.total + '</b><span>descargas en total</span>';
-      resumen.appendChild(total);
+      unNumero(d.total, 'descargas en total', null, 'Todas las descargas');
       Object.keys(d.porArchivo || {}).forEach((k) => {
-        const caja = document.createElement('div');
-        caja.innerHTML = '<b>' + d.porArchivo[k] + '</b><span>' + (nombres[k] || k) + '</span>';
-        resumen.appendChild(caja);
+        unNumero(d.porArchivo[k], nombres[k] || k, k);
       });
       resumen.hidden = false;
 
-      const cuerpo = tabla.querySelector('tbody');
-      cuerpo.innerHTML = '';
-      d.filas.forEach((f) => {
-        const tr = document.createElement('tr');
-        const celdas = [
-          { clase: 'que', campo: 'Qué se bajó', texto: nombres[f.archivo] || f.archivo },
-          { clase: 'cuando', campo: 'Cuándo', texto: cuando(f.ts) },
-          { clase: 'donde', campo: 'Dónde', texto: donde(f) },
-          { clase: 'ip', campo: 'IP', texto: f.ip },
-          { clase: 'con', campo: 'Con qué', texto: conQue(f.ua) },
-        ];
-        celdas.forEach((c) => {
-          const td = document.createElement('td');
-          td.className = c.clase;
-          td.dataset.campo = c.campo;
-          td.textContent = c.texto || '—';
-          tr.appendChild(td);
-        });
-        cuerpo.appendChild(tr);
-      });
+      pintarLasFilas(tabla.querySelector('tbody'), loQueSeBajo);
       tabla.hidden = false;
       document.getElementById('bloque-descargas').hidden = false;
 
