@@ -11,6 +11,11 @@
   /* Estilos propios: esta página es interna y no comparte nada con el
      resto del sitio salvo los colores. */
   .clave-caja { display: flex; gap: 12px; flex-wrap: wrap; align-items: center; margin-bottom: 24px; }
+  .clave-caja select {
+    padding: 12px 16px; border-radius: 12px; border: 1px solid var(--borde);
+    background: var(--fondo); color: var(--texto); font-size: 16px;
+    box-shadow: var(--hundido); font-family: inherit; min-width: 220px;
+  }
   .clave-caja input {
     padding: 12px 16px; border-radius: 12px; border: 1px solid var(--borde);
     background: var(--fondo); color: var(--texto); font-size: 16px;
@@ -207,6 +212,41 @@
               <th>Estado</th>
               <th>Cobrado</th>
               <th>Clave</th>
+            </tr>
+          </thead>
+          <tbody></tbody>
+        </table>
+      </div>
+    </div>
+
+    <div class="bloque" id="bloque-inscriptos" hidden>
+      <h2>Inscriptos a los torneos</h2>
+      <p class="aclaracion">Los que se anotaron por
+         <b>/inscripcion/</b>. El comprobante de cada uno no está acá: vive
+         en el correo del club, adjunto al aviso de la inscripción.</p>
+
+      <div class="clave-caja">
+        <select id="torneo-elegido"></select>
+        <button class="boton chico" id="bajar-planilla" type="button">Bajar la planilla</button>
+        <p class="estado" id="estado-planilla"></p>
+      </div>
+
+      <div class="resumen" id="resumen-inscriptos"></div>
+
+      <div class="tabla-envoltorio">
+        <table id="tabla-inscriptos">
+          <thead>
+            <tr>
+              <th>Quién</th>
+              <th>Cuándo</th>
+              <th>División</th>
+              <th>Clase</th>
+              <th>Categoría</th>
+              <th>Día</th>
+              <th>2ª arma</th>
+              <th>Tenía que pagar</th>
+              <th>Comprobante</th>
+              <th>Estado</th>
             </tr>
           </thead>
           <tbody></tbody>
@@ -433,9 +473,11 @@
       estado.className = 'estado ok';
       estado.textContent = d.total ? '' : 'Todavía no bajó nadie.';
 
-      // Las ventas van aparte y no arrastran a las descargas: si esa
-      // consulta falla, lo de arriba ya está en pantalla.
+      // Las ventas y los inscriptos van aparte y no arrastran a las
+      // descargas: si una de esas consultas falla, lo de arriba ya está
+      // en pantalla.
       pedirLasVentas(valor);
+      pedirLosInscriptos(valor);
     } catch (e) {
       estado.className = 'estado mal';
       estado.textContent = 'No se pudo conectar.';
@@ -568,6 +610,199 @@
 
     bloque.hidden = false;
   }
+
+  // -------------------------------------------------------------------
+  // Los inscriptos a los torneos
+  // -------------------------------------------------------------------
+
+  const INSCRIPTOS = FUNCIONES + '/panelInscriptos';
+
+  const DIA_LARGO = {};
+  let losInscriptos = [];
+  let elTorneo = null;
+
+  const COMO_SE_DICE = {
+    Lady: 'Lady', Senior: 'Senior (+50)', SuperSenior: 'Super Senior (+65)',
+    NV: 'Novicio', MM: 'Marksman', SS: 'Sharpshooter',
+    EX: 'Expert', MA: 'Master', UN: 'Sin clasificar',
+  };
+
+  const ESTADO_INSCRIPCION = {
+    'anotada-y-avisada': ['Avisado', 'bien'],
+    'anotada-sin-mandar': ['NO LE LLEGÓ EL CORREO', 'mal'],
+    'anotada': ['Sin avisar', 'espera'],
+  };
+
+  async function pedirLosInscriptos(valor, slug) {
+    const bloque = document.getElementById('bloque-inscriptos');
+    const elegido = document.getElementById('torneo-elegido');
+
+    let d;
+    try {
+      const r = await fetch(INSCRIPTOS + '?clave=' + encodeURIComponent(valor) +
+        (slug ? '&torneo=' + encodeURIComponent(slug) : ''));
+      d = await r.json();
+      if (!d.ok) return;
+    } catch (e) {
+      return;
+    }
+
+    // Sin torneo, la función contesta cuáles hay: se llena la lista y se
+    // pide el primero, que es el que interesa mirar apenas se entra.
+    if (d.torneos) {
+      if (!d.torneos.length) return;
+      elegido.innerHTML = '';
+      d.torneos.forEach((t) => {
+        const op = document.createElement('option');
+        op.value = t.slug;
+        op.textContent = t.sede + ' — ' + t.fecha;
+        elegido.appendChild(op);
+      });
+      bloque.hidden = false;
+      await pedirLosInscriptos(valor, d.torneos[0].slug);
+      return;
+    }
+
+    elTorneo = d.torneo;
+    losInscriptos = d.inscriptos || [];
+    Object.assign(DIA_LARGO, (d.torneo && d.torneo.dias) || {});
+
+    const resumenI = document.getElementById('resumen-inscriptos');
+    resumenI.innerHTML = '';
+    caja(resumenI, losInscriptos.length,
+      losInscriptos.length === 1 ? 'inscripto' : 'inscriptos');
+
+    const porDia = {};
+    losInscriptos.forEach((i) => { porDia[i.dia] = (porDia[i.dia] || 0) + 1; });
+    Object.keys(porDia).forEach((k) => caja(resumenI, porDia[k], DIA_LARGO[k] || k));
+
+    const sinComprobante = losInscriptos.filter((i) => !i.trajoComprobante).length;
+    if (sinComprobante) caja(resumenI, sinComprobante, 'sin comprobante');
+
+    const sinAvisar = losInscriptos.filter((i) => i.estado === 'anotada-sin-mandar').length;
+    if (sinAvisar) caja(resumenI, sinAvisar, 'no recibieron el correo');
+
+    const cuerpo = document.getElementById('tabla-inscriptos').querySelector('tbody');
+    cuerpo.innerHTML = '';
+
+    losInscriptos.forEach((i) => {
+      const tr = document.createElement('tr');
+      const celdas = [
+        { clase: 'que', campo: 'Quién', texto: (i.apellido || '') + ', ' + (i.nombre || '') },
+        { clase: 'cuando', campo: 'Cuándo', texto: i.ts ? cuando(i.ts) : '' },
+        { campo: 'División', texto: i.division },
+        { campo: 'Clase', texto: COMO_SE_DICE[i.clase] || i.clase },
+        { campo: 'Categoría', texto: COMO_SE_DICE[i.categoria] || i.categoria },
+        { campo: 'Día', texto: DIA_LARGO[i.dia] || i.dia },
+        { campo: '2ª arma', texto: i.segundaArma ? i.segundaDivision : 'no' },
+        { campo: 'Tenía que pagar', texto: i.total ? pesos(i.total) : '' },
+        { campo: 'Comprobante', texto: i.trajoComprobante ? 'sí' : 'NO mandó' },
+      ];
+
+      celdas.forEach((c) => {
+        const td = document.createElement('td');
+        if (c.clase) td.className = c.clase;
+        td.dataset.campo = c.campo;
+        td.textContent = c.texto || '—';
+        tr.appendChild(td);
+      });
+
+      const est = document.createElement('td');
+      est.dataset.campo = 'Estado';
+      const marca = document.createElement('span');
+      const cual = ESTADO_INSCRIPCION[i.estado] || [i.estado || '—', 'espera'];
+      marca.className = 'marca-estado ' + cual[1];
+      marca.textContent = cual[0];
+      est.appendChild(marca);
+      tr.appendChild(est);
+
+      cuerpo.appendChild(tr);
+    });
+
+    bloque.hidden = false;
+  }
+
+  document.getElementById('torneo-elegido').addEventListener('change', function () {
+    pedirLosInscriptos(clave.value.trim(), this.value);
+  });
+
+  // -------------------------------------------------------------------
+  // La planilla para cargar en 9x19 Score
+  //
+  // Sale en formato SpreadsheetML —un .xls que por dentro es XML— y no
+  // en CSV: la app abre el selector de archivos filtrando por planilla de
+  // Excel, así que **un .csv no se puede ni elegir**. Y el XML no necesita
+  // ninguna librería, que es lo que este sitio no tiene.
+  //
+  // Los nombres de las columnas son los que la app busca al importar
+  // (MatchScreen.js): si allá cambian, acá también. Las que no conoce las
+  // ignora, así que las últimas son para el club.
+  // -------------------------------------------------------------------
+
+  const COLUMNAS = [
+    ['Apellido', (i) => (i.apellido || '').toUpperCase()],
+    ['Nombre', (i) => (i.nombre || '').toUpperCase()],
+    ['Email', (i) => i.correo || ''],
+    ['Numero de IDPA', (i) => i.idpa || ''],
+    ['Division', (i) => i.division || ''],
+    ['Clase', (i) => i.clase || ''],
+    ['Categoria especial', (i) => COMO_SE_DICE[i.categoria] || i.categoria || ''],
+    ['Club', () => ''],
+    ['Escuadra', () => ''],
+    // De acá para abajo, lo que la app no importa y al club le sirve.
+    ['Dia', (i) => DIA_LARGO[i.dia] || i.dia || ''],
+    ['Celular', (i) => i.celular || ''],
+    ['DNI', (i) => i.dni || ''],
+    ['CLU', (i) => i.clu || ''],
+    ['Vence CLU', (i) => i.cluVence || ''],
+    ['Direccion', (i) => i.direccion || ''],
+    ['Segunda arma', (i) => (i.segundaArma ? i.segundaDivision : '')],
+    ['Tenia que pagar', (i) => (i.total || '')],
+    ['Comprobante', (i) => (i.trajoComprobante ? 'si' : 'no')],
+  ];
+
+  function enXml(t) {
+    return String(t)
+      .replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;')
+      .replace(/"/g, '&quot;');
+  }
+
+  function armarLaPlanilla(inscriptos) {
+    const fila = (celdas) =>
+      '<Row>' + celdas.map((c) =>
+        '<Cell><Data ss:Type="String">' + enXml(c) + '</Data></Cell>').join('') + '</Row>';
+
+    const filas = [fila(COLUMNAS.map((c) => c[0]))]
+      .concat(inscriptos.map((i) => fila(COLUMNAS.map((c) => c[1](i)))));
+
+    return '<?xml version="1.0" encoding="UTF-8"?>' +
+      '<?mso-application progid="Excel.Sheet"?>' +
+      '<Workbook xmlns="urn:schemas-microsoft-com:office:spreadsheet"' +
+      ' xmlns:ss="urn:schemas-microsoft-com:office:spreadsheet">' +
+      '<Worksheet ss:Name="Inscriptos"><Table>' + filas.join('') +
+      '</Table></Worksheet></Workbook>';
+  }
+
+  document.getElementById('bajar-planilla').addEventListener('click', () => {
+    const aviso = document.getElementById('estado-planilla');
+
+    if (!losInscriptos.length) {
+      aviso.className = 'estado mal';
+      aviso.textContent = 'Todavía no hay inscriptos en este torneo.';
+      return;
+    }
+
+    const xml = armarLaPlanilla(losInscriptos);
+    const url = URL.createObjectURL(new Blob([xml], { type: 'application/vnd.ms-excel' }));
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = 'inscriptos-' + (elTorneo ? elTorneo.slug : 'torneo') + '.xls';
+    a.click();
+    URL.revokeObjectURL(url);
+
+    aviso.className = 'estado ok';
+    aviso.textContent = losInscriptos.length + ' inscriptos. Se importa desde Utilidades de la app.';
+  });
 
   document.getElementById('entrar').addEventListener('click', pedir);
   clave.addEventListener('keydown', (e) => { if (e.key === 'Enter') pedir(); });

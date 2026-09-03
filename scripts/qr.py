@@ -13,11 +13,13 @@ for d in (web, impresion):
     if not os.path.isdir(d):
         os.makedirs(d)
 
+# Esperanza apunta al formulario propio del sitio; las otras tres siguen
+# en JotForm hasta que el propio se vea andar en un torneo de verdad.
 fechas = [
     ('tucuman',  'https://form.jotform.com/260535458428665'),
     ('santa-fe', 'https://form.jotform.com/260783817028665'),
     ('parana',   'https://form.jotform.com/253155748498674'),
-    ('esperanza','https://form.jotform.com/262246237073657'),
+    ('esperanza','https://9x19shooting.com.ar/inscripcion/?t=esperanza'),
 ]
 
 for nombre, url in fechas:

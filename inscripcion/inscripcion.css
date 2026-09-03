@@ -1,0 +1,195 @@
+/* Lo propio del formulario de inscripción.
+ *
+ * Va en un archivo aparte y no en `estilo.css` porque lo usa una sola
+ * página: sumarlo al compartido obligaría a subir el `?v=` de todas las
+ * demás para que se refresque, por un estilo que ninguna usa.
+ *
+ * Las variables —colores, relieve, hundido— salen de `estilo.css`, que
+ * esta página carga primero. Acá no se define ningún color a mano. */
+
+/* El asterisco de los obligatorios, como en el formulario que se venía
+   usando: rojo, chico, al lado del nombre del campo. */
+.obligatorio {
+  color: var(--peligro);
+  font-weight: 700;
+  margin-left: 2px;
+}
+
+/* La aclaración debajo de un campo: para qué sirve, o qué pasa si se
+   deja vacío. */
+.ayuda {
+  margin: 6px 0 0;
+  font-size: 14px;
+  color: var(--texto-suave);
+  font-weight: 400;
+}
+
+.archivo-elegido { color: var(--ok); font-weight: 600; }
+
+/* ---------------------------------- grupos de opciones */
+
+/* Un fieldset se ve distinto en cada navegador: se lo deja sin borde y
+   la leyenda se disfraza de etiqueta de campo, para que un grupo de
+   opciones y un campo de texto se lean igual. */
+.campo.grupo {
+  border: 0;
+  padding: 0;
+  margin: 0 0 18px;
+  min-width: 0;
+}
+.campo.grupo legend {
+  padding: 0;
+  font-size: 14px;
+  font-weight: 600;
+  margin-bottom: 8px;
+}
+
+.opciones {
+  display: grid;
+  gap: 8px;
+}
+
+/* Cada opción es una chapa tocable entera, no un puntito de 13 px. En la
+   cancha y con el celular en la mano, la diferencia se nota. */
+.opcion {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 13px 15px;
+  border-radius: 12px;
+  border: 1px solid var(--borde);
+  background: var(--fondo);
+  box-shadow: var(--relieve-chico);
+  cursor: pointer;
+  font-size: 16px;
+  font-weight: 400;
+  margin: 0;
+  transition: box-shadow .12s ease;
+}
+.opcion span { flex: 1; }
+.opcion input { flex: 0 0 auto; width: 20px; height: 20px; accent-color: var(--acento); }
+
+/* La elegida queda hundida: es el mismo lenguaje que usa la app para lo
+   que está activo. */
+.opcion:has(input:checked) {
+  box-shadow: var(--hundido);
+  color: var(--acento);
+  font-weight: 600;
+}
+.opcion:has(input:focus-visible) { outline: 2px solid var(--acento); outline-offset: 2px; }
+
+/* Las casillas sueltas —segunda arma, compromiso— son una línea, no un
+   grupo, así que no llevan chapa: alcanzan la casilla y su texto. */
+/* El `.campo label` de estilo.css las pone en negrita, que es lo que
+   corresponde a un nombre de campo pero no a una oración larga: acá se
+   lee un texto, no una etiqueta. De ahí el selector doble. */
+.campo label.casilla {
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+  font-weight: 400;
+  font-size: 16px;
+  cursor: pointer;
+  line-height: 1.45;
+}
+.casilla input {
+  flex: 0 0 auto;
+  width: 22px;
+  height: 22px;
+  margin-top: 1px;
+  accent-color: var(--acento);
+}
+
+/* ---------------------------------- el pago */
+
+.chapa {
+  padding: 20px 22px;
+  border-radius: 18px;
+  border: 1px solid var(--borde);
+  background: var(--fondo);
+  box-shadow: var(--relieve);
+}
+
+.chapa.pago { margin: 0 0 22px; }
+
+.chapa.pago .total {
+  margin: 0;
+  font-size: clamp(18px, 3vw, 22px);
+}
+.chapa.pago .total strong {
+  color: var(--acento);
+  font-size: clamp(22px, 4vw, 28px);
+  white-space: nowrap;
+}
+.chapa.pago .desglose {
+  margin: 6px 0 0;
+  font-size: 14px;
+  color: var(--texto-suave);
+}
+
+.chapa.pago .alias {
+  display: grid;
+  grid-template-columns: auto 1fr;
+  gap: 4px 14px;
+  margin: 16px 0 0;
+  font-size: 15px;
+}
+.chapa.pago .alias dt { color: var(--texto-suave); }
+.chapa.pago .alias dd { margin: 0; }
+.chapa.pago .alias strong {
+  color: var(--acento);
+  /* El alias se copia a mano en la app del banco: que se pueda
+     seleccionar de un toque sin arrastrar media línea. */
+  user-select: all;
+}
+
+/* ---------------------------------- avisos de página entera */
+
+.aviso-grande {
+  max-width: 620px;
+  margin: 0 auto;
+  text-align: center;
+}
+.aviso-grande p { margin: 0 0 10px; }
+.aviso-grande p:last-child { margin-bottom: 0; }
+.aviso-grande.ok strong { color: var(--ok); }
+
+/* Lo que falta completar, marcado al intentar enviar. */
+.mal-campo,
+.mal-campo input,
+.mal-campo .opcion {
+  outline: 2px solid var(--peligro);
+  outline-offset: 2px;
+  border-radius: 12px;
+}
+
+/* ---------------------------------- el archivo y la fecha */
+
+/* El selector de archivo y el de fecha son los dos controles que cada
+   navegador dibuja a su manera; se los empareja con el resto. */
+.campo input[type="file"] {
+  padding: 11px 13px;
+  font-size: 15px;
+  box-shadow: var(--relieve-chico);
+  cursor: pointer;
+}
+.campo input[type="date"] { max-width: 260px; }
+
+/* ---------------------------------- el logo de IDPA */
+
+/* Cierra la página, debajo de los botones. Grande, centrado y con aire:
+   es la marca del deporte, no un adorno del formulario. */
+.marca-idpa {
+  margin: 44px 0 8px;
+  text-align: center;
+}
+.marca-idpa img {
+  width: min(420px, 82%);
+  height: auto;
+}
+
+@media (max-width: 600px) {
+  .chapa { padding: 17px 18px; }
+  .opcion { padding: 12px 14px; }
+  .marca-idpa { margin-top: 36px; }
+}

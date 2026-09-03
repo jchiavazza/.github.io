@@ -1,0 +1,258 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Inscripción — Club 9x19 Shooting</title>
+<meta name="description" content="Formulario de inscripción a los torneos de IDPA que organiza el Club 9x19 Shooting.">
+<link rel="icon" href="/assets/icono.png">
+<link rel="stylesheet" href="/estilo.css?v=59">
+<link rel="stylesheet" href="inscripcion.css?v=2">
+
+<!-- Fuera de los buscadores: a esta página se llega por el botón del
+     torneo o por el QR del afiche, no por una búsqueda. Tampoco está en
+     el sitemap. -->
+<meta name="robots" content="noindex, nofollow">
+
+<meta property="og:type" content="website">
+<meta property="og:title" content="Inscripción a los torneos del Club 9x19 Shooting">
+<meta property="og:image" content="https://9x19shooting.com.ar/assets/compartir.png">
+<meta property="og:locale" content="es_AR">
+</head>
+<body>
+
+<div class="envoltorio">
+  <div class="barra">
+    <a class="marca" href="/"><img src="/assets/logo-club.png" alt="Club 9x19 Shooting"></a>
+    <img class="medalla" src="/assets/medalla.png" alt="Medalla del club: 9x19 Shooting, IDPA Argentina">
+    <nav class="corto">
+      <a href="/#contacto">Contacto</a>
+    </nav>
+  </div>
+</div>
+
+<main class="envoltorio">
+
+  <!-- El logo del club encabeza la página: es el de la barra de acá
+       arriba, que en todo el sitio va grande y además vuelve al inicio.
+       Repetirlo acá abajo era verlo dos veces en la misma pantalla. -->
+  <header class="portada">
+    <h1 id="t-titulo">Inscripción</h1>
+    <p class="bajada" id="t-bajada"></p>
+  </header>
+
+  <!-- Cuando la dirección no trae un torneo conocido. Es lo único que se
+       ve; el formulario queda escondido. -->
+  <section id="sin-torneo" hidden>
+    <div class="chapa aviso-grande">
+      <p><strong>No encontramos ese torneo.</strong></p>
+      <p>
+        Puede que la inscripción todavía no esté abierta o que el enlace
+        esté incompleto. Mirá los torneos abiertos en la
+        <a href="/#torneos">portada del sitio</a>, o escribinos a
+        <a href="mailto:9x19shooting@gmail.com">9x19shooting@gmail.com</a>.
+      </p>
+    </div>
+  </section>
+
+  <!-- Cuando el torneo ya cerró su inscripción. -->
+  <section id="cerrado" hidden>
+    <div class="chapa aviso-grande">
+      <p><strong>La inscripción a este torneo ya cerró.</strong></p>
+      <p>
+        Si necesitás anotarte igual, escribinos a
+        <a href="mailto:9x19shooting@gmail.com">9x19shooting@gmail.com</a>
+        y vemos si todavía hay lugar.
+      </p>
+    </div>
+  </section>
+
+  <!-- Lo que se ve cuando la inscripción salió bien. Reemplaza al
+       formulario para que nadie mande dos veces sin querer. -->
+  <section id="listo" hidden>
+    <div class="chapa aviso-grande ok">
+      <p><strong>¡Listo, quedaste inscripto!</strong></p>
+      <p id="listo-detalle"></p>
+      <p class="nota">
+        Si no te llega en unos minutos, revisá el correo no deseado y, si
+        tampoco está ahí, escribinos a
+        <a href="mailto:9x19shooting@gmail.com">9x19shooting@gmail.com</a>.
+      </p>
+    </div>
+  </section>
+
+  <form class="form-club" id="inscripcion" hidden novalidate>
+
+    <!-- Trampa antispam: invisible para las personas, la completan los
+         robots y por eso el envío se descarta. La misma del formulario
+         de contacto de la portada. -->
+    <input type="checkbox" name="botcheck" class="trampa" tabindex="-1" autocomplete="off">
+
+    <h2 class="sub">Tus datos</h2>
+
+    <!-- Apellido y nombre van en dos campos y no en uno: 9x19 Score los
+         importa por separado, y partir "Juan Carlos Pérez" adivinando dónde
+         termina el nombre se corrige después a mano, tirador por tirador. -->
+    <div class="campo">
+      <label for="i-apellido">Apellido <span class="obligatorio">*</span></label>
+      <input id="i-apellido" name="apellido" type="text" required
+             autocomplete="family-name" maxlength="60" autocapitalize="words">
+    </div>
+
+    <div class="campo">
+      <label for="i-nombre">Nombre <span class="obligatorio">*</span></label>
+      <input id="i-nombre" name="nombre" type="text" required
+             autocomplete="given-name" maxlength="60" autocapitalize="words">
+    </div>
+
+    <div class="campo">
+      <label for="i-correo">Correo electrónico <span class="obligatorio">*</span></label>
+      <input id="i-correo" name="correo" type="email" required autocomplete="email"
+             maxlength="120" inputmode="email" autocapitalize="off" spellcheck="false">
+      <p class="ayuda">Acá te mandamos la confirmación de la inscripción.</p>
+    </div>
+
+    <div class="campo">
+      <label for="i-direccion">Dirección <span class="obligatorio">*</span></label>
+      <input id="i-direccion" name="direccion" type="text" required
+             autocomplete="street-address" maxlength="120">
+    </div>
+
+    <div class="campo">
+      <label for="i-dni">DNI <span class="obligatorio">*</span></label>
+      <input id="i-dni" name="dni" type="text" required inputmode="numeric"
+             maxlength="12" placeholder="Sin puntos">
+    </div>
+
+    <div class="campo">
+      <label for="i-celular">Celular <span class="obligatorio">*</span></label>
+      <input id="i-celular" name="celular" type="tel" required autocomplete="tel"
+             inputmode="tel" maxlength="30" placeholder="Con característica, sin 0 ni 15">
+    </div>
+
+    <h2 class="sub">Credencial y asociación</h2>
+
+    <div class="campo">
+      <label for="i-clu">Número de credencial de legítimo usuario <span class="obligatorio">*</span></label>
+      <input id="i-clu" name="clu" type="text" required inputmode="numeric" maxlength="30">
+    </div>
+
+    <div class="campo">
+      <label for="i-clu-vence">Vencimiento de la credencial <span class="obligatorio">*</span></label>
+      <input id="i-clu-vence" name="cluVence" type="date" required>
+    </div>
+
+    <div class="campo">
+      <label for="i-idpa">Número de asociado IDPA</label>
+      <input id="i-idpa" name="idpa" type="text" inputmode="numeric" maxlength="20"
+             autocapitalize="off" spellcheck="false">
+      <p class="ayuda">Dejalo vacío si no estás asociado. No hace falta poner nada.</p>
+    </div>
+
+    <h2 class="sub">Cómo vas a correr</h2>
+
+    <fieldset class="campo grupo" id="grupo-division">
+      <legend>División <span class="obligatorio">*</span></legend>
+      <div class="opciones" id="opciones-division"></div>
+    </fieldset>
+
+    <fieldset class="campo grupo">
+      <legend>Clase <span class="obligatorio">*</span></legend>
+      <div class="opciones" id="opciones-clase"></div>
+    </fieldset>
+
+    <fieldset class="campo grupo">
+      <legend>Categoría</legend>
+      <div class="opciones" id="opciones-categoria"></div>
+      <p class="ayuda">Si no pertenecés a ninguna, dejalo sin marcar.</p>
+    </fieldset>
+
+    <fieldset class="campo grupo">
+      <legend>¿Qué día venís? <span class="obligatorio">*</span></legend>
+      <div class="opciones" id="opciones-dia"></div>
+      <p class="ayuda" id="ayuda-hora"></p>
+    </fieldset>
+
+    <div class="campo">
+      <label class="casilla">
+        <input type="checkbox" id="i-segunda" name="segundaArma">
+        <span>Corro con una segunda arma</span>
+      </label>
+    </div>
+
+    <fieldset class="campo grupo" id="grupo-segunda" hidden>
+      <legend>División de la segunda arma <span class="obligatorio">*</span></legend>
+      <div class="opciones" id="opciones-segunda"></div>
+    </fieldset>
+
+    <h2 class="sub">El pago</h2>
+
+    <!-- El importe lo arma inscripcion.js con lo que se va marcando. Es
+         para que la persona sepa cuánto transferir: el que vale es el que
+         calcula la función cuando recibe la inscripción. -->
+    <div class="chapa pago">
+      <p class="total">
+        Tenés que transferir <strong id="p-total">—</strong>
+      </p>
+      <p class="desglose" id="p-desglose"></p>
+      <dl class="alias">
+        <dt>Alias</dt><dd><strong id="p-alias"></strong></dd>
+        <dt>A nombre de</dt><dd id="p-titular"></dd>
+      </dl>
+      <p class="nota" id="p-nota"></p>
+    </div>
+
+    <div class="campo">
+      <label class="casilla">
+        <input type="checkbox" id="i-compromiso" name="compromiso" required>
+        <span id="texto-compromiso"></span>
+      </label>
+    </div>
+
+    <div class="campo">
+      <label for="i-comprobante">Comprobante de la transferencia</label>
+      <input id="i-comprobante" name="comprobante" type="file"
+             accept="image/*,application/pdf">
+      <p class="ayuda">
+        Una foto o captura de la transferencia, o el PDF. Si todavía no
+        transferiste, podés mandarlo después a
+        <a href="mailto:9x19shooting@gmail.com">9x19shooting@gmail.com</a>.
+      </p>
+      <p class="ayuda archivo-elegido" id="archivo-elegido" hidden></p>
+    </div>
+
+    <div class="acciones-form">
+      <button type="submit" class="boton principal">Enviar inscripción</button>
+      <button type="reset" class="boton">Borrar el formulario</button>
+      <p class="estado" role="status" aria-live="polite"></p>
+    </div>
+
+    <!-- El logo de IDPA cierra la página, debajo de los botones. -->
+    <div class="marca-idpa">
+      <img src="/assets/idpa.png" alt="IDPA — International Defensive Pistol Association">
+    </div>
+
+    <p class="nota">
+      Los datos que cargás son para organizar el torneo. Qué hacemos con
+      ellos y cuánto los guardamos está en la
+      <a href="/privacidad/">política de privacidad</a>.
+    </p>
+
+  </form>
+
+</main>
+
+<footer>
+  <div class="envoltorio">
+    <p>
+      Club 9x19 Shooting · Club organizador de eventos de IDPA ·
+      <a href="mailto:9x19shooting@gmail.com">9x19shooting@gmail.com</a> ·
+      <a href="https://www.instagram.com/9x19_shooting/" target="_blank" rel="noopener">@9x19_shooting</a>
+    </p>
+  </div>
+</footer>
+
+<script src="torneos.js?v=2"></script>
+<script src="inscripcion.js?v=2"></script>
+</body>
+</html>

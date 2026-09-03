@@ -14,6 +14,7 @@ index.html               el club: IDPA, qué hacemos, sedes, torneos, contacto
 score/index.html         la App 9x19 Score
 clasificador/index.html  la App 9x19 Clasificador
 torneos/                 una página por fecha, con su galería
+inscripcion/             el formulario de inscripción a los torneos
 privacidad/index.html    la política de privacidad del sitio
 panel/index.html         registro de descargas (interno, pide clave)
 descargas/               el APK del Clasificador
@@ -78,6 +79,50 @@ curl -s https://api.github.com/repos/jchiavazza/.github.io/releases/latest
 
 Tiene que decir el tag nuevo y el archivo con el tamaño exacto del que se
 compiló.
+
+## El formulario de inscripción
+
+Hasta septiembre de 2026 las inscripciones pasaban por **JotForm**. Ahora
+la fecha de Esperanza usa un formulario propio, en `inscripcion/`:
+
+```
+inscripcion/index.html      la página, una sola para todos los torneos
+inscripcion/torneos.js      **lo único que se edita en cada torneo**
+inscripcion/inscripcion.js  arma el formulario, valida y lo manda
+inscripcion/inscripcion.css lo suyo; el resto sale de estilo.css
+```
+
+Qué torneo se muestra sale de la dirección: `/inscripcion/?t=esperanza`.
+Para abrir el torneo siguiente se copia el bloque anterior de
+`torneos.js`, se le cambian los datos y se pushea.
+
+> **Santa Fe y Paraná siguen en JotForm** hasta que el propio se vea
+> andar en un torneo de verdad. Sus botones y sus QR no se tocaron.
+
+El envío lo recibe la Cloud Function `inscribirse`, **que vive en
+`PuntajeApp/functions/inscripciones.js`**, por el mismo motivo que las
+del contador de descargas: un proyecto de Firebase despliega todas sus
+funciones desde una sola carpeta.
+
+> **Los precios están escritos en los dos repositorios.** En `torneos.js`
+> para mostrarlos, y en `functions/inscripciones.js` de la App para
+> calcular de verdad cuánto tenía que transferir cada uno. Si el importe
+> viajara con el formulario, cualquiera lo editaría en su navegador antes
+> de enviarlo. **Si cambiás un precio acá, cambialo también allá.**
+
+La inscripción queda anotada y se ve en `/panel/`, con un botón que baja
+la lista como planilla para importarla en 9x19 Score. Esa planilla sale
+en formato SpreadsheetML —un `.xls` que por dentro es XML— y no en CSV:
+la app filtra el selector de archivos por planilla de Excel, así que un
+`.csv` no se puede ni elegir. Que la app la siga leyendo se comprueba
+desde el otro repositorio:
+
+```bash
+node scripts/verificar-planilla-inscriptos.js
+```
+
+Lo que se pide en el formulario está declarado en
+`privacidad/index.html`: **si cambian los campos, hay que actualizarla.**
 
 ## El contador de descargas vive en el repositorio de la App
 
