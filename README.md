@@ -97,6 +97,12 @@ Qué torneo se muestra sale de la dirección: `/inscripcion/?t=esperanza`.
 Para abrir el torneo siguiente se copia el bloque anterior de
 `torneos.js`, se le cambian los datos y se pushea.
 
+> **Al agregar un torneo hay que subir el `?v=` de `torneos.js`** en el
+> `index.html` de esa carpeta. El navegador de quien ya entró una vez
+> tiene guardada la versión anterior, y con esa el torneo nuevo no
+> existe: la página le contesta "No encontramos ese torneo" y esa
+> persona no tiene forma de enterarse de que el problema es suyo.
+
 > **Paraná sigue en JotForm**, y va a quedar así: es una charla única,
 > no una fecha del calendario, y no vale la pena moverla. Su botón y su
 > QR no se tocaron.

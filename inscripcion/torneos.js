@@ -4,6 +4,11 @@
 // un torneo nuevo: se copia el bloque del anterior, se cambian los datos y
 // se pushea. Ni el HTML ni la función de los correos hay que mirarlos.
 //
+// AL AGREGAR UN TORNEO, SUBIR EL ?v= DE ESTE ARCHIVO en el index.html de
+// esta carpeta. El navegador de quien ya entro una vez tiene guardada la
+// version anterior, y con esa el torneo nuevo no existe: la pagina le
+// contesta "No encontramos ese torneo" y no hay forma de que se entere.
+//
 // La clave de cada bloque —`esperanza`— es lo que va en la dirección:
 //
 //     9x19shooting.com.ar/inscripcion/?t=esperanza
