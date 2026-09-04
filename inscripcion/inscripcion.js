@@ -114,6 +114,7 @@
   opciones('opciones-categoria', 'categoria', CATEGORIAS);
   opciones('opciones-dia', 'dia', torneo.dias);
   opciones('opciones-segunda', 'segundaDivision', divisiones);
+  opciones('opciones-segunda-clase', 'segundaClase', CLASES);
 
   if (torneo.horaComienzo) {
     $('ayuda-hora').textContent = 'El torneo comienza a las ' + torneo.horaComienzo + ' hs.';
@@ -122,8 +123,10 @@
   // La división de la segunda arma solo aparece si dijo que corre con una.
   $('i-segunda').addEventListener('change', function () {
     $('grupo-segunda').hidden = !this.checked;
+    $('grupo-segunda-clase').hidden = !this.checked;
     if (!this.checked) {
-      form.querySelectorAll('[name="segundaDivision"]').forEach((r) => { r.checked = false; });
+      form.querySelectorAll('[name="segundaDivision"], [name="segundaClase"]')
+        .forEach((r) => { r.checked = false; });
     }
     recalcular();
   });
@@ -293,6 +296,10 @@
       problemas.push([$('grupo-segunda'), 'Elegí la división de la segunda arma']);
     }
 
+    if ($('i-segunda').checked && !elegido_('segundaClase')) {
+      problemas.push([$('grupo-segunda-clase'), 'Elegí la clase de la segunda arma']);
+    }
+
     if (!$('i-compromiso').checked) {
       problemas.push([$('i-compromiso'), 'Para inscribirte tenés que aceptar el compromiso de pago']);
     }
@@ -342,6 +349,7 @@
       dia: elegido_('dia'),
       segundaArma: $('i-segunda').checked,
       segundaDivision: $('i-segunda').checked ? elegido_('segundaDivision') : '',
+      segundaClase: $('i-segunda').checked ? elegido_('segundaClase') : '',
       compromiso: $('i-compromiso').checked,
       botcheck: form.botcheck.checked,
       comprobante: adjunto,
@@ -378,6 +386,7 @@
   form.addEventListener('reset', () => {
     setTimeout(() => {
       $('grupo-segunda').hidden = true;
+      $('grupo-segunda-clase').hidden = true;
       elegido.hidden = true;
       form.querySelectorAll('.mal-campo').forEach((e) => e.classList.remove('mal-campo'));
       decir('');

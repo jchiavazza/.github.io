@@ -176,13 +176,20 @@
     <div class="campo">
       <label class="casilla">
         <input type="checkbox" id="i-segunda" name="segundaArma">
-        <span>Corro con una segunda arma</span>
+        <span>Participo con una segunda arma</span>
       </label>
     </div>
 
     <fieldset class="campo grupo" id="grupo-segunda" hidden>
       <legend>División de la segunda arma <span class="obligatorio">*</span></legend>
       <div class="opciones" id="opciones-segunda"></div>
+    </fieldset>
+
+    <!-- La segunda arma lleva su clase además de su división: corre como
+         un competidor aparte y se clasifica igual que el primero. -->
+    <fieldset class="campo grupo" id="grupo-segunda-clase" hidden>
+      <legend>Clase de la segunda arma <span class="obligatorio">*</span></legend>
+      <div class="opciones" id="opciones-segunda-clase"></div>
     </fieldset>
 
     <h2 class="sub">El pago</h2>
@@ -252,7 +259,7 @@
   </div>
 </footer>
 
-<script src="torneos.js?v=4"></script>
-<script src="inscripcion.js?v=3"></script>
+<script src="torneos.js?v=5"></script>
+<script src="inscripcion.js?v=4"></script>
 </body>
 </html>

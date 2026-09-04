@@ -694,7 +694,7 @@
         { campo: 'Clase', texto: COMO_SE_DICE[i.clase] || i.clase },
         { campo: 'Categoría', texto: COMO_SE_DICE[i.categoria] || i.categoria },
         { campo: 'Día', texto: DIA_LARGO[i.dia] || i.dia },
-        { campo: '2ª arma', texto: i.segundaArma ? i.segundaDivision : 'no' },
+        { campo: '2ª arma', texto: i.segundaArma ? (i.segundaDivision + ' · ' + (i.segundaClase || '')) : 'no' },
         { campo: 'Tenía que pagar', texto: i.total ? pesos(i.total) : '' },
         { campo: 'Comprobante', texto: i.trajoComprobante ? 'sí' : 'NO mandó' },
       ];
@@ -757,6 +757,7 @@
     ['Vence CLU', (i) => i.cluVence || ''],
     ['Direccion', (i) => i.direccion || ''],
     ['Segunda arma', (i) => (i.segundaArma ? i.segundaDivision : '')],
+    ['Clase segunda arma', (i) => (i.segundaArma ? i.segundaClase || '' : '')],
     ['Tenia que pagar', (i) => (i.total || '')],
     ['Comprobante', (i) => (i.trajoComprobante ? 'si' : 'no')],
   ];
