@@ -222,8 +222,10 @@
     <div class="bloque" id="bloque-inscriptos" hidden>
       <h2>Inscriptos a los torneos</h2>
       <p class="aclaracion">Los que se anotaron por
-         <b>/inscripcion/</b>. El comprobante de cada uno no está acá: vive
-         en el correo del club, adjunto al aviso de la inscripción.</p>
+         <b>/inscripcion/</b>, <b>un renglón por arma</b>: quien corre con
+         dos aparece dos veces, y el pago va en el de la primera. El
+         comprobante de cada uno no está acá: vive en el correo del club,
+         adjunto al aviso de la inscripción.</p>
 
       <div class="clave-caja">
         <select id="torneo-elegido"></select>
@@ -243,7 +245,7 @@
               <th>Clase</th>
               <th>Categoría</th>
               <th>Día</th>
-              <th>2ª arma</th>
+              <th>Arma</th>
               <th>Tenía que pagar</th>
               <th>Comprobante</th>
               <th>Estado</th>
@@ -674,13 +676,24 @@
     losInscriptos = d.inscriptos || [];
     Object.assign(DIA_LARGO, (d.torneo && d.torneo.dias) || {});
 
+    // La tabla muestra **un renglón por arma**, igual que la lista del
+    // sitio y que la planilla: quien corre con dos armas es dos
+    // competidores, cada uno con su división y su clase.
+    const tiradores = ordenarComoLaLista(comoTiradores(losInscriptos));
+
     const resumenI = document.getElementById('resumen-inscriptos');
     resumenI.innerHTML = '';
-    caja(resumenI, losInscriptos.length,
-      losInscriptos.length === 1 ? 'inscripto' : 'inscriptos');
+    caja(resumenI, tiradores.length,
+      tiradores.length === 1 ? 'tirador' : 'tiradores');
+
+    // Las personas son otra cuenta cuando alguien corre con dos armas, y
+    // es la que importa para la plata: un solo pago, un solo comprobante.
+    if (tiradores.length !== losInscriptos.length) {
+      caja(resumenI, losInscriptos.length, 'personas');
+    }
 
     const porDia = {};
-    losInscriptos.forEach((i) => { porDia[i.dia] = (porDia[i.dia] || 0) + 1; });
+    tiradores.forEach((i) => { porDia[i.dia] = (porDia[i.dia] || 0) + 1; });
     Object.keys(porDia).forEach((k) => caja(resumenI, porDia[k], DIA_LARGO[k] || k));
 
     const sinComprobante = losInscriptos.filter((i) => !i.trajoComprobante).length;
@@ -692,18 +705,22 @@
     const cuerpo = document.getElementById('tabla-inscriptos').querySelector('tbody');
     cuerpo.innerHTML = '';
 
-    losInscriptos.forEach((i) => {
+    tiradores.forEach((i) => {
       const tr = document.createElement('tr');
+
+      // En el renglón de la segunda arma, el pago y el aviso van vacíos:
+      // son de la persona, no del arma, y repetirlos hace parecer que
+      // tenía que pagar dos veces.
       const celdas = [
         { clase: 'que', campo: 'Quién', texto: (i.apellido || '') + ', ' + (i.nombre || '') },
-        { clase: 'cuando', campo: 'Cuándo', texto: i.ts ? cuando(i.ts) : '' },
+        { clase: 'cuando', campo: 'Cuándo', texto: i.esSegunda ? '' : (i.ts ? cuando(i.ts) : '') },
         { campo: 'División', texto: i.division },
         { campo: 'Clase', texto: COMO_SE_DICE[i.clase] || i.clase },
         { campo: 'Categoría', texto: COMO_SE_DICE[i.categoria] || i.categoria },
         { campo: 'Día', texto: DIA_LARGO[i.dia] || i.dia },
-        { campo: '2ª arma', texto: i.segundaArma ? (i.segundaDivision + ' · ' + (i.segundaClase || '')) : 'no' },
-        { campo: 'Tenía que pagar', texto: i.total ? pesos(i.total) : '' },
-        { campo: 'Comprobante', texto: i.trajoComprobante ? 'sí' : 'NO mandó' },
+        { campo: 'Arma', texto: i.esSegunda ? 'Segunda' : 'Primera' },
+        { campo: 'Tenía que pagar', texto: i.esSegunda ? '' : (i.total ? pesos(i.total) : '') },
+        { campo: 'Comprobante', texto: i.esSegunda ? '' : (i.trajoComprobante ? 'sí' : 'NO mandó') },
       ];
 
       celdas.forEach((c) => {
@@ -716,11 +733,15 @@
 
       const est = document.createElement('td');
       est.dataset.campo = 'Estado';
-      const marca = document.createElement('span');
-      const cual = ESTADO_INSCRIPCION[i.estado] || [i.estado || '—', 'espera'];
-      marca.className = 'marca-estado ' + cual[1];
-      marca.textContent = cual[0];
-      est.appendChild(marca);
+      if (i.esSegunda) {
+        est.textContent = '—';
+      } else {
+        const marca = document.createElement('span');
+        const cual = ESTADO_INSCRIPCION[i.estado] || [i.estado || '—', 'espera'];
+        marca.className = 'marca-estado ' + cual[1];
+        marca.textContent = cual[0];
+        est.appendChild(marca);
+      }
       tr.appendChild(est);
 
       cuerpo.appendChild(tr);
@@ -776,6 +797,26 @@
   // competidor en otra división entra como un registro aparte. Si bajara
   // una sola fila, la segunda arma habría que cargarla a mano en la app,
   // que es justo lo que esta planilla viene a evitar.
+  // El mismo orden que la lista pública del sitio: primero un día y
+  // después el otro, y adentro por apellido. Es como se arman las
+  // escuadras, y tener las dos pantallas iguales evita comparar dos
+  // listas que dicen lo mismo en distinto orden.
+  //
+  // El orden de los días sale del torneo y no del alfabeto: sabado y
+  // domingo ordenados como texto dan el domingo primero.
+  function ordenarComoLaLista(filas) {
+    const orden = Object.keys(DIA_LARGO);
+    const cuando = (i) => {
+      const n = orden.indexOf(i.dia);
+      return n === -1 ? orden.length : n;
+    };
+    return filas.slice().sort((a, b) =>
+      cuando(a) - cuando(b) ||
+      ((a.apellido || '') + ' ' + (a.nombre || ''))
+        .localeCompare((b.apellido || '') + ' ' + (b.nombre || ''), 'es') ||
+      (a.esSegunda ? 1 : 0) - (b.esSegunda ? 1 : 0));
+  }
+
   function comoTiradores(inscriptos) {
     const filas = [];
     inscriptos.forEach((i) => {
@@ -830,13 +871,9 @@
     a.click();
     URL.revokeObjectURL(url);
 
-    // Los dos números no son el mismo cuando alguien corre con dos armas,
-    // y verlo acá evita la duda de por qué la planilla trae más renglones.
-    const tiradores = comoTiradores(losInscriptos).length;
     aviso.className = 'estado ok';
-    aviso.textContent = losInscriptos.length + ' inscriptos' +
-      (tiradores !== losInscriptos.length ? ', ' + tiradores + ' tiradores con las segundas armas' : '') +
-      '. Se importa desde Utilidades de la app.';
+    aviso.textContent = comoTiradores(losInscriptos).length +
+      ' tiradores. Se importa desde Utilidades de la app.';
   });
 
   document.getElementById('entrar').addEventListener('click', pedir);
