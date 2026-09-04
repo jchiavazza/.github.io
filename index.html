@@ -9,7 +9,7 @@
      archivo google27f9713e6eb2c514.html. No borrar ninguno de los dos. -->
 <meta name="google-site-verification" content="XFqVQXDWMgoB-UdauIgBkN-bCp5_d6BZNYdiPUPmPRA">
 <link rel="icon" href="assets/icono.png">
-<link rel="stylesheet" href="estilo.css?v=59">
+<link rel="stylesheet" href="estilo.css?v=60">
 
 <meta property="og:type" content="website">
 <meta property="og:title" content="Club 9x19 Shooting">
@@ -188,6 +188,7 @@
 
           <div class="acciones">
             <a class="boton principal" href="/inscripcion/?t=santa-fe">Inscribirme</a>
+            <button class="boton" type="button" data-inscriptos="santa-fe">Inscriptos</button>
           </div>
 
         </div>
@@ -270,6 +271,7 @@
             <!-- Formulario propio del sitio. Paraná sigue en JotForm: es
                  una charla única y no vale la pena moverla. -->
             <a class="boton principal" href="/inscripcion/?t=esperanza">Inscribirme</a>
+            <button class="boton" type="button" data-inscriptos="esperanza">Inscriptos</button>
           </div>
         </div>
       </article>
@@ -628,6 +630,38 @@
 
 </main>
 
+<!-- La lista de inscriptos de un torneo. Se abre desde el botón
+     "Inscriptos" de su tarjeta y la trae la Cloud Function
+     `listaDeInscriptos`, que no pide clave y devuelve sólo apellido y
+     nombre, número de IDPA, división, clase y día. -->
+<div class="fondo-lista" id="fondoInscriptos" hidden role="dialog" aria-modal="true"
+     aria-labelledby="tituloInscriptos">
+  <div class="caja-lista">
+    <header>
+      <h3 id="tituloInscriptos">Inscriptos</h3>
+      <span class="cuantos" id="cuantosInscriptos"></span>
+      <button class="boton chico cerrar-lista" type="button" id="cerrarInscriptos">Cerrar</button>
+    </header>
+    <div class="adentro">
+      <p class="estado-lista" id="estadoInscriptos"></p>
+      <div class="tabla-envoltorio">
+        <table id="tablaInscriptos" hidden>
+          <thead>
+            <tr>
+              <th>Apellido y nombre</th>
+              <th>Nº IDPA</th>
+              <th>División</th>
+              <th>Clase</th>
+              <th>Día</th>
+            </tr>
+          </thead>
+          <tbody></tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+</div>
+
 <footer>
   <div class="envoltorio">
     <p>
@@ -644,6 +678,6 @@
   </div>
 </footer>
 
-<script src="sitio.js?v=31"></script>
+<script src="sitio.js?v=32"></script>
 </body>
 </html>

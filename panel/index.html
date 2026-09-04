@@ -6,7 +6,7 @@
 <title>Panel — Club 9x19 Shooting</title>
 <meta name="robots" content="noindex, nofollow">
 <link rel="icon" href="/assets/icono.png">
-<link rel="stylesheet" href="/estilo.css?v=59">
+<link rel="stylesheet" href="/estilo.css?v=60">
 <style>
   /* Estilos propios: esta página es interna y no comparte nada con el
      resto del sitio salvo los colores. */
@@ -631,6 +631,10 @@
     'anotada-y-avisada': ['Avisado', 'bien'],
     'anotada-sin-mandar': ['NO LE LLEGÓ EL CORREO', 'mal'],
     'anotada': ['Sin avisar', 'espera'],
+    // Las que se pasaron a mano desde un match de 9x19 Score: no vinieron
+    // del formulario, así que no tienen DNI ni credencial ni comprobante,
+    // y nadie recibió ningún correo.
+    'cargada-del-match': ['Del match', 'espera'],
   };
 
   async function pedirLosInscriptos(valor, slug) {

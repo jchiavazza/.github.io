@@ -379,3 +379,114 @@
     });
   });
 })();
+
+
+// LA LISTA DE INSCRIPTOS DE UN TORNEO
+//
+// El botón "Inscriptos" de cada tarjeta abre esta ventana con los que ya
+// se anotaron. La trae `listaDeInscriptos`, que no pide clave y devuelve
+// sólo apellido y nombre, número de IDPA, división, clase y día: el
+// resto de la inscripción —DNI, domicilio, credencial— no sale de ahí.
+//
+// La lista se pide cada vez que se abre y no se guarda: alguien que se
+// anota mientras la ventana está abierta aparece al volver a abrirla.
+
+(function () {
+  const LISTA =
+    'https://us-central1-x19shooting-sync.cloudfunctions.net/listaDeInscriptos';
+
+  const fondo = document.getElementById('fondoInscriptos');
+  if (!fondo) return;
+
+  const titulo = document.getElementById('tituloInscriptos');
+  const cuantos = document.getElementById('cuantosInscriptos');
+  const estado = document.getElementById('estadoInscriptos');
+  const tabla = document.getElementById('tablaInscriptos');
+  const cerrar = document.getElementById('cerrarInscriptos');
+
+  // Las clases se escriben como en el formulario; las divisiones ya son
+  // sus tres letras y se dejan como est\u00e1n.
+  const CLASES = {
+    NV: 'Novicio', MM: 'Marksman', SS: 'Sharpshooter',
+    EX: 'Expert', MA: 'Master', UN: 'Sin clasificar',
+  };
+
+  let queAbrio = null;
+
+  function abrir() {
+    fondo.hidden = false;
+    document.body.style.overflow = 'hidden';
+  }
+
+  function cerrarLaLista() {
+    fondo.hidden = true;
+    document.body.style.overflow = '';
+    if (queAbrio && queAbrio.focus) queAbrio.focus();
+  }
+
+  cerrar.addEventListener('click', cerrarLaLista);
+  fondo.addEventListener('click', (e) => { if (e.target === fondo) cerrarLaLista(); });
+  document.addEventListener('keydown', (e) => {
+    if (e.key === 'Escape' && !fondo.hidden) cerrarLaLista();
+  });
+
+  async function mostrar(slug, boton) {
+    queAbrio = boton;
+    titulo.textContent = 'Inscriptos';
+    cuantos.textContent = '';
+    tabla.hidden = true;
+    estado.className = 'estado-lista';
+    estado.textContent = 'Buscando\u2026';
+    abrir();
+
+    let d;
+    try {
+      const r = await fetch(LISTA + '?torneo=' + encodeURIComponent(slug));
+      d = await r.json();
+      if (!d.ok) throw new Error('sin lista');
+    } catch (e) {
+      estado.className = 'estado-lista mal';
+      estado.textContent = 'No se pudo traer la lista. Prob\u00e1 de nuevo en un rato.';
+      return;
+    }
+
+    titulo.textContent = 'Inscriptos \u2014 ' + d.torneo.sede;
+
+    const gente = d.inscriptos || [];
+    if (!gente.length) {
+      estado.textContent = 'Todav\u00eda no se anot\u00f3 nadie. Pod\u00e9s ser el primero.';
+      return;
+    }
+
+    estado.textContent = '';
+    cuantos.textContent = gente.length + (gente.length === 1 ? ' inscripto' : ' inscriptos');
+
+    const cuerpo = tabla.querySelector('tbody');
+    cuerpo.innerHTML = '';
+
+    gente.forEach((i) => {
+      const tr = document.createElement('tr');
+      const celdas = [
+        { clase: 'quien', campo: 'Apellido y nombre', texto: i.apellido + ', ' + i.nombre },
+        { campo: 'N\u00ba IDPA', texto: i.idpa },
+        { campo: 'Divisi\u00f3n', texto: i.division },
+        { campo: 'Clase', texto: CLASES[i.clase] || i.clase },
+        { campo: 'D\u00eda', texto: (d.torneo.dias && d.torneo.dias[i.dia]) || i.dia },
+      ];
+      celdas.forEach((c) => {
+        const td = document.createElement('td');
+        if (c.clase) td.className = c.clase;
+        td.dataset.campo = c.campo;
+        td.textContent = c.texto || '\u2014';
+        tr.appendChild(td);
+      });
+      cuerpo.appendChild(tr);
+    });
+
+    tabla.hidden = false;
+  }
+
+  document.querySelectorAll('[data-inscriptos]').forEach((b) => {
+    b.addEventListener('click', () => mostrar(b.dataset.inscriptos, b));
+  });
+})();

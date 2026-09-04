@@ -1174,3 +1174,108 @@ footer a:hover { text-decoration: underline; }
   /* En el celular, de a dos: tres botones no entran sin achicar la letra. */
   .barra nav { grid-template-columns: repeat(2, 1fr); max-width: none; }
 }
+
+/* ---------------------------------- lista de inscriptos */
+
+/* La ventana que abre el botón "Inscriptos" de cada torneo. Es el único
+   diálogo del sitio: el visor de fotos tiene el suyo, con otras reglas
+   —ahí lo que manda es la imagen, acá una tabla que puede ser larga. */
+.fondo-lista {
+  position: fixed;
+  inset: 0;
+  z-index: 60;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 20px;
+  background: rgba(0, 0, 0, .5);
+}
+.fondo-lista[hidden] { display: none; }
+
+.caja-lista {
+  width: min(760px, 100%);
+  max-height: 86vh;
+  display: flex;
+  flex-direction: column;
+  background: var(--fondo);
+  color: var(--texto);
+  border: 1px solid var(--borde);
+  border-radius: 18px;
+  box-shadow: 0 18px 50px rgba(0, 0, 0, .35);
+}
+
+.caja-lista > header {
+  display: flex;
+  align-items: baseline;
+  gap: 12px;
+  flex-wrap: wrap;
+  padding: 18px 22px;
+  border-bottom: 1px solid var(--borde);
+}
+.caja-lista h3 { margin: 0; font-size: 19px; }
+.caja-lista .cuantos { color: var(--texto-suave); font-size: 14px; }
+.caja-lista .cerrar-lista { margin-left: auto; font-family: inherit; cursor: pointer; }
+
+/* Lo que crece es la lista; el encabezado queda arriba. Con cuarenta
+   inscriptos, perder de vista de qué torneo son es perderse. */
+.caja-lista .adentro { overflow: auto; padding: 4px 22px 22px; }
+.caja-lista .estado-lista { color: var(--texto-suave); margin: 14px 0; }
+.caja-lista .estado-lista.mal { color: var(--peligro); }
+
+.caja-lista .tabla-envoltorio { overflow-x: auto; }
+.caja-lista table {
+  border-collapse: collapse;
+  width: 100%;
+  font-size: 15px;
+  margin-top: 12px;
+}
+.caja-lista th, .caja-lista td {
+  text-align: left;
+  padding: 9px 12px;
+  border-bottom: 1px solid var(--borde);
+  vertical-align: top;
+}
+.caja-lista th {
+  position: sticky;
+  top: 0;
+  background: var(--fondo);
+  font-size: 12px;
+  text-transform: uppercase;
+  letter-spacing: .05em;
+  color: var(--texto-suave);
+  white-space: nowrap;
+}
+.caja-lista td.quien { font-weight: 600; }
+
+/* En el celular la tabla no entra: cada inscripto pasa a ser una tarjeta
+   con el nombre del dato al lado del valor, igual que en el panel. */
+@media (max-width: 640px) {
+  .fondo-lista { padding: 10px; }
+  .caja-lista { max-height: 92vh; }
+  .caja-lista .adentro { padding: 4px 16px 18px; }
+  .caja-lista .tabla-envoltorio { overflow-x: visible; }
+  .caja-lista table, .caja-lista tbody, .caja-lista tr, .caja-lista td {
+    display: block;
+    width: 100%;
+  }
+  .caja-lista thead { display: none; }
+  .caja-lista tr {
+    border: 1px solid var(--borde);
+    border-radius: 12px;
+    box-shadow: var(--relieve-chico);
+    padding: 12px 14px;
+    margin-bottom: 14px;
+  }
+  .caja-lista td { border: 0; padding: 3px 0; }
+  .caja-lista td::before {
+    content: attr(data-campo) ': ';
+    color: var(--texto-suave);
+    font-size: 12px;
+    text-transform: uppercase;
+    letter-spacing: .04em;
+  }
+  /* El apellido abre la tarjeta, en grande y sin rótulo: es lo que se
+     busca de un vistazo. */
+  .caja-lista td.quien { font-size: 17px; padding-bottom: 6px; }
+  .caja-lista td.quien::before { content: none; }
+}
