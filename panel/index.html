@@ -659,7 +659,10 @@
       d.torneos.forEach((t) => {
         const op = document.createElement('option');
         op.value = t.slug;
-        op.textContent = t.sede + ' — ' + t.fecha;
+        // Cuántos tiene cada uno, para no tener que ir probando cuál
+        // mirar. Vienen ordenados con el más próximo primero.
+        op.textContent = t.sede + ' — ' + t.fecha +
+          ' (' + (t.cuantos || 0) + ')';
         elegido.appendChild(op);
       });
       bloque.hidden = false;
