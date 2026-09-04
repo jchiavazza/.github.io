@@ -119,7 +119,12 @@ funciones desde una sola carpeta.
 > de enviarlo. **Si cambiás un precio acá, cambialo también allá.**
 
 La inscripción queda anotada y se ve en `/panel/`, con un botón que baja
-la lista como planilla para importarla en 9x19 Score. Esa planilla sale
+la lista como planilla para importarla en 9x19 Score. **Quien corre con
+dos armas baja como dos renglones**, uno por arma: la app distingue a un
+tirador por apellido, nombre, división y clase, así que el mismo
+competidor en otra división es un registro aparte. Con un solo renglón,
+la segunda arma habría que cargarla a mano, que es lo que la planilla
+viene a evitar. Esa planilla sale
 en formato SpreadsheetML —un `.xls` que por dentro es XML— y no en CSV:
 la app filtra el selector de archivos por planilla de Excel, así que un
 `.csv` no se puede ni elegir. Que la app la siga leyendo se comprueba

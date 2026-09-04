@@ -740,27 +740,49 @@
   // -------------------------------------------------------------------
 
   const COLUMNAS = [
-    ['Apellido', (i) => (i.apellido || '').toUpperCase()],
-    ['Nombre', (i) => (i.nombre || '').toUpperCase()],
-    ['Email', (i) => i.correo || ''],
-    ['Numero de IDPA', (i) => i.idpa || ''],
-    ['Division', (i) => i.division || ''],
-    ['Clase', (i) => i.clase || ''],
-    ['Categoria especial', (i) => COMO_SE_DICE[i.categoria] || i.categoria || ''],
+    ['Apellido', (f) => (f.apellido || '').toUpperCase()],
+    ['Nombre', (f) => (f.nombre || '').toUpperCase()],
+    ['Email', (f) => f.correo || ''],
+    ['Numero de IDPA', (f) => f.idpa || ''],
+    ['Division', (f) => f.division || ''],
+    ['Clase', (f) => f.clase || ''],
+    ['Categoria especial', (f) => COMO_SE_DICE[f.categoria] || f.categoria || ''],
     ['Club', () => ''],
     ['Escuadra', () => ''],
     // De acá para abajo, lo que la app no importa y al club le sirve.
-    ['Dia', (i) => DIA_LARGO[i.dia] || i.dia || ''],
-    ['Celular', (i) => i.celular || ''],
-    ['DNI', (i) => i.dni || ''],
-    ['CLU', (i) => i.clu || ''],
-    ['Vence CLU', (i) => i.cluVence || ''],
-    ['Direccion', (i) => i.direccion || ''],
-    ['Segunda arma', (i) => (i.segundaArma ? i.segundaDivision : '')],
-    ['Clase segunda arma', (i) => (i.segundaArma ? i.segundaClase || '' : '')],
-    ['Tenia que pagar', (i) => (i.total || '')],
-    ['Comprobante', (i) => (i.trajoComprobante ? 'si' : 'no')],
+    ['Arma', (f) => (f.esSegunda ? 'Segunda' : 'Primera')],
+    ['Dia', (f) => DIA_LARGO[f.dia] || f.dia || ''],
+    // Lo personal y lo del pago van una sola vez, en el renglón de la
+    // primera arma: repetirlos hace parecer que son dos personas y que
+    // cada una tenía que pagar.
+    ['Celular', (f) => (f.esSegunda ? '' : f.celular || '')],
+    ['DNI', (f) => (f.esSegunda ? '' : f.dni || '')],
+    ['CLU', (f) => (f.esSegunda ? '' : f.clu || '')],
+    ['Vence CLU', (f) => (f.esSegunda ? '' : f.cluVence || '')],
+    ['Direccion', (f) => (f.esSegunda ? '' : f.direccion || '')],
+    ['Tenia que pagar', (f) => (f.esSegunda ? '' : f.total || '')],
+    ['Comprobante', (f) => (f.esSegunda ? '' : (f.trajoComprobante ? 'si' : 'no'))],
   ];
+
+  // Quien corre con dos armas es **dos tiradores** para 9x19 Score: la app
+  // distingue por apellido, nombre, división y clase, así que el mismo
+  // competidor en otra división entra como un registro aparte. Si bajara
+  // una sola fila, la segunda arma habría que cargarla a mano en la app,
+  // que es justo lo que esta planilla viene a evitar.
+  function comoTiradores(inscriptos) {
+    const filas = [];
+    inscriptos.forEach((i) => {
+      filas.push(Object.assign({}, i, { esSegunda: false }));
+      if (i.segundaArma && i.segundaDivision) {
+        filas.push(Object.assign({}, i, {
+          esSegunda: true,
+          division: i.segundaDivision,
+          clase: i.segundaClase || i.clase,
+        }));
+      }
+    });
+    return filas;
+  }
 
   function enXml(t) {
     return String(t)
@@ -774,7 +796,7 @@
         '<Cell><Data ss:Type="String">' + enXml(c) + '</Data></Cell>').join('') + '</Row>';
 
     const filas = [fila(COLUMNAS.map((c) => c[0]))]
-      .concat(inscriptos.map((i) => fila(COLUMNAS.map((c) => c[1](i)))));
+      .concat(comoTiradores(inscriptos).map((f) => fila(COLUMNAS.map((c) => c[1](f)))));
 
     return '<?xml version="1.0" encoding="UTF-8"?>' +
       '<?mso-application progid="Excel.Sheet"?>' +
@@ -801,8 +823,13 @@
     a.click();
     URL.revokeObjectURL(url);
 
+    // Los dos números no son el mismo cuando alguien corre con dos armas,
+    // y verlo acá evita la duda de por qué la planilla trae más renglones.
+    const tiradores = comoTiradores(losInscriptos).length;
     aviso.className = 'estado ok';
-    aviso.textContent = losInscriptos.length + ' inscriptos. Se importa desde Utilidades de la app.';
+    aviso.textContent = losInscriptos.length + ' inscriptos' +
+      (tiradores !== losInscriptos.length ? ', ' + tiradores + ' tiradores con las segundas armas' : '') +
+      '. Se importa desde Utilidades de la app.';
   });
 
   document.getElementById('entrar').addEventListener('click', pedir);
