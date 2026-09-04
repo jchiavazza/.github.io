@@ -83,7 +83,8 @@ compiló.
 ## El formulario de inscripción
 
 Hasta septiembre de 2026 las inscripciones pasaban por **JotForm**. Ahora
-la fecha de Esperanza usa un formulario propio, en `inscripcion/`:
+las fechas de **Santa Fe** y **Esperanza** usan un formulario propio, en
+`inscripcion/`:
 
 ```
 inscripcion/index.html      la página, una sola para todos los torneos
@@ -96,8 +97,9 @@ Qué torneo se muestra sale de la dirección: `/inscripcion/?t=esperanza`.
 Para abrir el torneo siguiente se copia el bloque anterior de
 `torneos.js`, se le cambian los datos y se pushea.
 
-> **Santa Fe y Paraná siguen en JotForm** hasta que el propio se vea
-> andar en un torneo de verdad. Sus botones y sus QR no se tocaron.
+> **Paraná sigue en JotForm**, y va a quedar así: es una charla única,
+> no una fecha del calendario, y no vale la pena moverla. Su botón y su
+> QR no se tocaron.
 
 El envío lo recibe la Cloud Function `inscribirse`, **que vive en
 `PuntajeApp/functions/inscripciones.js`**, por el mismo motivo que las

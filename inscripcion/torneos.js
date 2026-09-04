@@ -66,4 +66,30 @@ window.TORNEOS = {
     // divisiones: ['SSP', 'ESP', 'CDP'],
   },
 
+  'santa-fe': {
+    titulo: '4º Torneo Social de IDPA',
+    subtitulo: 'Torneo Anual 2026 · Homenaje a Jorge Pastor',
+    sede: 'Tiro Federal Argentino de Santa Fe',
+    ciudad: 'Santa Fe',
+    direccion: 'Av. Urquiza 751',
+    fecha: '19 y 20 de septiembre de 2026',
+    horaComienzo: '8:30',
+
+    dias: [
+      { valor: 'sabado', texto: 'Sábado 19 — Pre Match' },
+      { valor: 'domingo', texto: 'Domingo 20 — Torneo' },
+    ],
+
+    precio: 35000,
+    precioAsociado: 30000,
+    precioSegundaArma: 20000,
+
+    alias: '9x19shooting.nx',
+    titularAlias: 'José Chiavazza',
+
+    notaPago: 'Los asociados a IDPA tienen además una bonificación en la comida.',
+
+    cierra: '2026-09-17',
+  },
+
 };
