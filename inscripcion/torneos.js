@@ -50,8 +50,13 @@ window.TORNEOS = {
     ],
 
     // Los precios, en pesos y sin puntos ni símbolos.
-    precio: 35000,          // el general
-    precioAsociado: 30000,  // el de los asociados a IDPA
+    //
+    // **No hay precio de asociado acá, y no es un olvido.** Estuvo una
+    // versión y se sacó: el número de IDPA no se consulta a ningún lado,
+    // así que cualquiera escribía cualquier cosa y la página le cobraba
+    // cinco mil pesos menos. Lo del asociado se avisa en `notaPago` y lo
+    // resuelve el club al mirar el comprobante.
+    precio: 35000,
     precioSegundaArma: 20000,
 
     // A dónde se transfiere.
@@ -60,7 +65,7 @@ window.TORNEOS = {
 
     // Una línea más abajo del importe, para lo que no entra en el resto.
     // Si no hace falta, se deja en '' y no se muestra nada.
-    notaPago: 'Los asociados a IDPA tienen además una bonificación en la comida.',
+    notaPago: 'Si estás asociado a IDPA la inscripción te sale $30.000 y tenés bonificación en la comida: transferí ese importe y avisanos.',
 
     // Hasta cuándo se puede inscribir, inclusive. Pasada esa fecha la
     // página lo dice y no deja enviar; la función tampoco acepta.
@@ -86,13 +91,12 @@ window.TORNEOS = {
     ],
 
     precio: 35000,
-    precioAsociado: 30000,
     precioSegundaArma: 20000,
 
     alias: '9x19shooting.nx',
     titularAlias: 'José Chiavazza',
 
-    notaPago: 'Los asociados a IDPA tienen además una bonificación en la comida.',
+    notaPago: 'Si estás asociado a IDPA la inscripción te sale $30.000 y tenés bonificación en la comida: transferí ese importe y avisanos.',
 
     cierra: '2026-09-17',
   },

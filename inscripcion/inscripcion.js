@@ -139,28 +139,22 @@
     return '$' + n.toLocaleString('es-AR');
   }
 
-  function esAsociado() {
-    return $('i-idpa').value.trim() !== '';
-  }
-
+  // **Siempre el precio general, aunque haya cargado número de IDPA.** El
+  // descuento de asociado se aplicó solo una versión y se sacó: ese número
+  // no se consulta a ningún lado, así que cualquiera escribía cualquier
+  // cosa y se cobraba solo cinco mil pesos menos. Lo del asociado lo
+  // resuelve el club al mirar el comprobante.
   function recalcular() {
-    const inscripcion = esAsociado() && torneo.precioAsociado
-      ? torneo.precioAsociado
-      : torneo.precio;
-
     const segunda = $('i-segunda').checked ? (torneo.precioSegundaArma || 0) : 0;
 
-    $('p-total').textContent = plata(inscripcion + segunda);
+    $('p-total').textContent = plata(torneo.precio + segunda);
 
-    const partes = [
-      'Inscripción ' + plata(inscripcion) +
-      (esAsociado() && torneo.precioAsociado ? ' (precio de asociado a IDPA)' : ''),
-    ];
+    const partes = ['Inscripción ' + plata(torneo.precio)];
     if (segunda) partes.push('Segunda arma ' + plata(segunda));
     $('p-desglose').textContent = partes.join(' · ');
 
     $('texto-compromiso').textContent =
-      'Entiendo que tengo que transferir ' + plata(inscripcion + segunda) +
+      'Entiendo que tengo que transferir ' + plata(torneo.precio + segunda) +
       ' al alias ' + torneo.alias + ', y que la inscripción es un compromiso: ' +
       'solo se reintegra si se suspende el torneo.';
   }
@@ -168,7 +162,6 @@
   $('p-alias').textContent = torneo.alias;
   $('p-titular').textContent = torneo.titularAlias || '';
   $('p-nota').textContent = torneo.notaPago || '';
-  $('i-idpa').addEventListener('input', recalcular);
   recalcular();
 
   // ------------------------------------------------------------------
