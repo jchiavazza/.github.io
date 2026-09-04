@@ -399,7 +399,7 @@
   if (!fondo) return;
 
   const titulo = document.getElementById('tituloInscriptos');
-  const cuantos = document.getElementById('cuantosInscriptos');
+  const conteo = document.getElementById('conteoInscriptos');
   const estado = document.getElementById('estadoInscriptos');
   const tabla = document.getElementById('tablaInscriptos');
   const cerrar = document.getElementById('cerrarInscriptos');
@@ -430,10 +430,22 @@
     if (e.key === 'Escape' && !fondo.hidden) cerrarLaLista();
   });
 
+  function unConteo(numero, texto, destacado) {
+    const caja = document.createElement('div');
+    if (destacado) caja.className = 'total';
+    const b = document.createElement('b');
+    b.textContent = numero;
+    const span = document.createElement('span');
+    span.textContent = texto;
+    caja.appendChild(b);
+    caja.appendChild(span);
+    conteo.appendChild(caja);
+  }
+
   async function mostrar(slug, boton) {
     queAbrio = boton;
     titulo.textContent = 'Inscriptos';
-    cuantos.textContent = '';
+    conteo.innerHTML = '';
     tabla.hidden = true;
     estado.className = 'estado-lista';
     estado.textContent = 'Buscando\u2026';
@@ -459,7 +471,19 @@
     }
 
     estado.textContent = '';
-    cuantos.textContent = gente.length + (gente.length === 1 ? ' inscripto' : ' inscriptos');
+
+    // Cuántos hay cada día, en el orden en que se corre el torneo, y el
+    // total al final. Los días salen del torneo y se muestran cortos: el
+    // nombre entero —"Sábado 19 — Pre Match"— no entra en el celular.
+    const porDia = {};
+    gente.forEach((i) => { porDia[i.dia] = (porDia[i.dia] || 0) + 1; });
+
+    conteo.innerHTML = '';
+    Object.keys(d.torneo.dias || {}).forEach((clave) => {
+      const corto = String(d.torneo.dias[clave]).split('\u2014')[0].trim();
+      unConteo(porDia[clave] || 0, corto);
+    });
+    unConteo(gente.length, 'en total', true);
 
     const cuerpo = tabla.querySelector('tbody');
     cuerpo.innerHTML = '';

@@ -9,7 +9,7 @@
      archivo google27f9713e6eb2c514.html. No borrar ninguno de los dos. -->
 <meta name="google-site-verification" content="XFqVQXDWMgoB-UdauIgBkN-bCp5_d6BZNYdiPUPmPRA">
 <link rel="icon" href="assets/icono.png">
-<link rel="stylesheet" href="estilo.css?v=60">
+<link rel="stylesheet" href="estilo.css?v=61">
 
 <meta property="og:type" content="website">
 <meta property="og:title" content="Club 9x19 Shooting">
@@ -639,11 +639,13 @@
   <div class="caja-lista">
     <header>
       <h3 id="tituloInscriptos">Inscriptos</h3>
-      <span class="cuantos" id="cuantosInscriptos"></span>
       <button class="boton chico cerrar-lista" type="button" id="cerrarInscriptos">Cerrar</button>
     </header>
     <div class="adentro">
       <p class="estado-lista" id="estadoInscriptos"></p>
+      <!-- Cuántos hay cada día y cuántos en total. Es lo primero que se
+           mira: dice si el pre match se llenó y si hay que abrir escuadra. -->
+      <div class="conteo-lista" id="conteoInscriptos"></div>
       <div class="tabla-envoltorio">
         <table id="tablaInscriptos" hidden>
           <thead>
@@ -678,6 +680,6 @@
   </div>
 </footer>
 
-<script src="sitio.js?v=32"></script>
+<script src="sitio.js?v=33"></script>
 </body>
 </html>
