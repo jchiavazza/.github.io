@@ -82,8 +82,34 @@
   td.ip { font-family: ui-monospace, Consolas, monospace; font-size: 13px; word-break: break-all; }
   td.cuando, td.que { white-space: nowrap; }
 
-  /* Cada bloque de la página —descargas y ventas— con su título, para no
-     confundir una tabla con la otra al bajar. */
+  /* Cada tabla va plegada dentro de un desplegable: con cientos de
+     descargas la página se hacía interminable y para llegar a las ventas
+     o a los inscriptos había que bajar y bajar. Los números de cada
+     bloque quedan afuera y siempre a la vista. */
+  .plegable { margin-top: 8px; }
+  .plegable[hidden] { display: none; }
+  .plegable > summary {
+    display: inline-block;
+    padding: 9px 16px;
+    border-radius: 12px;
+    border: 1px solid var(--borde);
+    background: var(--fondo);
+    box-shadow: var(--relieve-chico);
+    font-size: 14px;
+    font-weight: 600;
+    color: var(--acento);
+    cursor: pointer;
+    list-style: none;
+    user-select: none;
+  }
+  .plegable > summary::-webkit-details-marker { display: none; }
+  .plegable > summary::before { content: '▸ '; }
+  .plegable[open] > summary::before { content: '▾ '; }
+  .plegable[open] > summary { box-shadow: var(--hundido); }
+  .plegable > summary:hover { border-color: var(--texto-suave); }
+
+  /* Cada bloque de la página —descargas, ventas e inscriptos— con su
+     título, para no confundir una tabla con la otra al bajar. */
   .bloque { margin-top: 40px; }
   .bloque > h2 { margin-bottom: 4px; }
   .bloque > p.aclaracion { color: var(--texto-suave); font-size: 14px; margin-top: 0; }
@@ -178,20 +204,26 @@
 
     <div class="resumen" id="resumen" hidden></div>
 
-    <div class="tabla-envoltorio">
-      <table id="tabla" hidden>
-        <thead>
-          <tr>
-            <th>Qué se bajó</th>
-            <th>Cuándo</th>
-            <th>Dónde</th>
-            <th>IP</th>
-            <th>Con qué</th>
-          </tr>
-        </thead>
-        <tbody></tbody>
-      </table>
-    </div>
+    <!-- La lista entera va plegada: son cientos de renglones y hacían la
+         página interminable. Los números de arriba quedan siempre a la
+         vista, que es lo que se mira de un vistazo. -->
+    <details class="plegable" id="plegable-descargas" hidden>
+      <summary>Ver una por una</summary>
+      <div class="tabla-envoltorio">
+        <table id="tabla" hidden>
+          <thead>
+            <tr>
+              <th>Qué se bajó</th>
+              <th>Cuándo</th>
+              <th>Dónde</th>
+              <th>IP</th>
+              <th>Con qué</th>
+            </tr>
+          </thead>
+          <tbody></tbody>
+        </table>
+      </div>
+    </details>
 
     <div class="bloque" id="bloque-ventas" hidden>
       <h2>Licencias de 9x19 Club vendidas por la web</h2>
@@ -201,6 +233,8 @@
 
       <div class="resumen" id="resumen-ventas"></div>
 
+      <details class="plegable" id="plegable-ventas">
+        <summary>Ver una por una</summary>
       <div class="tabla-envoltorio">
         <table id="tabla-ventas">
           <thead>
@@ -217,6 +251,7 @@
           <tbody></tbody>
         </table>
       </div>
+      </details>
     </div>
 
     <div class="bloque" id="bloque-inscriptos" hidden>
@@ -235,6 +270,8 @@
 
       <div class="resumen" id="resumen-inscriptos"></div>
 
+      <details class="plegable" id="plegable-inscriptos" open>
+        <summary>Ver uno por uno</summary>
       <div class="tabla-envoltorio">
         <table id="tabla-inscriptos">
           <thead>
@@ -254,6 +291,7 @@
           <tbody></tbody>
         </table>
       </div>
+      </details>
     </div>
   </section>
 
@@ -470,6 +508,11 @@
 
       pintarLasFilas(tabla.querySelector('tbody'), loQueSeBajo);
       tabla.hidden = false;
+
+      const plegable = document.getElementById('plegable-descargas');
+      plegable.hidden = false;
+      plegable.querySelector('summary').textContent =
+        'Ver las ' + loQueSeBajo.length + ' descargas, una por una';
       document.getElementById('bloque-descargas').hidden = false;
 
       estado.className = 'estado ok';
@@ -610,6 +653,9 @@
       cuerpo.appendChild(tr);
     });
 
+    document.getElementById('plegable-ventas').querySelector('summary').textContent =
+      'Ver las ' + d.ventas.length + (d.ventas.length === 1 ? ' venta' : ' ventas') + ', una por una';
+
     bloque.hidden = false;
   }
 
@@ -746,6 +792,9 @@
 
       cuerpo.appendChild(tr);
     });
+
+    document.getElementById('plegable-inscriptos').querySelector('summary').textContent =
+      'Ver los ' + tiradores.length + ' tiradores, uno por uno';
 
     bloque.hidden = false;
   }
