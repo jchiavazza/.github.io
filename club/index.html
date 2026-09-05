@@ -60,11 +60,24 @@
        computadoras del club.</p>
 
     <div class="acciones">
-      <!-- La dirección "latest" siempre apunta al último release, así que
-           esto no hay que tocarlo en cada versión: alcanza con subir el
-           instalador con el mismo nombre. -->
+      <!-- **La etiqueta va escrita, y hay que subirla en cada versión.**
+           Los dos botones de esta página apuntan acá.
+
+           Se probó con releases/latest/download/..., que se resuelve
+           solo,
+           y no sirve: en este repositorio conviven los releases del Club y
+           los del Clasificador, así que "latest" es el último de los dos.
+           El día que salga una versión del Clasificador, ese enlace pasa a
+           apuntar a un release donde el instalador del Club no existe, y
+           el botón del producto que se vende contesta 404 sin que nadie se
+           entere.
+
+           Y como los releases viejos se van borrando, apuntar a una
+           etiqueta vieja también termina en 404: es lo que había pasado
+           con club-4.2.31. Por eso la etiqueta se actualiza junto con el
+           release, y se comprueba que el enlace baje. -->
       <a class="boton principal"
-         href="https://github.com/jchiavazza/.github.io/releases/download/club-4.2.31/9x19-Club-instalador.exe"
+         href="https://github.com/jchiavazza/.github.io/releases/download/club-4.2.37/9x19-Club-instalador.exe"
          data-descarga="club-instalador">Descargar el programa</a>
       <a class="boton" href="#funciones">Qué hace</a>
       <a class="boton" href="../assets/Manual_de_Uso_9x19_Club.pdf" data-descarga="club-manual"
@@ -298,7 +311,7 @@
     <div class="acciones">
       <a class="boton principal" href="/comprar/">Comprar la licencia</a>
       <a class="boton"
-         href="https://github.com/jchiavazza/.github.io/releases/download/club-4.2.31/9x19-Club-instalador.exe"
+         href="https://github.com/jchiavazza/.github.io/releases/download/club-4.2.37/9x19-Club-instalador.exe"
          data-descarga="club-instalador">Probarlo 60 días</a>
     </div>
   </section>
