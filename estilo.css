@@ -643,6 +643,18 @@ section > .acciones {
    que no se lea como parte de la tarjeta de arriba. */
 .destacada + h2 { margin-top: 46px; }
 
+/* El ícono de un programa arriba de su título: es el mismo que se ve en
+   el escritorio de Windows, así que quien ya lo tiene instalado lo
+   reconoce de entrada. */
+.portada .icono-programa {
+  width: 96px;
+  height: 96px;
+  display: block;
+  margin: 0 auto 14px;
+  border-radius: 22px;
+  box-shadow: var(--relieve-chico);
+}
+
 /* Los pasos para instalar un APK: numerados, con aire entre uno y otro
    porque se leen con el teléfono en la mano. */
 .pasos {
