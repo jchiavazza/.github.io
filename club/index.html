@@ -82,7 +82,12 @@
          href="https://github.com/jchiavazza/.github.io/releases/download/club-4.3.7/9x19-Club-instalador.exe"
          data-descarga="club-instalador">Descargar el programa</a>
       <a class="boton" href="#funciones">Qué hace</a>
-      <a class="boton" href="../assets/Manual_de_Uso_9x19_Club.pdf" data-descarga="club-manual"
+      <!-- **El ?v= no es decorativo: hay que subirlo al cambiar el manual.**
+           GitHub Pages manda el PDF con cache-control de cuatro horas, así
+           que el que entra despues de publicar uno nuevo se baja el viejo
+           igual, sin enterarse. Con el numero pegado, la direccion cambia y
+           el navegador y el CDN traen el nuevo enseguida. -->
+      <a class="boton" href="../assets/Manual_de_Uso_9x19_Club.pdf?v=4.3.8" data-descarga="club-manual"
          download="Manual_de_Uso_9x19_Club.pdf">Manual de uso (PDF)</a>
     </div>
 
@@ -361,7 +366,7 @@
     </p>
 
     <div class="acciones">
-      <a class="boton principal" href="../assets/Manual_de_Uso_9x19_Club.pdf" data-descarga="club-manual"
+      <a class="boton principal" href="../assets/Manual_de_Uso_9x19_Club.pdf?v=4.3.8" data-descarga="club-manual"
          download="Manual_de_Uso_9x19_Club.pdf">
         Descargar el manual (PDF)
       </a>
