@@ -87,6 +87,7 @@
     display: inline-block; margin-right: 6px; padding: 1px 6px; border-radius: 10px;
     background: #e7e7e7; color: #555; font-size: 12px;
   }
+  .borrar-mias { color: #8a1f1f; }
   .mias-aparte {
     display: flex; gap: 8px; flex-wrap: wrap; align-items: center;
     margin: -12px 0 24px; color: #666; font-size: 14px;
@@ -535,6 +536,39 @@
     await pedir();
   }
 
+  // Borrar del registro las bajadas propias. **No se deshace.**
+  async function borrarLasMias(cuantas) {
+    const valor = clave.value.trim();
+    if (!valor || !cuantas) return;
+
+    const seguro = window.confirm(
+      'Se van a borrar ' + cuantas + (cuantas === 1 ? ' bajada tuya' : ' bajadas tuyas') +
+      ' del registro.' +
+      String.fromCharCode(10, 10) +
+      'No se puede deshacer. Las de la gente no se tocan.' +
+      String.fromCharCode(10, 10) +
+      'Para que las cuentas cierren no hace falta borrarlas: marcadas ya no se cuentan.'
+    );
+    if (!seguro) return;
+
+    estado.className = 'estado';
+    estado.textContent = 'Borrando…';
+
+    try {
+      const r = await fetch(PANEL + '?clave=' + encodeURIComponent(valor) + '&borrarLasMias=1');
+      const d = await r.json();
+      await pedir();
+      if (d && d.ok) {
+        estado.className = 'estado ok';
+        estado.textContent = 'Se borraron ' + (d.borradas || 0) +
+          ((d.borradas === 1) ? ' bajada tuya.' : ' bajadas tuyas.');
+      }
+    } catch (e) {
+      estado.className = 'estado mal';
+      estado.textContent = 'No se pudo borrar.';
+    }
+  }
+
   async function pedir() {
     const valor = clave.value.trim();
     if (!valor) { clave.focus(); return; }
@@ -600,6 +634,19 @@
           chip.addEventListener('click', () => marcarLaIp(ip, false));
           propias.appendChild(chip);
         });
+
+        // Y sacarlas del registro, para el que no las quiere ni ver.
+        //
+        // Esto no se deshace, así que pregunta con el número adelante. No
+        // hace falta para que las cuentas cierren —marcadas ya no se
+        // cuentan— y por eso el botón queda apagado, aparte de los otros.
+        const borrar = document.createElement('button');
+        borrar.className = 'boton chico borrar-mias';
+        borrar.type = 'button';
+        borrar.textContent = 'Borrarlas del registro';
+        borrar.title = 'Sacar del registro las ' + d.mias + ' bajadas tuyas';
+        borrar.addEventListener('click', () => borrarLasMias(d.mias));
+        propias.appendChild(borrar);
       } else {
         propias.hidden = true;
       }
