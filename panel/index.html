@@ -80,6 +80,17 @@
   /* La IP es lo más largo de la fila y lo que empujaba la tabla fuera de
      la pantalla: se la deja cortar donde haga falta. */
   td.ip { font-family: ui-monospace, Consolas, monospace; font-size: 13px; word-break: break-all; }
+  td.dequien { white-space: nowrap; }
+  tr.mia { opacity: .55; }
+  tr.mia td.que { font-style: italic; }
+  .esmia {
+    display: inline-block; margin-right: 6px; padding: 1px 6px; border-radius: 10px;
+    background: #e7e7e7; color: #555; font-size: 12px;
+  }
+  .mias-aparte {
+    display: flex; gap: 8px; flex-wrap: wrap; align-items: center;
+    margin: -12px 0 24px; color: #666; font-size: 14px;
+  }
   td.cuando, td.que { white-space: nowrap; }
 
   /* Cada tabla va plegada dentro de un desplegable: con cientos de
@@ -204,6 +215,11 @@
 
     <div class="resumen" id="resumen" hidden></div>
 
+    <!-- Las bajadas propias: las de probar el botón después de publicar.
+         No se borran del registro —lo que pasó, pasó— pero no se cuentan
+         en los números de arriba. Se marcan por IP desde la tabla. -->
+    <p class="mias-aparte" id="lasMias" hidden></p>
+
     <!-- La lista entera va plegada: son cientos de renglones y hacían la
          página interminable. Los números de arriba quedan siempre a la
          vista, que es lo que se mira de un vistazo. -->
@@ -218,6 +234,7 @@
               <th>Dónde</th>
               <th>IP</th>
               <th>Con qué</th>
+              <th>De quién</th>
             </tr>
           </thead>
           <tbody></tbody>
@@ -317,6 +334,7 @@
               <th>Dónde</th>
               <th>IP</th>
               <th>Con qué</th>
+              <th>De quién</th>
             </tr>
           </thead>
           <tbody></tbody>
@@ -394,6 +412,36 @@
         td.textContent = c.texto || '—';
         tr.appendChild(td);
       });
+
+      // De quién es, y el botón para cambiarlo.
+      //
+      // Se marca **la IP**, no el renglón: probar el botón deja varias
+      // bajadas seguidas desde la misma, y marcarlas de a una sería
+      // volver a hacerlo cada vez. Lo que se marca vale para las que ya
+      // están y para las que vengan.
+      const suyo = document.createElement('td');
+      suyo.className = 'dequien';
+      suyo.dataset.campo = 'De quién';
+      if (f.mia) tr.classList.add('mia');
+
+      const boton = document.createElement('button');
+      boton.className = 'boton chico';
+      boton.type = 'button';
+      boton.textContent = f.mia ? 'No es mía' : 'Es mía';
+      boton.title = f.mia
+        ? 'Volver a contar las bajadas de ' + f.ip
+        : 'No contar las bajadas de ' + f.ip;
+      boton.addEventListener('click', () => marcarLaIp(f.ip, !f.mia));
+
+      if (f.mia) {
+        const cartel = document.createElement('span');
+        cartel.className = 'esmia';
+        cartel.textContent = 'tuya';
+        suyo.appendChild(cartel);
+      }
+      suyo.appendChild(boton);
+      tr.appendChild(suyo);
+
       cuerpo.appendChild(tr);
     });
   }
@@ -465,6 +513,28 @@
     if (e.key === 'Escape' && !fondoDetalle.hidden) cerrarElDetalle();
   });
 
+  // Marcar una IP como propia —o soltarla— y volver a pedir todo.
+  //
+  // Va por la misma dirección y con la misma clave que el resto del
+  // panel: es la misma persona mirando lo mismo, y una segunda puerta
+  // sería una segunda cosa que cuidar.
+  async function marcarLaIp(ip, esMia) {
+    if (!ip) return;
+    const valor = clave.value.trim();
+    if (!valor) return;
+
+    estado.className = 'estado';
+    estado.textContent = esMia ? 'Sacando las tuyas…' : 'Volviéndolas a contar…';
+
+    try {
+      await fetch(PANEL + '?clave=' + encodeURIComponent(valor) +
+        (esMia ? '&marcar=' : '&desmarcar=') + encodeURIComponent(ip));
+    } catch (e) {
+      // Si falla, `pedir()` lo va a mostrar tal cual está.
+    }
+    await pedir();
+  }
+
   async function pedir() {
     const valor = clave.value.trim();
     if (!valor) { clave.focus(); return; }
@@ -501,11 +571,38 @@
       comoSeLlama = nombres;
 
       resumen.innerHTML = '';
-      unNumero(d.total, 'descargas en total', null, 'Todas las descargas');
+      unNumero(d.total, 'descargas de gente', null, 'Las descargas de gente');
       Object.keys(d.porArchivo || {}).forEach((k) => {
         unNumero(d.porArchivo[k], nombres[k] || k, k);
       });
       resumen.hidden = false;
+
+      // Las propias, aparte y en chico. **No entran en ningún número de
+      // arriba**: el panel contesta cuántos se lo bajaron, y probar el
+      // botón después de publicar una versión no es eso.
+      const propias = document.getElementById('lasMias');
+      if (d.mias) {
+        propias.hidden = false;
+        propias.innerHTML = '';
+        const t = document.createElement('span');
+        t.innerHTML = '<b>' + d.mias + '</b> ' +
+          (d.mias === 1 ? 'bajada tuya' : 'bajadas tuyas') +
+          ', que no se cuentan. Salen de ' +
+          (d.ipsPropias || []).length +
+          ((d.ipsPropias || []).length === 1 ? ' IP marcada' : ' IP marcadas') + ':';
+        propias.appendChild(t);
+        (d.ipsPropias || []).forEach((ip) => {
+          const chip = document.createElement('button');
+          chip.className = 'boton chico';
+          chip.type = 'button';
+          chip.textContent = ip + ' ✕';
+          chip.title = 'Volver a contar las bajadas de ' + ip;
+          chip.addEventListener('click', () => marcarLaIp(ip, false));
+          propias.appendChild(chip);
+        });
+      } else {
+        propias.hidden = true;
+      }
 
       pintarLasFilas(tabla.querySelector('tbody'), loQueSeBajo);
       tabla.hidden = false;
