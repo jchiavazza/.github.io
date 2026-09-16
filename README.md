@@ -49,23 +49,32 @@ git add -A && git commit -m "..." && git push
 ## El instalador de 9x19 Club sale de un release
 
 El programa de escritorio pesa 108 MB y **no está en este repositorio**:
-GitHub Pages no es lugar para eso. El botón de `/club/` apunta a
+GitHub Pages no es lugar para eso. Los botones de `/club/` apuntan a la
+etiqueta exacta del release, con el nombre del archivo tal como lo compila
+el instalador:
 
-    https://github.com/jchiavazza/.github.io/releases/latest/download/9x19-Club-instalador.exe
+    https://github.com/jchiavazza/.github.io/releases/download/club-4.3.13/9x19-Club-4.3.13-instalador.exe
 
 Dos cosas de ahí importan:
 
-- **`latest`**, y no un release con número. Por eso publicar una versión
-  nueva no obliga a tocar el sitio: el mismo botón empieza a servirla sola.
-- **El archivo tiene que llamarse `9x19-Club-instalador.exe`**, sin la
-  versión. El nombre es parte de la dirección: si el que se sube se llama
-  `9x19-Club-4.1.41-instalador.exe`, el botón queda roto. El instalador se
-  compila con el número adentro del nombre, así que hay que copiarlo sin él
-  antes de subirlo.
+- **La etiqueta va escrita, no `latest`.** Con `latest` el botón servía
+  sola la versión nueva, pero también servía cualquier cosa que se
+  publicara después —un release del Clasificador marcado como el último
+  dejaba a 9x19 Club en 404—. Escribirla obliga a tocar el sitio en cada
+  versión, que es justo cuando hay que revisar que el enlace baje.
+- **El archivo se sube como sale compilado**, con la versión adentro del
+  nombre: `9x19-Club-4.3.13-instalador.exe`. Se probó también subirlo sin
+  el número y no conviene: el que lo baja termina con un archivo que no
+  dice qué versión es, y en la carpeta de Descargas de un club eso es un
+  problema el día que hay dos. **El nombre es parte de la dirección**, así
+  que renombrar el archivo después de publicarlo rompe los dos botones.
 
 Para publicar una versión: en el repo, **Releases → Draft a new release**,
 tag `club-<versión>` creado al publicar, el archivo arrastrado al recuadro
-de abajo, **Set as the latest release** tildado y *Publish*.
+de abajo, **Set as the latest release** tildado y *Publish*. Después se
+cambian a mano las dos direcciones de `club/index.html` —son dos, la del
+encabezado y la de "Probarlo 60 días"— y el `?v=` del manual si el manual
+cambió.
 
 > **El programa no se actualiza solo.** No lleva `electron-updater`, así
 > que al club que ya lo tiene instalado no le llega nada: un release nuevo
@@ -78,7 +87,9 @@ curl -s https://api.github.com/repos/jchiavazza/.github.io/releases/latest
 ```
 
 Tiene que decir el tag nuevo y el archivo con el tamaño exacto del que se
-compiló.
+compiló. Y una vez publicado el sitio, bajarlo de los botones y comparar
+el MD5 contra el instalador compilado: es la única forma de saber que el
+club se lleva el archivo que se probó, y no uno de otra versión.
 
 ## El formulario de inscripción
 
