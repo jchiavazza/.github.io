@@ -539,7 +539,15 @@
     if (m.final) return false;
     if (!m.posibles) return false;
     if (m.cargados >= m.posibles) return false;
-    if (!m.fecha) return true;
+
+    // Sincronizó hace un rato: hay árbitros con la app abierta, o sea que
+    // se está corriendo ahora aunque la fecha cargada diga otra cosa.
+    const sincronizo = m.sincronizado || 0;
+    if (Date.now() - sincronizo < 3 * 60 * 60 * 1000) return true;
+
+    // O la fecha del torneo es de estos días, aunque nadie haya
+    // sincronizado todavía: el match está por empezar.
+    if (!m.fecha) return false;
     const p = m.fecha.split('-').map(Number);
     const dias = (Date.now() - new Date(p[0], p[1] - 1, p[2]).getTime()) / 86400000;
     return dias >= -1 && dias <= 2;
