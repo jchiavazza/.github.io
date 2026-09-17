@@ -172,6 +172,18 @@
   @keyframes latido-etiqueta { 0%, 100% { opacity: 1; } 50% { opacity: .45; } }
   .etiqueta.termino { border: 1px solid var(--borde); color: var(--texto-suave); }
 
+  /* El anual, al final de la cartelera: es la suma de todo lo que está
+     arriba, así que va después y no compitiendo con los torneos. */
+  .tarjeta-anual {
+    display: block; text-decoration: none; color: inherit;
+    text-align: center; padding: 22px 20px; border-radius: 12px;
+    border: 1px solid var(--acento); box-shadow: var(--relieve-chico);
+    transition: transform .15s ease;
+  }
+  .tarjeta-anual:hover { transform: translateY(-2px); }
+  .tarjeta-anual h3 { margin-bottom: 6px; font-size: 20px; color: var(--acento); }
+  .tarjeta-anual p { color: var(--texto-suave); font-size: 14px; margin: 0; }
+
 </style>
 </head>
 <body>
@@ -237,6 +249,11 @@
     <p class="aviso-vacio" id="sin-matches" hidden>
       Todavía no hay ningún torneo publicado.
     </p>
+
+    <a class="tarjeta-anual" href="/anual/">
+      <h3>Resultados del Torneo Anual</h3>
+      <p>La suma de las cinco fechas del año: se computan las cuatro mejores de cada tirador.</p>
+    </a>
 
   </section>
 

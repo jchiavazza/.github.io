@@ -1,0 +1,184 @@
+<!DOCTYPE html>
+<!--
+  El torneo anual: la suma de las fechas del año.
+
+  De las cinco fechas se computan las cuatro mejores de cada tirador. En
+  cada fecha, el mejor tiempo vale el 100% y los demás el porcentaje que
+  les toca contra ése.
+
+  Acá no se calcula nada: la cuenta la hace `resultadosAnual` en el
+  repositorio de 9x19 Score (functions/anual.js), con las mismas tablas
+  que se publican en /envivo/. Si una fecha se corrige, el anual se
+  corrige solo.
+-->
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Torneo Anual — Club 9x19 Shooting</title>
+<meta name="description" content="Clasificación del torneo anual de IDPA del Club 9x19 Shooting: cinco fechas, se computan las cuatro mejores de cada tirador.">
+<link rel="icon" href="../assets/icono.png">
+<link rel="stylesheet" href="../estilo.css?v=66">
+
+<meta property="og:type" content="website">
+<meta property="og:title" content="Torneo Anual">
+<meta property="og:description" content="La clasificación anual, fecha por fecha.">
+<meta property="og:url" content="https://9x19shooting.com.ar/anual/">
+<meta property="og:locale" content="es_AR">
+
+<style>
+  .envoltorio.ancho { max-width: 1100px; }
+
+  .cabecera-anual { text-align: center; margin-bottom: 8px; }
+  .cabecera-anual h1 { margin-bottom: 6px; }
+  .cabecera-anual .datos { color: var(--texto-suave); font-size: 15px; margin: 0; }
+
+  /* Cómo se puntúa, en dos renglones: es lo primero que pregunta todo el
+     mundo cuando ve una tabla de porcentajes. */
+  .como-se-cuenta {
+    max-width: 640px; margin: 20px auto 0;
+    padding: 14px 18px; border-radius: 12px;
+    border: 1px solid var(--borde); box-shadow: var(--hundido);
+    color: var(--texto-suave); font-size: 14px;
+  }
+  .como-se-cuenta p { margin: 0 0 6px; }
+  .como-se-cuenta p:last-child { margin-bottom: 0; }
+
+  .filtros { display: flex; flex-wrap: wrap; gap: 8px; justify-content: center; margin: 24px 0 18px; }
+  .filtros button {
+    padding: 9px 16px; border-radius: 12px;
+    border: 1px solid var(--borde); background: var(--fondo);
+    color: var(--acento); font-weight: 600; font-size: 14px;
+    font-family: inherit; cursor: pointer;
+    box-shadow: var(--relieve-chico);
+  }
+  .filtros button.actual { box-shadow: var(--hundido); color: var(--texto); }
+
+  table { border-collapse: collapse; width: 100%; font-size: 15px; }
+  th, td { text-align: left; padding: 10px 12px; border-bottom: 1px solid var(--borde); }
+  th {
+    font-size: 12px; text-transform: uppercase; letter-spacing: .05em;
+    color: var(--texto-suave); white-space: nowrap;
+  }
+  td.puesto { font-weight: 700; font-size: 17px; width: 54px; }
+  /* El que todavía no sumó lleva su número, pero apagado. */
+  td.puesto.sin-puntos { color: var(--texto-suave); font-weight: 500; }
+  td.tirador { font-weight: 600; }
+  td.chico, th.chico { font-size: 13px; color: var(--texto-suave); }
+
+  th.fecha, td.fecha { text-align: right; font-variant-numeric: tabular-nums; white-space: nowrap; }
+  td.fecha.vacia { color: var(--texto-suave); }
+  /* La peor de las cinco no suma: se muestra igual, tachada, para que se
+     vea que el tirador corrió y por qué no la cuenta. */
+  td.fecha.descartada { color: var(--texto-suave); text-decoration: line-through; }
+  th.total, td.total {
+    text-align: right; font-variant-numeric: tabular-nums;
+    font-weight: 700; white-space: nowrap;
+  }
+
+  tr.podio td.puesto { color: var(--acento); }
+
+  .aviso-vacio { text-align: center; color: var(--texto-suave); padding: 30px 0; }
+
+  /* Las fechas, abajo de todo: qué número es cada una. */
+  .pie-fechas {
+    margin: 26px 0 0; padding-top: 16px; border-top: 1px solid var(--borde);
+    color: var(--texto-suave); font-size: 13px;
+  }
+  .pie-fechas ol { margin: 8px 0 0; padding-left: 20px; }
+  .pie-fechas li { margin-bottom: 3px; }
+  .pie-fechas a { color: inherit; }
+
+  /* En el celular, cada tirador es una tarjeta: nueve columnas no entran
+     de ninguna manera. */
+  @media (max-width: 860px) {
+    table, tbody, tr, td { display: block; width: 100%; }
+    thead { display: none; }
+    tr {
+      position: relative;
+      border: 1px solid var(--borde); border-radius: 12px;
+      box-shadow: var(--relieve-chico);
+      padding: 12px 14px 12px 58px;
+      margin-bottom: 12px;
+    }
+    td { border: 0; padding: 2px 0; }
+    td.puesto {
+      position: absolute; left: 14px; top: 12px;
+      width: 34px; text-align: center; font-size: 22px;
+    }
+    td.tirador { font-size: 17px; }
+    td.chico::before, td.fecha::before, td.total::before { content: attr(data-campo) ': '; }
+    td.fecha, td.total { text-align: left; }
+    /* En el teléfono las cinco fechas van en un solo renglón, separadas
+       por comas, y no una abajo de la otra. */
+    td.fecha { display: inline; padding-right: 10px; }
+    td.total { display: block; margin-top: 6px; font-size: 17px; }
+  }
+</style>
+</head>
+<body>
+
+<div class="envoltorio ancho">
+  <div class="barra">
+    <a class="marca" href="/"><img src="../assets/logo-club.png" alt="Club 9x19 Shooting"></a>
+    <img class="medalla" src="../assets/medalla.png" alt="Medalla del club: 9x19 Shooting, IDPA Argentina">
+    <nav class="corto">
+      <a href="/">← Volver al inicio</a>
+      <a href="/envivo/">← Torneos</a>
+      <a href="/score/">9x19 Score</a>
+    </nav>
+  </div>
+</div>
+
+<main class="envoltorio ancho">
+
+  <header class="cabecera-anual">
+    <h1 id="a-titulo">Torneo Anual</h1>
+    <p class="datos" id="a-datos"></p>
+  </header>
+
+  <div class="como-se-cuenta">
+    <p><strong>En cada fecha, el mejor tiempo vale 100%</strong> y los demás el porcentaje que les toca contra ése: el que tardó el doble se lleva 50%.</p>
+    <p id="a-cuantas">De las cinco fechas se computan las cuatro mejores de cada tirador: la peor se descarta y queda tachada.</p>
+  </div>
+
+  <div class="filtros" id="filtros"></div>
+
+  <div>
+    <table id="tabla">
+      <thead>
+        <tr id="encabezado">
+          <th>#</th>
+          <th>Tirador</th>
+          <th class="chico">Nº IDPA</th>
+          <th class="chico">Div.</th>
+          <th class="chico">Clase</th>
+        </tr>
+      </thead>
+      <tbody></tbody>
+    </table>
+    <p class="aviso-vacio" id="vacio" hidden>Todavía no hay fechas publicadas.</p>
+  </div>
+
+  <div class="pie-fechas" id="pie" hidden>
+    <strong>Las fechas</strong>
+    <ol id="lista-fechas"></ol>
+    <p id="nota-avisos" hidden></p>
+  </div>
+
+</main>
+
+<footer>
+  <div class="envoltorio">
+    <p>
+      Club 9x19 Shooting · Club organizador de eventos de IDPA ·
+      <a href="mailto:9x19shooting@gmail.com">9x19shooting@gmail.com</a> ·
+      <a href="https://www.instagram.com/9x19_shooting/" target="_blank" rel="noopener">@9x19_shooting</a>
+    </p>
+    <p><a href="/privacidad/">Política de privacidad</a></p>
+  </div>
+</footer>
+
+<script src="anual.js?v=1"></script>
+</body>
+</html>
