@@ -154,7 +154,19 @@
     font-size: 11px; font-weight: 700; letter-spacing: .06em;
     padding: 2px 8px; border-radius: 6px;
   }
-  .etiqueta.envivo { background: var(--ok); color: var(--fondo); }
+  /* El que se está corriendo: borde verde y un poco más de presencia,
+     para que se distinga de un vistazo entre los terminados. */
+  .match-tarjeta.corriendo {
+    border-color: var(--ok);
+    box-shadow: var(--relieve);
+  }
+  .match-tarjeta.corriendo h3 { color: var(--ok); }
+
+  .etiqueta.envivo {
+    background: var(--ok); color: var(--fondo);
+    animation: latido-etiqueta 1.6s ease-in-out infinite;
+  }
+  @keyframes latido-etiqueta { 0%, 100% { opacity: 1; } 50% { opacity: .45; } }
   .etiqueta.termino { border: 1px solid var(--borde); color: var(--texto-suave); }
 
 </style>
@@ -235,6 +247,6 @@
   </div>
 </footer>
 
-<script src="envivo.js?v=6"></script>
+<script src="envivo.js?v=7"></script>
 </body>
 </html>

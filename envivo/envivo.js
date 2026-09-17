@@ -51,6 +51,19 @@
       return dias >= -1 && dias <= 2;
     }
 
+    // Primero el que se está corriendo, después los demás del más nuevo
+    // al más viejo. El orden que trae el servidor es por última
+    // sincronización, que no es lo mismo: un torneo terminado al que se
+    // le tocó algo ayer quedaría arriba del que se está corriendo hoy.
+    function ordenar(matches) {
+      return matches.slice().sort((a, b) => {
+        const va = seEstaCorriendo(a) ? 1 : 0;
+        const vb = seEstaCorriendo(b) ? 1 : 0;
+        if (va !== vb) return vb - va;
+        return (b.fecha || '').localeCompare(a.fecha || '');
+      });
+    }
+
     function tarjeta(m) {
       const a = document.createElement('a');
       a.className = 'match-tarjeta';
@@ -60,6 +73,8 @@
       // tabla queda de archivo y no va a cambiar nunca más.
       const completo = m.final || (m.posibles > 0 && m.cargados >= m.posibles);
       const corriendo = seEstaCorriendo(m);
+
+      if (corriendo) a.classList.add('corriendo');
 
       const h = document.createElement('h3');
       h.textContent = m.nombre || 'Match';
@@ -104,7 +119,7 @@
 
         const cont = $('cartelera');
         cont.innerHTML = '';
-        d.matches.forEach((m) => cont.appendChild(tarjeta(m)));
+        ordenar(d.matches).forEach((m) => cont.appendChild(tarjeta(m)));
         $('sin-matches').hidden = d.matches.length > 0;
       } catch (e) {
         $('sin-matches').hidden = false;

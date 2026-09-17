@@ -560,8 +560,11 @@
       const corriendo = (d.matches || []).filter(seEstaCorriendo);
       if (!corriendo.length) return;
 
+      // Sólo se enciende. **No lleva derecho a la tabla del que está
+      // corriendo**, aunque sea uno solo: el que entra quiere ver la
+      // cartelera y elegir —los torneos terminados también se miran—, y
+      // un atajo que saltea la lista la esconde sin que se note.
       boton.classList.add('corriendo');
-      if (corriendo.length === 1) boton.href = '/envivo/?c=' + corriendo[0].clave;
     })
     .catch(() => {});
 })();
