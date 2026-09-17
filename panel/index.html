@@ -181,6 +181,21 @@
     td.que { font-weight: 600; font-size: 16px; padding-bottom: 6px; }
     td.que::before { content: none; }
   }
+
+  /* Publicar un match en vivo. */
+  .publicar-envivo { margin-bottom: 30px; }
+  .publicar-envivo input {
+    padding: 12px 16px; border-radius: 12px;
+    border: 1px solid var(--borde); background: var(--fondo);
+    color: var(--texto); font-size: 16px; font-family: inherit;
+    box-shadow: var(--hundido); min-width: 320px; flex: 1 1 320px;
+  }
+  .enlace-envivo {
+    margin-top: 14px; padding: 14px 18px; border-radius: 12px;
+    border: 1px solid var(--borde); box-shadow: var(--relieve-chico);
+    word-break: break-all;
+  }
+  .enlace-envivo b { display: block; font-size: 17px; margin-bottom: 4px; }
 </style>
 </head>
 <body>
@@ -310,6 +325,26 @@
         </table>
       </div>
       </details>
+    </div>
+
+    <!-- Publicar un match en vivo. Vive acá adentro y no en /envivo/
+         porque es tarea del organizador: el público entra a mirar, no a
+         publicar. La función pide esta misma clave. -->
+    <div class="bloque" id="bloque-envivo" hidden>
+      <h2>Resultados en vivo</h2>
+      <p class="aclaracion">Pegá el <b>código de sincronización</b> del match
+         —el mismo que les pasás a los otros árbitros— y queda publicado en
+         <b>/envivo/</b>. Se hace una sola vez por torneo: después se
+         actualiza solo con cada sincronización.</p>
+    </div>
+
+    <div class="publicar-envivo" id="caja-envivo" hidden>
+      <div class="acciones-form">
+        <input id="codigo-match" type="text" placeholder="Código del match" autocomplete="off" spellcheck="false">
+        <button class="boton chico" id="publicar-match" type="button">Publicar</button>
+        <p class="estado" id="estado-envivo"></p>
+      </div>
+      <p class="enlace-envivo" id="enlace-envivo" hidden></p>
     </div>
   </section>
 
@@ -588,6 +623,10 @@
 
       // La clave queda solo mientras dure la pestaña.
       sessionStorage.setItem('panel9x19', valor);
+
+      // Publicar un match en vivo se habilita con la misma clave.
+      document.getElementById('bloque-envivo').hidden = false;
+      document.getElementById('caja-envivo').hidden = false;
 
       const nombres = {
         'score-manual': 'Manual de Score',
@@ -1072,6 +1111,59 @@
 
   document.getElementById('entrar').addEventListener('click', pedir);
   clave.addEventListener('keydown', (e) => { if (e.key === 'Enter') pedir(); });
+
+  // ------------------------------------------------------------------
+  // Publicar un match para que se vea en vivo
+  //
+  // La función `publicarEnVivo` pide esta misma clave: la pantalla se mudó
+  // acá adentro, así que la puerta se mudó con ella. Si se vuelve a pegar
+  // el código de un match ya publicado, devuelve la misma dirección — no
+  // crea otra, que dejaría una tabla vieja dando vueltas por WhatsApp.
+  async function publicarUnMatch() {
+    const codigo = document.getElementById('codigo-match').value.trim();
+    const estadoEV = document.getElementById('estado-envivo');
+    const enlaceEV = document.getElementById('enlace-envivo');
+    if (!codigo) { document.getElementById('codigo-match').focus(); return; }
+
+    estadoEV.className = 'estado';
+    estadoEV.textContent = 'Buscando el match…';
+    enlaceEV.hidden = true;
+
+    try {
+      const r = await fetch(
+        FUNCIONES + '/publicarEnVivo?clave=' + encodeURIComponent(clave.value.trim()) +
+        '&codigo=' + encodeURIComponent(codigo),
+        { method: 'POST', body: '' }
+      );
+      const d = await r.json();
+
+      if (!d.ok) {
+        estadoEV.className = 'estado mal';
+        estadoEV.textContent = r.status === 401 ? 'Clave incorrecta.' : (d.error || 'No se pudo publicar.');
+        return;
+      }
+
+      estadoEV.className = 'estado ok';
+      estadoEV.textContent = d.match ? 'Publicado: ' + d.match : 'Publicado.';
+      enlaceEV.innerHTML = '';
+      const b = document.createElement('b');
+      b.textContent = d.url;
+      const p = document.createElement('span');
+      p.textContent = d.tiradores + (d.tiradores === 1 ? ' tirador' : ' tiradores') +
+        ' · repartí esta dirección, que sólo deja mirar';
+      enlaceEV.appendChild(b);
+      enlaceEV.appendChild(p);
+      enlaceEV.hidden = false;
+    } catch (e) {
+      estadoEV.className = 'estado mal';
+      estadoEV.textContent = 'No se pudo conectar.';
+    }
+  }
+
+  document.getElementById('publicar-match').addEventListener('click', publicarUnMatch);
+  document.getElementById('codigo-match').addEventListener('keydown', (e) => {
+    if (e.key === 'Enter') publicarUnMatch();
+  });
 
   const guardada = sessionStorage.getItem('panel9x19');
   if (guardada) { clave.value = guardada; pedir(); }

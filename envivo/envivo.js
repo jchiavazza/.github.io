@@ -14,48 +14,12 @@
   const clave = (new URLSearchParams(location.search).get('c') || '').trim().toUpperCase();
 
   // ------------------------------------------------------------------
-  // Sin clave: la pantalla del organizador
+  // Sin clave: la cartelera
   // ------------------------------------------------------------------
   if (!clave) {
-    $('pantalla-publicar').hidden = false;
+    $('pantalla-cartelera').hidden = false;
     cartelera();
 
-    const estado = $('estado-publicar');
-    const boton = $('publicar');
-
-    async function publicar() {
-      const codigo = $('codigo').value.trim();
-      if (!codigo) { $('codigo').focus(); return; }
-
-      boton.disabled = true;
-      estado.className = 'estado';
-      estado.textContent = 'Buscando el match…';
-
-      try {
-        const r = await fetch(API + '/publicarEnVivo?codigo=' + encodeURIComponent(codigo), { method: 'POST', body: '' });
-        const d = await r.json();
-
-        if (!d.ok) {
-          estado.className = 'estado mal';
-          estado.textContent = d.error || 'No se pudo publicar.';
-          return;
-        }
-
-        estado.className = 'estado ok';
-        estado.textContent = d.match ? 'Publicado: ' + d.match : 'Publicado.';
-        $('enlace-url').textContent = d.url;
-        $('enlace-ver').href = d.url;
-        $('enlace').hidden = false;
-      } catch (e) {
-        estado.className = 'estado mal';
-        estado.textContent = 'No se pudo conectar.';
-      } finally {
-        boton.disabled = false;
-      }
-    }
-
-    boton.addEventListener('click', publicar);
-    $('codigo').addEventListener('keydown', (e) => { if (e.key === 'Enter') publicar(); });
     return;
   }
 
@@ -63,32 +27,22 @@
   // La cartelera: todos los matches publicados
   // ------------------------------------------------------------------
   function cartelera() {
-    // Un match "en vivo" es uno que se sincronizó hace poco y al que le
-    // falta cargar planillas. Se mide por la última sincronización y no
-    // por la fecha del torneo: un match de ayer que sigue cargándose está
-    // más vivo que uno de hoy que nadie tocó.
-  // ¿Este match se está corriendo AHORA?
-  //
-  // Hacen falta las dos cosas, y por separado ninguna alcanza:
-  //
-  //   · que la fecha del torneo sea hoy o ayer —un match de julio no está
-  //     en vivo aunque la app haya sincronizado hace un rato, y sincroniza
-  //     con sólo abrirla para mirar algo—;
-  //   · que haya sincronizado hace poco, porque una fecha de hoy con la
-  //     app cerrada tampoco es un match corriendo.
-  function seEstaCorriendo(m) {
-    if (m.final) return false;
-    if (m.posibles > 0 && m.cargados >= m.posibles) return false;
+    // ¿Este torneo se está corriendo AHORA?
+    //
+    // Alcanza con que le falten planillas: un match al que no se le
+    // terminó de cargar todo es un match en curso. El único resguardo es
+    // la fecha —hoy, ayer o mañana—, porque si no, uno viejo que quedó a
+    // medio cargar dejaría el cartel encendido para siempre.
+    function seEstaCorriendo(m) {
+      if (m.final) return false;
+      if (m.posibles > 0 && m.cargados >= m.posibles) return false;
+      if (!m.posibles) return false; // sin etapas todavía no hay nada que seguir
 
-    const sincronizo = m.sincronizado || m.actualizado || 0;
-    if (Date.now() - sincronizo > 45 * 60 * 1000) return false;
-
-    if (!m.fecha) return true; // sin fecha, mandan los datos que llegan
-    const p = m.fecha.split('-').map(Number);
-    const dia = new Date(p[0], p[1] - 1, p[2]);
-    const dias = (Date.now() - dia.getTime()) / 86400000;
-    return dias >= -1 && dias <= 2;
-  }
+      if (!m.fecha) return true;
+      const p = m.fecha.split('-').map(Number);
+      const dias = (Date.now() - new Date(p[0], p[1] - 1, p[2]).getTime()) / 86400000;
+      return dias >= -1 && dias <= 2;
+    }
 
     function tarjeta(m) {
       const a = document.createElement('a');
@@ -190,13 +144,11 @@
   function filasDelFiltro() {
     if (!datos) return [];
     if (filtro.tipo === 'division') return datos.porDivision[filtro.division] || [];
-    if (filtro.tipo === 'divisionClase') return datos.porDivisionClase[filtro.clave] || [];
     return datos.general;
   }
 
   function nombreDelFiltro() {
     if (filtro.tipo === 'division') return 'div:' + filtro.division;
-    if (filtro.tipo === 'divisionClase') return 'dc:' + filtro.clave;
     return 'general';
   }
 
@@ -215,16 +167,10 @@
 
     boton('General', filtro.tipo === 'general', () => { filtro = { tipo: 'general' }; });
 
+    // Sólo las divisiones. La clase se ve en la fila de cada tirador.
     (datos.divisiones || []).forEach((d) => {
       boton(d, filtro.tipo === 'division' && filtro.division === d,
         () => { filtro = { tipo: 'division', division: d }; });
-    });
-
-    // División + clase, sólo las combinaciones que alguien corre.
-    Object.keys(datos.porDivisionClase || {}).sort().forEach((k) => {
-      const [d, c] = k.split('|');
-      boton(d + ' ' + c, filtro.tipo === 'divisionClase' && filtro.clave === k,
-        () => { filtro = { tipo: 'divisionClase', clave: k }; });
     });
   }
 
@@ -332,7 +278,7 @@
 
       dibujarCabecera();
       if (primeraVez) dibujarFiltros();
-      else if ((d.divisiones || []).length !== ($('filtros').children.length - 1 - Object.keys(d.porDivisionClase || {}).length)) {
+      else if ((d.divisiones || []).length !== $('filtros').children.length - 1) {
         dibujarFiltros(); // apareció una división nueva
       }
 

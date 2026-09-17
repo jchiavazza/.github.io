@@ -3,9 +3,11 @@
   Resultados en vivo de un match.
 
   Dos pantallas en la misma dirección:
-    /envivo/            el organizador pega el código de su match y saca
-                        la dirección pública para repartir;
-    /envivo/?c=XXXXX    la tabla, que se actualiza sola.
+    /envivo/            la cartelera: todos los torneos publicados;
+    /envivo/?c=XXXXX    la tabla de uno, que se actualiza sola.
+
+  Publicar un match se hace desde /panel/, con la clave del club: es una
+  tarea del organizador y no tiene por qué estar a la vista del público.
 
   El código del match no aparece nunca en la dirección pública: ese código
   es la llave para escribir el match desde la app. La clave corta de acá
@@ -63,7 +65,7 @@
   @keyframes latido { 0%, 100% { opacity: 1; } 50% { opacity: .25; } }
   .vivo.parado .punto { background: var(--texto-suave); animation: none; }
 
-  /* Los filtros: general, cada división, y división + clase. */
+  /* Los filtros: la general y cada división. */
   .filtros { display: flex; flex-wrap: wrap; gap: 8px; justify-content: center; margin: 22px 0 18px; }
   .filtros button {
     padding: 9px 16px; border-radius: 12px;
@@ -155,20 +157,6 @@
   .etiqueta.envivo { background: var(--ok); color: var(--fondo); }
   .etiqueta.termino { border: 1px solid var(--borde); color: var(--texto-suave); }
 
-  /* La pantalla de publicar, para el organizador. */
-  .publicar { max-width: 560px; margin: 0 auto; }
-  .publicar input {
-    width: 100%; padding: 13px 16px; border-radius: 12px;
-    border: 1px solid var(--borde); background: var(--fondo);
-    color: var(--texto); font-size: 16px; font-family: inherit;
-    box-shadow: var(--hundido);
-  }
-  .publicar .enlace {
-    margin-top: 20px; padding: 18px; border-radius: 12px;
-    border: 1px solid var(--borde); box-shadow: var(--relieve-chico);
-    word-break: break-all;
-  }
-  .publicar .enlace strong { font-size: 18px; }
 </style>
 </head>
 <body>
@@ -221,7 +209,7 @@
   </section>
 
   <!-- ---------------------------------------------- publicar -->
-  <section id="pantalla-publicar" hidden>
+  <section id="pantalla-cartelera" hidden>
     <header class="portada">
       <h1>Resultados en vivo</h1>
       <p class="bajada">Elegí un torneo para ver su clasificación. El que se está corriendo se actualiza solo, mientras los árbitros cargan.</p>
@@ -232,34 +220,6 @@
       Todavía no hay ningún torneo publicado.
     </p>
 
-    <h2 class="sub" style="text-align:center">¿Organizás un match?</h2>
-    <div class="publicar">
-      <p>
-        Pegá el <strong>código de sincronización</strong> del match —el mismo
-        que la App le pasa a los otros árbitros— y te damos la dirección para
-        repartir. Los puntajes van apareciendo a medida que se sincronizan.
-      </p>
-
-      <div class="acciones-form" style="margin-bottom:14px">
-        <input id="codigo" type="text" placeholder="Código del match" autocomplete="off" spellcheck="false">
-        <button class="boton chico" id="publicar" type="button">Publicar</button>
-      </div>
-      <p class="estado" id="estado-publicar"></p>
-
-      <div class="enlace" id="enlace" hidden>
-        <p style="margin-bottom:8px">Listo. La dirección para repartir es:</p>
-        <p><strong id="enlace-url"></strong></p>
-        <p style="margin:12px 0 0"><a id="enlace-ver" href="#">Ver la pantalla →</a></p>
-      </div>
-
-      <p class="nota" style="margin-top:26px">
-        La dirección pública <strong>sólo deja mirar</strong>: no lleva el
-        código del match, así que nadie puede cargar ni cambiar un puntaje
-        desde ahí. Se publican apellido y nombre, número de asociado, club,
-        división y clase de cada competidor, como en cualquier planilla de
-        resultados.
-      </p>
-    </div>
   </section>
 
 </main>
@@ -275,6 +235,6 @@
   </div>
 </footer>
 
-<script src="envivo.js?v=4"></script>
+<script src="envivo.js?v=5"></script>
 </body>
 </html>

@@ -531,13 +531,14 @@
   const boton = document.getElementById('boton-envivo');
   if (!boton) return;
 
-  // La misma regla que usa la cartelera en /envivo/: hace falta que el
-  // torneo sea de hoy Y que la app haya sincronizado recién. Con una sola
-  // de las dos, un match viejo se enciende apenas alguien abre la app.
+  // La misma regla que usa la cartelera en /envivo/: el botón se enciende
+  // cuando hay un torneo al que le faltan planillas, con la fecha como
+  // único resguardo —si no, un match viejo a medio cargar lo dejaría
+  // verde para siempre—.
   function seEstaCorriendo(m) {
     if (m.final) return false;
-    if (m.posibles > 0 && m.cargados >= m.posibles) return false;
-    if (Date.now() - (m.sincronizado || m.actualizado || 0) > 45 * 60 * 1000) return false;
+    if (!m.posibles) return false;
+    if (m.cargados >= m.posibles) return false;
     if (!m.fecha) return true;
     const p = m.fecha.split('-').map(Number);
     const dias = (Date.now() - new Date(p[0], p[1] - 1, p[2]).getTime()) / 86400000;
