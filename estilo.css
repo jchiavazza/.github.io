@@ -157,10 +157,9 @@ a { color: var(--acento); }
 /* El calendario no es una sección más de la página: va suelto, después de
    una línea que lo separa del menú, y con el color del acento. */
 .barra .aparte {
-  /* Con siete secciones, la última fila queda con un botón suelto: el
-     calendario ocupa las dos columnas que sobran, al lado de ese. */
+  /* La última fila del menú queda con Contacto solo y dos columnas
+     libres: ahí entra justo el calendario, al lado de ése. */
   grid-column: 2 / -1;
-  margin-top: 4px;
   padding: 11px 14px;
   border-radius: 14px;
   border: 1px solid var(--borde);
@@ -177,12 +176,15 @@ a { color: var(--acento); }
 .barra .aparte:active { box-shadow: var(--hundido); transform: none; }
 .barra .aparte span { margin-right: 5px; }
 
-/* El botón de los resultados en vivo: entra en la columna que deja libre
-   el calendario, en la última fila del menú. Apagado es un botón más; se
-   enciende —verde y con el punto latiendo— sólo cuando hay un match
-   sincronizando, que es cuando vale la pena entrar. */
+/* El botón de los resultados en vivo. Apagado es un botón más; se
+   enciende —verde y titilando— sólo cuando hay un torneo al que le faltan
+   planillas, que es cuando vale la pena entrar. */
 .barra .aparte.en-vivo {
-  grid-column: 1;
+  /* En su propio renglón y a lo ancho de las tres columnas: encendido es
+     el aviso de que hay un torneo disputándose, así que tiene que ser lo
+     más grande del menú y no un botón más. */
+  grid-column: 1 / -1;
+  margin-top: 4px;
   background: var(--fondo);
   color: var(--acento);
   box-shadow: var(--relieve-chico);
