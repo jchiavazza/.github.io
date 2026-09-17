@@ -74,8 +74,10 @@
       a.className = 'match-tarjeta';
       a.href = '?c=' + m.clave;
 
-      const completo = m.posibles > 0 && m.cargados >= m.posibles;
-      const corriendo = !completo && Date.now() - (m.actualizado || 0) < RECIENTE;
+      // `final` lo marca la nube cuando el match ya no existe allá: la
+      // tabla queda de archivo y no va a cambiar nunca más.
+      const completo = m.final || (m.posibles > 0 && m.cargados >= m.posibles);
+      const corriendo = !completo && !m.final && Date.now() - (m.actualizado || 0) < RECIENTE;
 
       const h = document.createElement('h3');
       h.textContent = m.nombre || 'Match';

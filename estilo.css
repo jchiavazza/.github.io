@@ -176,6 +176,32 @@ a { color: var(--acento); }
 .barra .aparte:hover { transform: translateY(-1px); }
 .barra .aparte:active { box-shadow: var(--hundido); transform: none; }
 .barra .aparte span { margin-right: 5px; }
+
+/* El botón de los resultados en vivo: entra en la columna que deja libre
+   el calendario, en la última fila del menú. Apagado es un botón más; se
+   enciende —verde y con el punto latiendo— sólo cuando hay un match
+   sincronizando, que es cuando vale la pena entrar. */
+.barra .aparte.en-vivo {
+  grid-column: 1;
+  background: var(--fondo);
+  color: var(--acento);
+  box-shadow: var(--relieve-chico);
+}
+.barra .aparte.en-vivo .punto-vivo {
+  display: none;
+  width: 8px; height: 8px; border-radius: 50%;
+  background: currentColor;
+  margin-right: 6px;
+}
+.barra .aparte.en-vivo.corriendo {
+  background: var(--ok);
+  color: var(--fondo);
+}
+.barra .aparte.en-vivo.corriendo .punto-vivo {
+  display: inline-block;
+  animation: latido-vivo 1.6s ease-in-out infinite;
+}
+@keyframes latido-vivo { 0%, 100% { opacity: 1; } 50% { opacity: .2; } }
 .barra nav a {
   text-decoration: none;
   text-align: center;

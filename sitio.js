@@ -514,3 +514,37 @@
     b.addEventListener('click', () => mostrar(b.dataset.inscriptos, b));
   });
 })();
+
+
+// El botón "En vivo" del menú: se enciende cuando hay un match
+// sincronizando en este momento.
+//
+// Es una sola consulta a una lista chica al abrir la portada. Si hay un
+// único match corriendo, el botón lleva derecho a su tabla: el que entra
+// desde el celular en el polígono quiere ver ESA, no elegir de una lista
+// de uno. Si hay varios, lleva a la cartelera.
+//
+// Si la consulta falla, el botón queda como está y sigue andando: lleva
+// a /envivo/, que es lo que tiene que hacer igual.
+
+(function () {
+  const boton = document.getElementById('boton-envivo');
+  if (!boton) return;
+
+  const RECIENTE = 45 * 60 * 1000; // sincronizó hace menos de esto
+
+  fetch('https://us-central1-x19shooting-sync.cloudfunctions.net/listaEnVivo')
+    .then((r) => r.json())
+    .then((d) => {
+      if (!d || !d.ok) return;
+      const corriendo = (d.matches || []).filter(
+        (m) => !m.final && Date.now() - (m.actualizado || 0) < RECIENTE &&
+               !(m.posibles > 0 && m.cargados >= m.posibles)
+      );
+      if (!corriendo.length) return;
+
+      boton.classList.add('corriendo');
+      if (corriendo.length === 1) boton.href = '/envivo/?c=' + corriendo[0].clave;
+    })
+    .catch(() => {});
+})();
