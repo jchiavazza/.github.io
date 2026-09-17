@@ -351,6 +351,17 @@ section > .acciones {
   color: var(--texto-suave);
 }
 
+/* Segunda versión de una App en la misma portada. Va separada por una línea
+   para que los dos juegos de botones no se lean como un solo bloque de seis:
+   son dos descargas distintas y hay que elegir una. */
+.otra-version {
+  margin-top: 36px;
+  padding-top: 30px;
+  border-top: 1px solid var(--borde);
+}
+.otra-version h2 { margin: 0 0 8px; font-size: 23px; }
+.otra-version .bajada { margin-bottom: 22px; }
+
 /* ---------------------------------- próximas fechas */
 
 .grilla-proximas {
