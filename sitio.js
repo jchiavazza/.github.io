@@ -536,21 +536,19 @@
   // único resguardo —si no, un match viejo a medio cargar lo dejaría
   // verde para siempre—.
   function seEstaCorriendo(m) {
-    if (m.final) return false;
-    if (!m.posibles) return false;
-    if (m.cargados >= m.posibles) return false;
-
-    // Sincronizó hace un rato: hay árbitros con la app abierta, o sea que
-    // se está corriendo ahora aunque la fecha cargada diga otra cosa.
-    const sincronizo = m.sincronizado || 0;
-    if (Date.now() - sincronizo < 3 * 60 * 60 * 1000) return true;
-
-    // O la fecha del torneo es de estos días, aunque nadie haya
-    // sincronizado todavía: el match está por empezar.
-    if (!m.fecha) return false;
-    const p = m.fecha.split('-').map(Number);
-    const dias = (Date.now() - new Date(p[0], p[1] - 1, p[2]).getTime()) / 86400000;
-    return dias >= -1 && dias <= 2;
+  // Un torneo publicado al que le faltan planillas es un torneo en
+  // curso, y punto: es lo que el cartel tiene que avisar.
+  //
+  // No se mira ni la fecha ni cuándo sincronizó. Con la fecha, un match
+  // cargado con la del torneo anterior no encendía nunca; con la
+  // sincronización, se apagaba en cada pausa larga —el almuerzo de una
+  // jornada de dos días lo dejaba gris—.
+  //
+  // Se apaga solo cuando el match se completa, o cuando desaparece de
+  // la nube a los 45 días y la tabla queda archivada (`final`).
+  if (m.final) return false;
+  if (!m.posibles) return false;
+  return m.cargados < m.posibles;
   }
 
   fetch('https://us-central1-x19shooting-sync.cloudfunctions.net/listaEnVivo')
