@@ -531,16 +531,24 @@
   const boton = document.getElementById('boton-envivo');
   if (!boton) return;
 
-  const RECIENTE = 45 * 60 * 1000; // sincronizó hace menos de esto
+  // La misma regla que usa la cartelera en /envivo/: hace falta que el
+  // torneo sea de hoy Y que la app haya sincronizado recién. Con una sola
+  // de las dos, un match viejo se enciende apenas alguien abre la app.
+  function seEstaCorriendo(m) {
+    if (m.final) return false;
+    if (m.posibles > 0 && m.cargados >= m.posibles) return false;
+    if (Date.now() - (m.sincronizado || m.actualizado || 0) > 45 * 60 * 1000) return false;
+    if (!m.fecha) return true;
+    const p = m.fecha.split('-').map(Number);
+    const dias = (Date.now() - new Date(p[0], p[1] - 1, p[2]).getTime()) / 86400000;
+    return dias >= -1 && dias <= 2;
+  }
 
   fetch('https://us-central1-x19shooting-sync.cloudfunctions.net/listaEnVivo')
     .then((r) => r.json())
     .then((d) => {
       if (!d || !d.ok) return;
-      const corriendo = (d.matches || []).filter(
-        (m) => !m.final && Date.now() - (m.actualizado || 0) < RECIENTE &&
-               !(m.posibles > 0 && m.cargados >= m.posibles)
-      );
+      const corriendo = (d.matches || []).filter(seEstaCorriendo);
       if (!corriendo.length) return;
 
       boton.classList.add('corriendo');

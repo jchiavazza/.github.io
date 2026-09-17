@@ -67,7 +67,28 @@
     // falta cargar planillas. Se mide por la última sincronización y no
     // por la fecha del torneo: un match de ayer que sigue cargándose está
     // más vivo que uno de hoy que nadie tocó.
-    const RECIENTE = 45 * 60 * 1000;
+  // ¿Este match se está corriendo AHORA?
+  //
+  // Hacen falta las dos cosas, y por separado ninguna alcanza:
+  //
+  //   · que la fecha del torneo sea hoy o ayer —un match de julio no está
+  //     en vivo aunque la app haya sincronizado hace un rato, y sincroniza
+  //     con sólo abrirla para mirar algo—;
+  //   · que haya sincronizado hace poco, porque una fecha de hoy con la
+  //     app cerrada tampoco es un match corriendo.
+  function seEstaCorriendo(m) {
+    if (m.final) return false;
+    if (m.posibles > 0 && m.cargados >= m.posibles) return false;
+
+    const sincronizo = m.sincronizado || m.actualizado || 0;
+    if (Date.now() - sincronizo > 45 * 60 * 1000) return false;
+
+    if (!m.fecha) return true; // sin fecha, mandan los datos que llegan
+    const p = m.fecha.split('-').map(Number);
+    const dia = new Date(p[0], p[1] - 1, p[2]);
+    const dias = (Date.now() - dia.getTime()) / 86400000;
+    return dias >= -1 && dias <= 2;
+  }
 
     function tarjeta(m) {
       const a = document.createElement('a');
@@ -77,7 +98,7 @@
       // `final` lo marca la nube cuando el match ya no existe allá: la
       // tabla queda de archivo y no va a cambiar nunca más.
       const completo = m.final || (m.posibles > 0 && m.cargados >= m.posibles);
-      const corriendo = !completo && !m.final && Date.now() - (m.actualizado || 0) < RECIENTE;
+      const corriendo = seEstaCorriendo(m);
 
       const h = document.createElement('h3');
       h.textContent = m.nombre || 'Match';
