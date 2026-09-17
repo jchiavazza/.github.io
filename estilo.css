@@ -193,13 +193,22 @@ a { color: var(--acento); }
   background: currentColor;
   margin-right: 6px;
 }
+/* Encendido: el botón entero titila, no sólo el punto. Es lo primero que
+   hay que ver al entrar al sitio —que hay un torneo disputándose ahora—,
+   y un punto de ocho píxeles no alcanza para eso. */
 .barra .aparte.en-vivo.corriendo {
   background: var(--ok);
   color: var(--fondo);
+  border-color: var(--ok);
+  animation: titila-vivo 1.8s ease-in-out infinite;
 }
 .barra .aparte.en-vivo.corriendo .punto-vivo {
   display: inline-block;
   animation: latido-vivo 1.6s ease-in-out infinite;
+}
+@keyframes titila-vivo {
+  0%, 100% { filter: brightness(1); box-shadow: var(--relieve-chico); }
+  50% { filter: brightness(1.35); box-shadow: 0 0 0 3px rgba(47, 107, 58, .35), var(--relieve-chico); }
 }
 @keyframes latido-vivo { 0%, 100% { opacity: 1; } 50% { opacity: .2; } }
 .barra nav a {
