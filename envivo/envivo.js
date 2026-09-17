@@ -221,18 +221,20 @@
       // El destello sólo cuando llegaron datos nuevos: al cambiar de
       // filtro toda la tabla "cambiaría" y parpadearía entera sin que
       // haya pasado nada en la cancha.
-      if (!cambioDeFiltro && f.puesto) {
+      if (!cambioDeFiltro && f.compite) {
         const antesEstaba = antes[f.id];
         if (antesEstaba === undefined || antesEstaba === null) tr.classList.add('nuevo');
         else if (f.puesto < antesEstaba) tr.classList.add('subio');
         else if (f.puesto > antesEstaba) tr.classList.add('bajo');
       }
 
-      celda(tr, f.puesto ? String(f.puesto) : '–', 'puesto');
+      // El número va siempre. Apagado mientras no haya tirado, para que
+      // no se lea como un puesto ganado.
+      celda(tr, String(f.puesto || ''), 'puesto' + (f.compite ? '' : ' sin-tirar'));
 
       const tdNombre = celda(tr, '', 'tirador');
       tdNombre.textContent = (f.apellido + ', ' + f.nombre).replace(/^, |, $/, '');
-      if (!cambioDeFiltro && f.puesto && antes[f.id] && antes[f.id] !== f.puesto) {
+      if (!cambioDeFiltro && f.compite && antes[f.id] && antes[f.id] !== f.puesto) {
         const flecha = document.createElement('span');
         const sube = f.puesto < antes[f.id];
         flecha.className = 'flecha ' + (sube ? 'sube' : 'baja');

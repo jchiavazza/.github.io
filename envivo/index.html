@@ -83,6 +83,9 @@
     color: var(--texto-suave); white-space: nowrap;
   }
   td.puesto { font-weight: 700; font-size: 17px; width: 54px; }
+  /* El que todavía no tiró lleva su número, pero apagado: ordena la lista
+     sin parecer un puesto ganado. */
+  td.puesto.sin-tirar { color: var(--texto-suave); font-weight: 500; }
   td.tiempo { text-align: right; font-variant-numeric: tabular-nums; font-weight: 600; white-space: nowrap; }
   td.etapas { text-align: center; color: var(--texto-suave); font-size: 14px; white-space: nowrap; }
   td.tirador { font-weight: 600; }
@@ -250,6 +253,6 @@
   </div>
 </footer>
 
-<script src="envivo.js?v=9"></script>
+<script src="envivo.js?v=10"></script>
 </body>
 </html>
