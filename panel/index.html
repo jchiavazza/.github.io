@@ -369,6 +369,18 @@
         <button class="boton chico" id="publicar-match" type="button">Publicar</button>
         <p class="estado" id="estado-envivo"></p>
       </div>
+
+      <!-- La hora de largada. Hasta ese momento la página no consulta ni
+           el cartel del menú se enciende: el torneo no empezó y no hay
+           nada que mirar. Si se deja vacío, el torneo cuenta como
+           arrancado desde que se publica. -->
+      <p class="aclaracion" style="margin-bottom:6px">
+        <label for="arranca-match"><b>Arranca el</b></label> — opcional, pero
+        conviene: hasta esa hora la pantalla no consulta nada y no se gasta al vicio.
+      </p>
+      <div class="acciones-form">
+        <input id="arranca-match" type="datetime-local">
+      </div>
       <p class="enlace-envivo" id="enlace-envivo" hidden></p>
 
       <!-- Los torneos ya publicados, con qué hacer con cada uno. -->
@@ -1166,9 +1178,11 @@
     enlaceEV.hidden = true;
 
     try {
+      const arranca = document.getElementById('arranca-match').value.trim();
       const r = await fetch(
         FUNCIONES + '/publicarEnVivo?clave=' + encodeURIComponent(clave.value.trim()) +
-        '&codigo=' + encodeURIComponent(codigo),
+        '&codigo=' + encodeURIComponent(codigo) +
+        (arranca ? '&arranca=' + encodeURIComponent(arranca) : ''),
         { method: 'POST', body: '' }
       );
       const d = await r.json();
@@ -1222,7 +1236,8 @@
         const caja = document.createElement('div');
         caja.className = 'publicado' + (m.oculto ? ' suspendido' : '');
 
-        const enCurso = !m.final && m.posibles > 0 && m.cargados < m.posibles;
+        const programado = m.arranca && Date.now() < m.arranca && !m.cargados;
+        const enCurso = !m.final && !programado && m.posibles > 0 && m.cargados < m.posibles;
         const pct = m.posibles ? Math.round((m.cargados / m.posibles) * 100) : 0;
 
         const titulo = document.createElement('p');
@@ -1232,7 +1247,9 @@
         titulo.appendChild(b);
         const et = document.createElement('span');
         et.className = 'marca-estado ' + (!m.oculto && enCurso ? 'vivo' : 'quieto');
-        et.textContent = m.oculto ? 'SUSPENDIDO' : enCurso ? 'EN VIVO' : 'TERMINADO';
+        et.textContent = m.oculto ? 'SUSPENDIDO'
+          : programado ? 'PROGRAMADO'
+          : enCurso ? 'EN VIVO' : 'TERMINADO';
         titulo.appendChild(et);
         caja.appendChild(titulo);
 
@@ -1247,6 +1264,32 @@
         a.textContent = '/envivo/?c=' + m.clave;
         datos.appendChild(a);
         caja.appendChild(datos);
+
+        // Cuándo larga, y la forma de corregirlo sin republicar.
+        const cuando = document.createElement('p');
+        cuando.className = 'datos';
+        const campo = document.createElement('input');
+        campo.type = 'datetime-local';
+        campo.style.marginRight = '8px';
+        if (m.arranca) {
+          const d = new Date(m.arranca);
+          const dosCifras = (n) => String(n).padStart(2, '0');
+          campo.value = d.getFullYear() + '-' + dosCifras(d.getMonth() + 1) + '-' +
+            dosCifras(d.getDate()) + 'T' + dosCifras(d.getHours()) + ':' + dosCifras(d.getMinutes());
+        }
+        const ponerHora = document.createElement('button');
+        ponerHora.type = 'button';
+        ponerHora.textContent = m.arranca ? 'Cambiar la hora' : 'Programar';
+        ponerHora.addEventListener('click', function () {
+          accionEnVivo(m.clave, 'programar', campo.value.trim());
+        });
+        cuando.textContent = m.arranca
+          ? 'Arranca el ' + new Date(m.arranca).toLocaleString('es-AR',
+              { day: '2-digit', month: '2-digit', hour: '2-digit', minute: '2-digit' }) + '. '
+          : 'Sin hora de largada: la pantalla consulta desde ya. ';
+        cuando.appendChild(campo);
+        cuando.appendChild(ponerHora);
+        caja.appendChild(cuando);
 
         const botones = document.createElement('div');
         botones.className = 'botones';
@@ -1278,14 +1321,15 @@
     }
   }
 
-  async function accionEnVivo(claveMatch, accion) {
+  async function accionEnVivo(claveMatch, accion, cuando) {
     const estadoEV = document.getElementById('estado-envivo');
     estadoEV.className = 'estado';
     estadoEV.textContent = 'Un momento…';
     try {
       const r = await fetch(
         FUNCIONES + '/administrarEnVivo?clave=' + encodeURIComponent(clave.value.trim()) +
-        '&c=' + encodeURIComponent(claveMatch) + '&accion=' + accion,
+        '&c=' + encodeURIComponent(claveMatch) + '&accion=' + accion +
+        (cuando ? '&cuando=' + encodeURIComponent(cuando) : ''),
         { method: 'POST', body: '' }
       );
       const d = await r.json();
@@ -1299,6 +1343,10 @@
         suspendido: 'Suspendido: ya no figura en la lista.',
         publicado: 'Publicado de nuevo.',
         borrado: 'Borrado de la página.',
+        programado: d.arranca
+          ? 'Larga el ' + new Date(d.arranca).toLocaleString('es-AR',
+              { day: '2-digit', month: '2-digit', hour: '2-digit', minute: '2-digit' })
+          : 'Sin hora: cuenta como arrancado.',
       }[d.estado] || 'Listo.';
       traerPublicados();
     } catch (e) {

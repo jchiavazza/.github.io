@@ -8,7 +8,10 @@
 
 (function () {
   const API = 'https://us-central1-x19shooting-sync.cloudfunctions.net';
-  const CADA = 7000; // cada cuánto se pregunta por novedades
+  // Corriendo, cada siete segundos. Antes de la largada, cada dos
+  // minutos: no hay nada que pueda cambiar y cada consulta se paga.
+  const CADA = 7000;
+  const CADA_ESPERANDO = 120000;
 
   const $ = (id) => document.getElementById(id);
   const clave = (new URLSearchParams(location.search).get('c') || '').trim().toUpperCase();
@@ -34,6 +37,11 @@
     // la fecha —hoy, ayer o mañana—, porque si no, uno viejo que quedó a
     // medio cargar dejaría el cartel encendido para siempre.
     function seEstaCorriendo(m) {
+    // Todavía no largó: hay hora puesta, falta para esa hora y no se
+    // cargó un solo puntaje. Si hay puntajes, arrancó antes de lo
+    // previsto y manda la cancha, no el horario.
+    if (m.arranca && Date.now() < m.arranca && !m.cargados) return false;
+
     // Un torneo publicado al que le faltan planillas es un torneo en
     // curso, y punto: es lo que el cartel tiene que avisar.
     //
@@ -71,15 +79,16 @@
       // tabla queda de archivo y no va a cambiar nunca más.
       const completo = m.final || (m.posibles > 0 && m.cargados >= m.posibles);
       const corriendo = seEstaCorriendo(m);
+      const programado = m.arranca && Date.now() < m.arranca && !m.cargados;
 
       if (corriendo) a.classList.add('corriendo');
 
       const h = document.createElement('h3');
       h.textContent = m.nombre || 'Match';
-      if (corriendo || completo) {
+      if (corriendo || completo || programado) {
         const et = document.createElement('span');
         et.className = 'etiqueta ' + (corriendo ? 'envivo' : 'termino');
-        et.textContent = corriendo ? 'EN VIVO' : 'TERMINADO';
+        et.textContent = corriendo ? 'EN VIVO' : programado ? 'PROGRAMADO' : 'TERMINADO';
         h.appendChild(et);
       }
       a.appendChild(h);
@@ -91,7 +100,10 @@
       partes.push(m.tiradores + (m.tiradores === 1 ? ' tirador' : ' tiradores'));
       partes.push(m.etapas + (m.etapas === 1 ? ' etapa' : ' etapas'));
       const pct = m.posibles ? Math.round((m.cargados / m.posibles) * 100) : 0;
-      partes.push(completo ? 'completo' : pct + '% cargado');
+      partes.push(programado
+        ? 'arranca ' + new Date(m.arranca).toLocaleString('es-AR',
+            { day: '2-digit', month: '2-digit', hour: '2-digit', minute: '2-digit' })
+        : completo ? 'completo' : pct + '% cargado');
 
       const p = document.createElement('p');
       p.className = 'detalle';
@@ -145,6 +157,7 @@
   let puestosAntes = {};
   let ultimoCambio = 0;
   let timer = null;
+  let ritmoActual = null;
 
   function texto(el, valor) { el.textContent = valor; }
 
@@ -160,6 +173,15 @@
     if (m < 60) return 'hace ' + m + (m === 1 ? ' minuto' : ' minutos');
     const h = Math.round(m / 60);
     return 'hace ' + h + (h === 1 ? ' hora' : ' horas');
+  }
+
+  // "arranca en 2 días" / "arranca en 3 horas" / "arranca a las 09:00".
+  function cuantoFalta(cuando) {
+    const minutos = Math.round((cuando - Date.now()) / 60000);
+    if (minutos > 60 * 24) return 'arranca en ' + Math.round(minutos / (60 * 24)) + ' días';
+    if (minutos > 60) return 'arranca en ' + Math.round(minutos / 60) + ' horas';
+    if (minutos > 1) return 'arranca en ' + minutos + ' minutos';
+    return 'está por arrancar';
   }
 
   function filasDelFiltro() {
@@ -309,8 +331,19 @@
       dibujarTabla(primeraVez);
       if (hayNovedad || primeraVez) ultimoCambio = d.actualizado;
 
-      $('m-vivo').classList.remove('parado');
-      texto($('m-actualizado'), haceCuanto(ultimoCambio));
+      // El ritmo se decide con lo que acaba de llegar: si el torneo ya
+      // largó —o si alguien cargó un puntaje antes de hora— se pasa a
+      // preguntar cada siete segundos sin recargar la página.
+      const esperando = faltaParaLargar();
+      const ritmo = esperando ? CADA_ESPERANDO : CADA;
+      if (ritmo !== ritmoActual) {
+        ritmoActual = ritmo;
+        clearInterval(timer);
+        timer = setInterval(traer, ritmo);
+      }
+
+      $('m-vivo').classList.toggle('parado', esperando);
+      texto($('m-actualizado'), esperando ? cuantoFalta(datos.arranca) : haceCuanto(ultimoCambio));
     } catch (e) {
       $('m-vivo').classList.add('parado');
       texto($('m-actualizado'), 'sin conexión');
@@ -319,15 +352,23 @@
 
   // El reloj del "hace tanto" corre aunque no lleguen datos nuevos.
   setInterval(() => {
-    if (ultimoCambio && !$('m-vivo').classList.contains('parado')) {
+    if (faltaParaLargar()) {
+      texto($('m-actualizado'), cuantoFalta(datos.arranca));
+    } else if (ultimoCambio && !$('m-vivo').classList.contains('parado')) {
       texto($('m-actualizado'), haceCuanto(ultimoCambio));
     }
   }, 5000);
 
+  // ¿Todavía no largó? Con hora puesta, sin puntajes y antes de esa hora.
+  function faltaParaLargar() {
+    if (!datos || !datos.arranca) return false;
+    return Date.now() < datos.arranca && !datos.match.cargados;
+  }
+
   function arrancar() {
     traer();
     clearInterval(timer);
-    timer = setInterval(traer, CADA);
+    timer = setInterval(traer, faltaParaLargar() ? CADA_ESPERANDO : CADA);
   }
 
   // Con la pestaña en segundo plano no tiene sentido seguir preguntando:

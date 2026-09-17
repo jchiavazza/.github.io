@@ -536,19 +536,25 @@
   // único resguardo —si no, un match viejo a medio cargar lo dejaría
   // verde para siempre—.
   function seEstaCorriendo(m) {
-  // Un torneo publicado al que le faltan planillas es un torneo en
-  // curso, y punto: es lo que el cartel tiene que avisar.
-  //
-  // No se mira ni la fecha ni cuándo sincronizó. Con la fecha, un match
-  // cargado con la del torneo anterior no encendía nunca; con la
-  // sincronización, se apagaba en cada pausa larga —el almuerzo de una
-  // jornada de dos días lo dejaba gris—.
-  //
-  // Se apaga solo cuando el match se completa, o cuando desaparece de
-  // la nube a los 45 días y la tabla queda archivada (`final`).
-  if (m.final) return false;
-  if (!m.posibles) return false;
-  return m.cargados < m.posibles;
+    // Un torneo publicado al que le faltan planillas es un torneo en
+    // curso, y punto: es lo que el cartel tiene que avisar.
+    //
+    // No se mira ni la fecha del torneo ni cuándo sincronizó. Con la
+    // fecha, un match cargado con la del torneo anterior no encendía
+    // nunca; con la sincronización, se apagaba en cada pausa larga —el
+    // almuerzo de una jornada de dos días lo dejaba gris—.
+    //
+    // Se apaga solo cuando el match se completa, o cuando desaparece de
+    // la nube a los 45 días y la tabla queda archivada (`final`).
+    if (m.final) return false;
+    if (!m.posibles) return false;
+
+    // Programado para más adelante y sin un solo puntaje: todavía no
+    // empezó. Si hay puntajes, arrancó antes de lo previsto y manda la
+    // cancha, no el horario que alguien cargó.
+    if (m.arranca && Date.now() < m.arranca && !m.cargados) return false;
+
+    return m.cargados < m.posibles;
   }
 
   fetch('https://us-central1-x19shooting-sync.cloudfunctions.net/listaEnVivo')
