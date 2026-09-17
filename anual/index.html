@@ -44,6 +44,26 @@
   .como-se-cuenta p { margin: 0 0 6px; }
   .como-se-cuenta p:last-child { margin-bottom: 0; }
 
+  /* Mientras una fecha se está corriendo, el total de todos es
+     provisorio: el 100% de esa fecha es el mejor de los que ya
+     terminaron y baja cuando entran los rápidos. Sin este cartel, el
+     que mira a media mañana se lleva un puesto que no es. */
+  .en-curso {
+    max-width: 640px; margin: 18px auto 0;
+    display: flex; align-items: center; gap: 10px;
+    padding: 12px 18px; border-radius: 12px;
+    border: 1px solid var(--ok); box-shadow: var(--relieve-chico);
+    font-size: 14px;
+  }
+  .en-curso .punto {
+    flex: none; width: 10px; height: 10px; border-radius: 50%;
+    background: var(--ok); animation: latido 1.6s ease-in-out infinite;
+  }
+  @keyframes latido { 0%, 100% { opacity: 1; } 50% { opacity: .25; } }
+
+  /* La columna de esa fecha, marcada en el encabezado. */
+  th.fecha.corriendo { color: var(--ok); }
+
   .filtros { display: flex; flex-wrap: wrap; gap: 8px; justify-content: center; margin: 24px 0 18px; }
   .filtros button {
     padding: 9px 16px; border-radius: 12px;
@@ -142,6 +162,11 @@
     <p id="a-cuantas">De las cinco fechas se computan las cuatro mejores de cada tirador: la peor se descarta y queda tachada.</p>
   </div>
 
+  <div class="en-curso" id="en-curso" hidden>
+    <span class="punto"></span>
+    <span id="en-curso-texto"></span>
+  </div>
+
   <div class="filtros" id="filtros"></div>
 
   <div>
@@ -179,6 +204,6 @@
   </div>
 </footer>
 
-<script src="anual.js?v=1"></script>
+<script src="anual.js?v=2"></script>
 </body>
 </html>
