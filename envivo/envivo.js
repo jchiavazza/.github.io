@@ -18,6 +18,7 @@
   // ------------------------------------------------------------------
   if (!clave) {
     $('pantalla-publicar').hidden = false;
+    cartelera();
 
     const estado = $('estado-publicar');
     const boton = $('publicar');
@@ -56,6 +57,81 @@
     boton.addEventListener('click', publicar);
     $('codigo').addEventListener('keydown', (e) => { if (e.key === 'Enter') publicar(); });
     return;
+  }
+
+  // ------------------------------------------------------------------
+  // La cartelera: todos los matches publicados
+  // ------------------------------------------------------------------
+  function cartelera() {
+    // Un match "en vivo" es uno que se sincronizó hace poco y al que le
+    // falta cargar planillas. Se mide por la última sincronización y no
+    // por la fecha del torneo: un match de ayer que sigue cargándose está
+    // más vivo que uno de hoy que nadie tocó.
+    const RECIENTE = 45 * 60 * 1000;
+
+    function tarjeta(m) {
+      const a = document.createElement('a');
+      a.className = 'match-tarjeta';
+      a.href = '?c=' + m.clave;
+
+      const completo = m.posibles > 0 && m.cargados >= m.posibles;
+      const corriendo = !completo && Date.now() - (m.actualizado || 0) < RECIENTE;
+
+      const h = document.createElement('h3');
+      h.textContent = m.nombre || 'Match';
+      if (corriendo || completo) {
+        const et = document.createElement('span');
+        et.className = 'etiqueta ' + (corriendo ? 'envivo' : 'termino');
+        et.textContent = corriendo ? 'EN VIVO' : 'TERMINADO';
+        h.appendChild(et);
+      }
+      a.appendChild(h);
+
+      const partes = [];
+      if (m.fecha) partes.push(m.fecha.split('-').reverse().join('/'));
+      if (m.nivel) partes.push(m.nivel);
+      if (m.subtitulo) partes.push(m.subtitulo);
+      partes.push(m.tiradores + (m.tiradores === 1 ? ' tirador' : ' tiradores'));
+      partes.push(m.etapas + (m.etapas === 1 ? ' etapa' : ' etapas'));
+      const pct = m.posibles ? Math.round((m.cargados / m.posibles) * 100) : 0;
+      partes.push(completo ? 'completo' : pct + '% cargado');
+
+      const p = document.createElement('p');
+      p.className = 'detalle';
+      p.textContent = partes.join(' · ');
+      a.appendChild(p);
+
+      const fondo = document.createElement('div');
+      fondo.className = 'barra-fondo';
+      const llena = document.createElement('div');
+      llena.className = 'barra-llena';
+      llena.style.width = pct + '%';
+      fondo.appendChild(llena);
+      a.appendChild(fondo);
+
+      return a;
+    }
+
+    async function traerLista() {
+      try {
+        const r = await fetch(API + '/listaEnVivo');
+        const d = await r.json();
+        if (!d.ok) return;
+
+        const cont = $('cartelera');
+        cont.innerHTML = '';
+        d.matches.forEach((m) => cont.appendChild(tarjeta(m)));
+        $('sin-matches').hidden = d.matches.length > 0;
+      } catch (e) {
+        $('sin-matches').hidden = false;
+        $('sin-matches').textContent = 'No se pudo cargar la lista de torneos.';
+      }
+    }
+
+    traerLista();
+    // Cada tanto, por si alguien publica uno mientras la página está
+    // abierta o el que está corriendo pasa a terminado.
+    setInterval(() => { if (!document.hidden) traerLista(); }, 30000);
   }
 
   // ------------------------------------------------------------------
