@@ -1,0 +1,251 @@
+<!DOCTYPE html>
+<!--
+  Resultados en vivo de un match.
+
+  Dos pantallas en la misma dirección:
+    /envivo/            el organizador pega el código de su match y saca
+                        la dirección pública para repartir;
+    /envivo/?c=XXXXX    la tabla, que se actualiza sola.
+
+  El código del match no aparece nunca en la dirección pública: ese código
+  es la llave para escribir el match desde la app. La clave corta de acá
+  sólo sirve para leer. La cuenta la hace functions/en-vivo.js en el
+  repositorio de 9x19 Score, con el mismo scoring.js que usa la app.
+-->
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Resultados en vivo — Club 9x19 Shooting</title>
+<meta name="description" content="Seguí en vivo la clasificación de un match de IDPA organizado por el Club 9x19 Shooting: las posiciones se actualizan solas a medida que los árbitros cargan los puntajes.">
+<link rel="icon" href="../assets/icono.png">
+<link rel="stylesheet" href="../estilo.css?v=62">
+
+<meta property="og:type" content="website">
+<meta property="og:title" content="Resultados en vivo">
+<meta property="og:description" content="La clasificación del match, actualizándose mientras se corre.">
+<meta property="og:url" content="https://9x19shooting.com.ar/envivo/">
+<meta property="og:locale" content="es_AR">
+
+<style>
+  /* La tabla es lo único de esta página, así que se le da todo el ancho
+     que el sitio permite y un poco más de aire que en el resto. */
+  .envoltorio.ancho { max-width: 1100px; }
+
+  .cabecera-match { text-align: center; margin-bottom: 8px; }
+  .cabecera-match h1 { margin-bottom: 6px; }
+  .cabecera-match .datos { color: var(--texto-suave); font-size: 15px; margin: 0; }
+
+  /* Cuánto del match está cargado. Es la forma más rápida de saber si la
+     tabla que se está mirando es media competencia o casi la final. */
+  .avance { margin: 18px auto 6px; max-width: 520px; }
+  .avance .barra-fondo {
+    height: 12px; border-radius: 8px; box-shadow: var(--hundido);
+    overflow: hidden;
+  }
+  .avance .barra-llena {
+    height: 100%; width: 0;
+    background: var(--acento);
+    border-radius: 8px;
+    transition: width .6s ease;
+  }
+  .avance p { text-align: center; font-size: 13px; color: var(--texto-suave); margin: 8px 0 0; }
+
+  .vivo {
+    display: inline-flex; align-items: center; gap: 7px;
+    font-size: 13px; color: var(--texto-suave);
+  }
+  .vivo .punto {
+    width: 9px; height: 9px; border-radius: 50%;
+    background: var(--ok);
+    animation: latido 2s ease-in-out infinite;
+  }
+  @keyframes latido { 0%, 100% { opacity: 1; } 50% { opacity: .25; } }
+  .vivo.parado .punto { background: var(--texto-suave); animation: none; }
+
+  /* Los filtros: general, cada división, y división + clase. */
+  .filtros { display: flex; flex-wrap: wrap; gap: 8px; justify-content: center; margin: 22px 0 18px; }
+  .filtros button {
+    padding: 9px 16px; border-radius: 12px;
+    border: 1px solid var(--borde); background: var(--fondo);
+    color: var(--acento); font-weight: 600; font-size: 14px;
+    font-family: inherit; cursor: pointer;
+    box-shadow: var(--relieve-chico);
+  }
+  .filtros button.actual { box-shadow: var(--hundido); color: var(--texto); }
+
+  table { border-collapse: collapse; width: 100%; font-size: 15px; }
+  th, td { text-align: left; padding: 10px 12px; border-bottom: 1px solid var(--borde); }
+  th {
+    font-size: 12px; text-transform: uppercase; letter-spacing: .05em;
+    color: var(--texto-suave); white-space: nowrap;
+  }
+  td.puesto { font-weight: 700; font-size: 17px; width: 54px; }
+  td.tiempo { text-align: right; font-variant-numeric: tabular-nums; font-weight: 600; white-space: nowrap; }
+  td.etapas { text-align: center; color: var(--texto-suave); font-size: 14px; white-space: nowrap; }
+  td.tirador { font-weight: 600; }
+  td.chico, th.chico { font-size: 13px; color: var(--texto-suave); }
+
+  /* El que se movió de puesto queda marcado unos segundos: es lo que hace
+     que la pantalla se sienta viva sin tener que mirarla fijo. */
+  tr.subio { animation: destello-sube 3s ease-out; }
+  tr.bajo { animation: destello-baja 3s ease-out; }
+  tr.nuevo { animation: destello-nuevo 3s ease-out; }
+  @keyframes destello-sube { from { background: rgba(47, 107, 58, .28); } to { background: transparent; } }
+  @keyframes destello-baja { from { background: rgba(138, 32, 24, .16); } to { background: transparent; } }
+  @keyframes destello-nuevo { from { background: rgba(138, 106, 30, .28); } to { background: transparent; } }
+
+  .flecha { font-size: 12px; margin-left: 4px; }
+  .flecha.sube { color: var(--ok); }
+  .flecha.baja { color: var(--peligro, #8A2018); }
+
+  tr.dq td { color: var(--texto-suave); }
+  .marca-dq {
+    font-size: 11px; font-weight: 700; letter-spacing: .04em;
+    color: var(--peligro, #8A2018); border: 1px solid currentColor;
+    border-radius: 6px; padding: 1px 5px; margin-left: 6px;
+  }
+
+  .aviso-vacio { text-align: center; color: var(--texto-suave); padding: 30px 0; }
+
+  /* En el celular cada tirador es una tarjeta: una tabla de siete
+     columnas no entra de ninguna manera, y esto se mira sobre todo desde
+     el teléfono, parado en el polígono. */
+  @media (max-width: 720px) {
+    table, tbody, tr, td { display: block; width: 100%; }
+    thead { display: none; }
+    tr {
+      position: relative;
+      border: 1px solid var(--borde); border-radius: 12px;
+      box-shadow: var(--relieve-chico);
+      padding: 12px 14px 12px 58px;
+      margin-bottom: 12px;
+    }
+    td { border: 0; padding: 2px 0; }
+    td.puesto {
+      position: absolute; left: 14px; top: 12px;
+      width: 34px; text-align: center; font-size: 22px;
+    }
+    td.tiempo { text-align: left; font-size: 17px; }
+    td.tirador { font-size: 17px; }
+    td.chico::before, td.etapas::before { content: attr(data-campo) ': '; }
+    td.etapas { text-align: left; }
+  }
+
+  /* La pantalla de publicar, para el organizador. */
+  .publicar { max-width: 560px; margin: 0 auto; }
+  .publicar input {
+    width: 100%; padding: 13px 16px; border-radius: 12px;
+    border: 1px solid var(--borde); background: var(--fondo);
+    color: var(--texto); font-size: 16px; font-family: inherit;
+    box-shadow: var(--hundido);
+  }
+  .publicar .enlace {
+    margin-top: 20px; padding: 18px; border-radius: 12px;
+    border: 1px solid var(--borde); box-shadow: var(--relieve-chico);
+    word-break: break-all;
+  }
+  .publicar .enlace strong { font-size: 18px; }
+</style>
+</head>
+<body>
+
+<div class="envoltorio ancho">
+  <div class="barra">
+    <a class="marca" href="/"><img src="../assets/logo-club.png" alt="Club 9x19 Shooting"></a>
+    <img class="medalla" src="../assets/medalla.png" alt="Medalla del club: 9x19 Shooting, IDPA Argentina">
+    <nav class="corto">
+      <a href="/">← Volver al inicio</a>
+      <a href="/score/">9x19 Score</a>
+    </nav>
+  </div>
+</div>
+
+<main class="envoltorio ancho">
+
+  <!-- ---------------------------------------------- la tabla -->
+  <section id="pantalla-tabla" hidden>
+    <header class="cabecera-match">
+      <h1 id="m-nombre">Resultados en vivo</h1>
+      <p class="datos" id="m-datos"></p>
+    </header>
+
+    <div class="avance">
+      <div class="barra-fondo"><div class="barra-llena" id="m-barra"></div></div>
+      <p><span id="m-avance"></span> · <span class="vivo" id="m-vivo"><span class="punto"></span><span id="m-actualizado">conectando…</span></span></p>
+    </div>
+
+    <div class="filtros" id="filtros"></div>
+
+    <div>
+      <table id="tabla">
+        <thead>
+          <tr>
+            <th>#</th>
+            <th>Tirador</th>
+            <th class="chico">Nº IDPA</th>
+            <th class="chico">Club</th>
+            <th class="chico">Div.</th>
+            <th class="chico">Clase</th>
+            <th style="text-align:center">Etapas</th>
+            <th style="text-align:right">Tiempo</th>
+          </tr>
+        </thead>
+        <tbody></tbody>
+      </table>
+      <p class="aviso-vacio" id="vacio" hidden>Todavía no hay puntajes cargados. La tabla se llena sola.</p>
+    </div>
+  </section>
+
+  <!-- ---------------------------------------------- publicar -->
+  <section id="pantalla-publicar" hidden>
+    <header class="portada">
+      <h1>Resultados en vivo</h1>
+      <p class="bajada">Para que el público siga la clasificación del match desde el celular, mientras se corre.</p>
+    </header>
+
+    <div class="publicar">
+      <p>
+        Pegá el <strong>código de sincronización</strong> del match —el mismo
+        que la App le pasa a los otros árbitros— y te damos la dirección para
+        repartir. Los puntajes van apareciendo a medida que se sincronizan.
+      </p>
+
+      <div class="acciones-form" style="margin-bottom:14px">
+        <input id="codigo" type="text" placeholder="Código del match" autocomplete="off" spellcheck="false">
+        <button class="boton chico" id="publicar" type="button">Publicar</button>
+      </div>
+      <p class="estado" id="estado-publicar"></p>
+
+      <div class="enlace" id="enlace" hidden>
+        <p style="margin-bottom:8px">Listo. La dirección para repartir es:</p>
+        <p><strong id="enlace-url"></strong></p>
+        <p style="margin:12px 0 0"><a id="enlace-ver" href="#">Ver la pantalla →</a></p>
+      </div>
+
+      <p class="nota" style="margin-top:26px">
+        La dirección pública <strong>sólo deja mirar</strong>: no lleva el
+        código del match, así que nadie puede cargar ni cambiar un puntaje
+        desde ahí. Se publican apellido y nombre, número de asociado, club,
+        división y clase de cada competidor, como en cualquier planilla de
+        resultados.
+      </p>
+    </div>
+  </section>
+
+</main>
+
+<footer>
+  <div class="envoltorio">
+    <p>
+      Club 9x19 Shooting · Club organizador de eventos de IDPA ·
+      <a href="mailto:9x19shooting@gmail.com">9x19shooting@gmail.com</a> ·
+      <a href="https://www.instagram.com/9x19_shooting/" target="_blank" rel="noopener">@9x19_shooting</a>
+    </p>
+    <p><a href="/privacidad/">Política de privacidad</a></p>
+  </div>
+</footer>
+
+<script src="envivo.js?v=1"></script>
+</body>
+</html>
