@@ -670,7 +670,13 @@
 
       // Se guardan para poder mostrar el detalle de cada número sin
       // volver a preguntarle al servidor: ya están todas acá.
-      loQueSeBajo = d.filas || [];
+      //
+      // **Las marcadas como propias no se muestran.** Ya no se cuentan en
+      // ningún número, y dejarlas en la lista sólo ensuciaba la vista:
+      // probar un botón deja varias seguidas y tapaban las de la gente.
+      // Siguen guardadas —marcar no borra nada— y se vuelven a ver
+      // sacando la marca de su IP, con el ✕ de los chips de arriba.
+      loQueSeBajo = (d.filas || []).filter((f) => !f.mia);
       comoSeLlama = nombres;
 
       resumen.innerHTML = '';
@@ -689,7 +695,7 @@
         propias.innerHTML = '';
         const t = document.createElement('span');
         t.innerHTML = '<b>' + d.mias + '</b> ' +
-          (d.mias === 1 ? 'bajada tuya' : 'bajadas tuyas') +
+          (d.mias === 1 ? 'bajada tuya, fuera de la lista' : 'bajadas tuyas, fuera de la lista') +
           ', que no se cuentan. Salen de ' +
           (d.ipsPropias || []).length +
           ((d.ipsPropias || []).length === 1 ? ' IP marcada' : ' IP marcadas') + ':';
