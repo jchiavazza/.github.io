@@ -135,6 +135,7 @@
   // Con clave: la tabla
   // ------------------------------------------------------------------
   $('pantalla-tabla').hidden = false;
+  $('volver-cartelera').hidden = false;
 
   let datos = null;
   let filtro = { tipo: 'general' };

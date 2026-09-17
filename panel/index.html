@@ -196,6 +196,31 @@
     word-break: break-all;
   }
   .enlace-envivo b { display: block; font-size: 17px; margin-bottom: 4px; }
+
+  .publicados { margin-top: 22px; display: grid; gap: 12px; }
+  .publicado {
+    padding: 14px 16px; border-radius: 12px;
+    border: 1px solid var(--borde); box-shadow: var(--relieve-chico);
+  }
+  .publicado.suspendido { opacity: .6; }
+  .publicado b { font-size: 16px; }
+  .publicado .datos { color: var(--texto-suave); font-size: 13px; margin: 4px 0 10px; }
+  .publicado .datos a { word-break: break-all; }
+  .publicado .botones { display: flex; gap: 8px; flex-wrap: wrap; }
+  .publicado .botones button {
+    padding: 8px 14px; border-radius: 10px; font-size: 13px;
+    border: 1px solid var(--borde); background: var(--fondo);
+    color: var(--acento); font-weight: 600; font-family: inherit;
+    cursor: pointer; box-shadow: var(--relieve-chico);
+  }
+  .publicado .botones button.peligro { color: var(--peligro, #8A2018); }
+  .marca-estado {
+    font-size: 11px; font-weight: 700; letter-spacing: .05em;
+    padding: 2px 8px; border-radius: 6px; margin-left: 8px;
+    vertical-align: 2px;
+  }
+  .marca-estado.vivo { background: var(--ok); color: var(--fondo); }
+  .marca-estado.quieto { border: 1px solid var(--borde); color: var(--texto-suave); }
 </style>
 </head>
 <body>
@@ -345,6 +370,9 @@
         <p class="estado" id="estado-envivo"></p>
       </div>
       <p class="enlace-envivo" id="enlace-envivo" hidden></p>
+
+      <!-- Los torneos ya publicados, con qué hacer con cada uno. -->
+      <div class="publicados" id="publicados"></div>
     </div>
   </section>
 
@@ -389,6 +417,7 @@
 <script>
 (function () {
   const FUNCIONES = 'https://us-central1-x19shooting-sync.cloudfunctions.net';
+  const AVISO_BORRAR = 'Sacar este torneo de la página: se borra la tabla publicada y su dirección deja de funcionar. El torneo NO se borra de la app ni de la nube, y se puede volver a publicar pegando su código, aunque la dirección va a ser otra.';
   const PANEL = FUNCIONES + '/panelDescargas';
   const VENTAS = FUNCIONES + '/panelVentasClub';
   const clave = document.getElementById('clave');
@@ -627,6 +656,7 @@
       // Publicar un match en vivo se habilita con la misma clave.
       document.getElementById('bloque-envivo').hidden = false;
       document.getElementById('caja-envivo').hidden = false;
+      traerPublicados();
 
       const nombres = {
         'score-manual': 'Manual de Score',
@@ -1154,6 +1184,117 @@
       enlaceEV.appendChild(b);
       enlaceEV.appendChild(p);
       enlaceEV.hidden = false;
+      traerPublicados();
+    } catch (e) {
+      estadoEV.className = 'estado mal';
+      estadoEV.textContent = 'No se pudo conectar.';
+    }
+  }
+
+  // Los torneos ya publicados, y qué se puede hacer con cada uno.
+  //
+  // La lista se pide CON la clave: así vienen también los suspendidos,
+  // que para el público no existen pero acá hay que poder volver a
+  // mostrar.
+  async function traerPublicados() {
+    const cont = document.getElementById('publicados');
+    try {
+      const r = await fetch(FUNCIONES + '/listaEnVivo?clave=' + encodeURIComponent(clave.value.trim()));
+      const d = await r.json();
+      if (!d.ok) return;
+
+      cont.innerHTML = '';
+      if (!d.matches.length) {
+        const vacio = document.createElement('p');
+        vacio.className = 'aclaracion';
+        vacio.textContent = 'Todavía no hay ningún torneo publicado.';
+        cont.appendChild(vacio);
+        return;
+      }
+
+      d.matches.forEach((m) => {
+        const caja = document.createElement('div');
+        caja.className = 'publicado' + (m.oculto ? ' suspendido' : '');
+
+        const enCurso = !m.final && m.posibles > 0 && m.cargados < m.posibles;
+        const pct = m.posibles ? Math.round((m.cargados / m.posibles) * 100) : 0;
+
+        const titulo = document.createElement('p');
+        titulo.style.margin = '0';
+        const b = document.createElement('b');
+        b.textContent = m.nombre || 'Match';
+        titulo.appendChild(b);
+        const et = document.createElement('span');
+        et.className = 'marca-estado ' + (!m.oculto && enCurso ? 'vivo' : 'quieto');
+        et.textContent = m.oculto ? 'SUSPENDIDO' : enCurso ? 'EN VIVO' : 'TERMINADO';
+        titulo.appendChild(et);
+        caja.appendChild(titulo);
+
+        const datos = document.createElement('p');
+        datos.className = 'datos';
+        const fecha = m.fecha ? m.fecha.split('-').reverse().join('/') + ' · ' : '';
+        datos.textContent = fecha + m.tiradores + ' tiradores · ' + pct + '% cargado · ';
+        const a = document.createElement('a');
+        a.href = 'https://9x19shooting.com.ar/envivo/?c=' + m.clave;
+        a.target = '_blank';
+        a.rel = 'noopener';
+        a.textContent = '/envivo/?c=' + m.clave;
+        datos.appendChild(a);
+        caja.appendChild(datos);
+
+        const botones = document.createElement('div');
+        botones.className = 'botones';
+
+        const cambiar = document.createElement('button');
+        cambiar.type = 'button';
+        cambiar.textContent = m.oculto ? 'Volver a publicar' : 'Suspender';
+        cambiar.addEventListener('click', function () {
+          accionEnVivo(m.clave, m.oculto ? 'publicar' : 'suspender');
+        });
+        botones.appendChild(cambiar);
+
+        const borrar = document.createElement('button');
+        borrar.type = 'button';
+        borrar.className = 'peligro';
+        borrar.textContent = 'Borrar de la web';
+        borrar.addEventListener('click', function () {
+          // Se avisa qué se borra y qué no: el match sigue en la nube y en
+          // los teléfonos, acá sólo se va lo que ve el público.
+          if (confirm(AVISO_BORRAR)) accionEnVivo(m.clave, 'borrar');
+        });
+        botones.appendChild(borrar);
+
+        caja.appendChild(botones);
+        cont.appendChild(caja);
+      });
+    } catch (e) {
+      cont.textContent = 'No se pudo traer la lista de publicados.';
+    }
+  }
+
+  async function accionEnVivo(claveMatch, accion) {
+    const estadoEV = document.getElementById('estado-envivo');
+    estadoEV.className = 'estado';
+    estadoEV.textContent = 'Un momento…';
+    try {
+      const r = await fetch(
+        FUNCIONES + '/administrarEnVivo?clave=' + encodeURIComponent(clave.value.trim()) +
+        '&c=' + encodeURIComponent(claveMatch) + '&accion=' + accion,
+        { method: 'POST', body: '' }
+      );
+      const d = await r.json();
+      if (!d.ok) {
+        estadoEV.className = 'estado mal';
+        estadoEV.textContent = d.error || 'No se pudo.';
+        return;
+      }
+      estadoEV.className = 'estado ok';
+      estadoEV.textContent = {
+        suspendido: 'Suspendido: ya no figura en la lista.',
+        publicado: 'Publicado de nuevo.',
+        borrado: 'Borrado de la página.',
+      }[d.estado] || 'Listo.';
+      traerPublicados();
     } catch (e) {
       estadoEV.className = 'estado mal';
       estadoEV.textContent = 'No se pudo conectar.';
