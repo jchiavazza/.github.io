@@ -86,6 +86,10 @@
   td.tirador { font-weight: 600; }
   td.chico, th.chico { font-size: 13px; color: var(--texto-suave); }
 
+  /* Cuántas fechas corrió: es lo primero que ordena la tabla, así que
+     tiene que estar a la vista o el orden parece un error. */
+  td.corridas { text-align: center; font-variant-numeric: tabular-nums; }
+
   th.fecha, td.fecha { text-align: right; font-variant-numeric: tabular-nums; white-space: nowrap; }
   td.fecha.vacia { color: var(--texto-suave); }
   /* La peor de las cinco no suma: se muestra igual, tachada, para que se
@@ -97,6 +101,15 @@
   }
 
   tr.podio td.puesto { color: var(--acento); }
+
+  /* El que no sumó nada va al final, y ahí conviene decir por qué: no es
+     lo mismo haber ido y quedar descalificado que no haber ido. */
+  .marca-dq {
+    font-size: 11px; font-weight: 700; letter-spacing: .04em;
+    color: var(--peligro, #8A2018); border: 1px solid currentColor;
+    border-radius: 6px; padding: 1px 5px; margin-left: 6px;
+  }
+  tr.sin-sumar td { color: var(--texto-suave); }
 
   .aviso-vacio { text-align: center; color: var(--texto-suave); padding: 30px 0; }
 
@@ -127,7 +140,9 @@
       width: 34px; text-align: center; font-size: 22px;
     }
     td.tirador { font-size: 17px; }
-    td.chico::before, td.fecha::before, td.total::before { content: attr(data-campo) ': '; }
+    td.chico::before, td.fecha::before, td.total::before,
+    td.corridas::before { content: attr(data-campo) ': '; }
+    td.corridas { text-align: left; }
     td.fecha, td.total { text-align: left; }
     /* En el teléfono las cinco fechas van en un solo renglón, separadas
        por comas, y no una abajo de la otra. */
@@ -160,6 +175,8 @@
   <div class="como-se-cuenta">
     <p><strong>En cada fecha, el mejor tiempo vale 100%</strong> y los demás el porcentaje que les toca contra ése: el que tardó el doble se lleva 50%.</p>
     <p id="a-cuantas">De las cinco fechas se computan las cuatro mejores de cada tirador: la peor se descarta y queda tachada.</p>
+    <p><strong>El orden lo manda primero la cantidad de fechas corridas</strong> —hasta las cuatro que computan— y después el porcentaje: el que fue a dos va antes que el que fue a una, aunque en esa única haya ganado; entre el que corrió cuatro y el que corrió las cinco manda el porcentaje.</p>
+    <p>Abajo de todo van los que todavía no sumaron: primero los que fueron y quedaron <strong>DQ</strong>, después los que corrieron sin completar, y al final los que no participaron.</p>
   </div>
 
   <div class="en-curso" id="en-curso" hidden>
@@ -178,6 +195,7 @@
           <th class="chico">Nº IDPA</th>
           <th class="chico">Div.</th>
           <th class="chico">Clase</th>
+          <th class="chico" style="text-align:center">Fechas</th>
         </tr>
       </thead>
       <tbody></tbody>
@@ -204,6 +222,6 @@
   </div>
 </footer>
 
-<script src="anual.js?v=2"></script>
+<script src="anual.js?v=4"></script>
 </body>
 </html>

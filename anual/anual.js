@@ -84,6 +84,7 @@
       const tr = document.createElement('tr');
       const suma = total(t);
       if (i < 3 && suma > 0) tr.className = 'podio';
+      if (!suma) tr.className = 'sin-sumar';
 
       const puesto = document.createElement('td');
       puesto.className = 'puesto' + (suma > 0 ? '' : ' sin-puntos');
@@ -93,12 +94,26 @@
       const quien = document.createElement('td');
       quien.className = 'tirador';
       quien.textContent = t.apellido + ', ' + t.nombre;
+      // La marca sólo va en el que no sumó nada: ahí es lo que explica
+      // por qué está donde está. Un DQ en una fecha suelta no descalifica
+      // a nadie del anual y marcarlo haría creer lo contrario.
+      if (!suma && t.tuvoDq) {
+        const marca = document.createElement('span');
+        marca.className = 'marca-dq';
+        marca.textContent = 'DQ';
+        marca.title = 'Se fue en DQ: fue a tirar, pero no llegó a sumar';
+        quien.appendChild(marca);
+      }
       tr.appendChild(quien);
 
       [
         ['chico', 'Nº IDPA', t.numero || '—'],
         ['chico', 'Div.', t.division || ''],
         ['chico', 'Clase', t.clase || ''],
+        // Cuántas fechas corrió: es lo primero que ordena la tabla, y sin
+        // verlo el orden parece equivocado cuando alguien con menos
+        // porcentaje figura más arriba.
+        ['chico corridas', 'Fechas', String(t.corridas || 0)],
       ].forEach(([clase, campo, texto]) => {
         const td = document.createElement('td');
         td.className = clase;
