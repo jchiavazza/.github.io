@@ -12,6 +12,13 @@
   // minutos: no hay nada que pueda cambiar y cada consulta se paga.
   const CADA = 7000;
   const CADA_ESPERANDO = 120000;
+  // Un torneo de dos días para de noche, y el almuerzo de una jornada
+  // larga también. Mientras no entra una sola planilla no hay nada que
+  // mirar, así que se pregunta cada dos minutos en vez de cada siete
+  // segundos; vuelve solo apenas se carga algo, sin recargar la página y
+  // sin que nadie tenga que acordarse de nada.
+  const CADA_DESCANSANDO = 120000;
+  const SIN_NOVEDADES = 45 * 60 * 1000;
 
   const $ = (id) => document.getElementById(id);
   const clave = (new URLSearchParams(location.search).get('c') || '').trim().toUpperCase();
@@ -303,6 +310,19 @@
       : 'sin etapas cargadas');
   }
 
+  // Cuántas planillas había la última vez y cuándo cambió ese número. Se
+  // mira eso y no la hora del recálculo: un celular con la app abierta
+  // sincroniza cada veinte segundos aunque nadie esté cargando nada, y
+  // con esa señal la pantalla no se dormiría nunca.
+  let cargadosAntes = null;
+  let ultimoMovimiento = Date.now();
+
+  function estaDescansando() {
+    if (!datos || !datos.match) return false;
+    if (!datos.match.cargados) return false;
+    return Date.now() - ultimoMovimiento > SIN_NOVEDADES;
+  }
+
   async function traer() {
     try {
       const r = await fetch(API + '/resultadosEnVivo?c=' + encodeURIComponent(clave));
@@ -334,16 +354,28 @@
       // El ritmo se decide con lo que acaba de llegar: si el torneo ya
       // largó —o si alguien cargó un puntaje antes de hora— se pasa a
       // preguntar cada siete segundos sin recargar la página.
+      const cargados = (d.match || {}).cargados || 0;
+      if (cargadosAntes === null || cargados !== cargadosAntes) {
+        cargadosAntes = cargados;
+        ultimoMovimiento = Date.now();
+      }
+
       const esperando = faltaParaLargar();
-      const ritmo = esperando ? CADA_ESPERANDO : CADA;
+      const descansando = !esperando && estaDescansando();
+      const ritmo = esperando || descansando ? CADA_ESPERANDO : CADA;
       if (ritmo !== ritmoActual) {
         ritmoActual = ritmo;
         clearInterval(timer);
         timer = setInterval(traer, ritmo);
       }
 
-      $('m-vivo').classList.toggle('parado', esperando);
-      texto($('m-actualizado'), esperando ? cuantoFalta(datos.arranca) : haceCuanto(ultimoCambio));
+      $('m-vivo').classList.toggle('parado', esperando || descansando);
+      texto(
+        $('m-actualizado'),
+        esperando
+          ? cuantoFalta(datos.arranca)
+          : haceCuanto(ultimoCambio) + (descansando ? ' · en pausa' : '')
+      );
     } catch (e) {
       $('m-vivo').classList.add('parado');
       texto($('m-actualizado'), 'sin conexión');
@@ -354,8 +386,8 @@
   setInterval(() => {
     if (faltaParaLargar()) {
       texto($('m-actualizado'), cuantoFalta(datos.arranca));
-    } else if (ultimoCambio && !$('m-vivo').classList.contains('parado')) {
-      texto($('m-actualizado'), haceCuanto(ultimoCambio));
+    } else if (ultimoCambio) {
+      texto($('m-actualizado'), haceCuanto(ultimoCambio) + (estaDescansando() ? ' · en pausa' : ''));
     }
   }, 5000);
 
