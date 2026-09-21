@@ -224,6 +224,147 @@
     });
   }
 
+  // Los puntos y las penalizaciones son enteros casi siempre: "3" se lee
+  // mejor que "3.00". El cero no se escribe, como en la app — una columna
+  // llena de ceros esconde justo los que no lo son.
+  function cantidad(n) {
+    if (!n) return '';
+    return Number.isInteger(n) ? String(n) : n.toFixed(2);
+  }
+
+  // La cabecera tiene dos renglones: arriba el número y el nombre de cada
+  // escenario, abajo lo que va en cada columna. Se rehace cuando cambia
+  // la cantidad de escenarios, que la decide el match.
+  // **Las tablas publicadas antes de que existiera el detalle no lo
+  // traen**, y la de un torneo archivado ya no se puede rearmar: su match
+  // se borró de la nube. Sin esta pregunta, un torneo terminado mostraría
+  // "falta" en todos los escenarios de todos los tiradores.
+  function hayEscenarios() {
+    return (datos.general || []).some((f) => Array.isArray(f.escenarios));
+  }
+  function escenariosAMostrar() {
+    return hayEscenarios() ? (datos.match && datos.match.etapas) || [] : [];
+  }
+
+  // "Escenario 1 - El Mozo" → "El Mozo": el número ya va adelante, en
+  // negrita, y con quince columnas cada letra del encabezado cuenta. Si el
+  // nombre es sólo "Escenario 1", se deja como está.
+  function nombreCorto(nombre, numero) {
+    const limpio = String(nombre || '')
+      .replace(new RegExp('^\\s*(escenario|etapa|stage)\\s*' + numero + '\\s*[-:.–]?\\s*', 'i'), '')
+      .trim();
+    return limpio || String(nombre || '').trim();
+  }
+
+  let escenariosDibujados = -1;
+  function dibujarCabeza() {
+    const etapas = escenariosAMostrar();
+    if (etapas.length === escenariosDibujados) return;
+    escenariosDibujados = etapas.length;
+    document.querySelector('main').classList.toggle('con-escenarios', etapas.length > 0);
+
+    const cabeza = $('cabeza');
+    cabeza.innerHTML = '';
+    const arriba = document.createElement('tr');
+    const abajo = document.createElement('tr');
+
+    const fija = (texto, clase, estilo) => {
+      const th = document.createElement('th');
+      th.textContent = texto;
+      th.rowSpan = 2;
+      if (clase) th.className = clase;
+      if (estilo) th.style.textAlign = estilo;
+      arriba.appendChild(th);
+    };
+    fija('#', 'fijo-1');
+    fija('Tirador', 'fijo-2');
+    fija('Nº IDPA', 'chico');
+    fija('Club', 'chico');
+    fija('Div.', 'chico');
+    fija('Clase', 'chico');
+    fija('Etapas', '', 'center');
+
+    etapas.forEach((e, i) => {
+      const alterno = i % 2 === 1 ? ' alterno' : '';
+      const th = document.createElement('th');
+      th.colSpan = 3;
+      th.className = 'escenario' + alterno;
+      th.title = (i + 1) + ': ' + (e.nombre || '');
+      const n = document.createElement('b');
+      n.textContent = i + 1;
+      th.appendChild(n);
+      th.appendChild(document.createTextNode(nombreCorto(e.nombre, i + 1)));
+      arriba.appendChild(th);
+
+      [['Tiempo', 'Tiempo sin penalizar'], ['PD', 'Puntos por debajo (incluye Miss y No-Shoot)'],
+        ['P', 'Penalizaciones, en segundos']].forEach(([texto, ayuda]) => {
+        const sub = document.createElement('th');
+        sub.className = 'sub' + alterno;
+        sub.textContent = texto;
+        sub.title = ayuda;
+        abajo.appendChild(sub);
+      });
+    });
+
+    fija('Tiempo final', '', 'right');
+
+    cabeza.appendChild(arriba);
+    cabeza.appendChild(abajo);
+  }
+
+  // Las celdas de un escenario, para la pantalla ancha y para el teléfono.
+  // `e` es [tiempo, pd, p], null si todavía no lo tiró, o 'DQ'.
+  function celdasDeEscenarios(tr, f) {
+    const etapas = escenariosAMostrar();
+    if (!etapas.length) return;
+    const lista = f.escenarios || [];
+    const movil = document.createElement('div');
+
+    etapas.forEach((etapa, i) => {
+      const e = lista[i];
+      const alterno = i % 2 === 1 ? ' alterno' : '';
+      const linea = document.createElement('div');
+      linea.className = 'linea';
+      const num = document.createElement('b');
+      num.textContent = i + 1;
+      linea.appendChild(num);
+
+      if (e === 'DQ') {
+        const td = celda(tr, 'DQ', 'esc es-dq' + alterno);
+        td.colSpan = 3;
+        linea.classList.add('es-dq');
+        linea.appendChild(document.createTextNode('DQ'));
+      } else if (!e) {
+        // Lo que falta tirar: es lo que deja ver, a mitad de torneo,
+        // cuántos escenarios le quedan a cada uno.
+        const td = celda(tr, '—', 'esc falta' + alterno);
+        td.colSpan = 3;
+        td.title = 'Todavía no tiró este escenario';
+        linea.classList.add('falta');
+        linea.appendChild(document.createTextNode('falta'));
+      } else {
+        celda(tr, tiempo(e[0]), 'esc' + alterno);
+        celda(tr, cantidad(e[1]), 'esc' + alterno + (e[1] ? ' penal' : ''));
+        celda(tr, cantidad(e[2]), 'esc' + alterno + (e[2] ? ' penal' : ''));
+
+        const partes = [['', tiempo(e[0])], ['PD ', cantidad(e[1])], ['P ', cantidad(e[2])]];
+        partes.forEach(([rotulo, valor], k) => {
+          if (k > 0 && !valor) return;
+          const s = document.createElement('span');
+          if (k > 0) s.className = 'penal';
+          s.textContent = rotulo + valor;
+          linea.appendChild(s);
+        });
+      }
+      movil.appendChild(linea);
+    });
+
+    const td = document.createElement('td');
+    td.className = 'esc-movil';
+    td.appendChild(movil);
+    tr.appendChild(td);
+  }
+
   function celda(tr, texto, clase, campo) {
     const td = document.createElement('td');
     if (clase) td.className = clase;
@@ -282,7 +423,10 @@
       celda(tr, f.division || '—', 'chico', 'División');
       celda(tr, f.clase || '—', 'chico', 'Clase');
       celda(tr, f.etapasCargadas + '/' + (datos.match.etapas.length || 0), 'etapas', 'Etapas');
-      celda(tr, f.etapasCargadas ? tiempo(f.tiempo) : '—', 'tiempo', 'Tiempo');
+      celdasDeEscenarios(tr, f);
+      // El tiempo final del torneo, al último: es la suma de todo lo que
+      // está a su izquierda.
+      celda(tr, f.etapasCargadas ? tiempo(f.tiempo) : '—', 'tiempo', 'Tiempo final');
 
       cuerpo.appendChild(tr);
     });
@@ -342,6 +486,7 @@
       datos = d;
 
       dibujarCabecera();
+      dibujarCabeza();
       if (primeraVez) dibujarFiltros();
       else if ((d.divisiones || []).length !== $('filtros').children.length - 1) {
         dibujarFiltros(); // apareció una división nueva

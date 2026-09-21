@@ -113,6 +113,54 @@
 
   .aviso-vacio { text-align: center; color: var(--texto-suave); padding: 30px 0; }
 
+  /* --- Los escenarios, como en Resultados → General de la app ---------
+     Cada escenario lleva tiempo, puntos por debajo y penalizaciones, y el
+     tiempo final del torneo queda al último. Son quince columnas más: en
+     una pantalla ancha entra todo, y en una angosta la tabla se desplaza
+     de costado con el puesto y el nombre fijos, para no perder de quién
+     es cada renglón. */
+  main.envoltorio.ancho.con-escenarios { max-width: 1560px; }
+  .tabla-ancha { overflow-x: auto; }
+  .tabla-ancha table { min-width: 100%; }
+
+  th.escenario {
+    text-align: center; text-transform: none; letter-spacing: 0;
+    font-size: 12px; color: var(--texto); padding: 8px 6px 2px;
+    border-bottom: 0; max-width: 170px;
+    overflow: hidden; text-overflow: ellipsis;
+  }
+  th.escenario b { color: var(--acento); margin-right: 4px; }
+  th.sub, td.esc {
+    text-align: right; padding: 10px 7px;
+    font-variant-numeric: tabular-nums; white-space: nowrap;
+  }
+  td.esc { font-size: 14px; }
+  /* Un escenario sí y uno no, apenas sombreado: con quince columnas de
+     números parecidos, es lo que deja ver dónde empieza cada uno. */
+  th.escenario.alterno, th.sub.alterno, td.esc.alterno {
+    background: rgba(138, 106, 30, .07);
+  }
+  /* Los puntos y las penalizaciones van en rojo, como en la app: son lo
+     que el tirador quiere ver primero. */
+  td.esc.penal { color: var(--peligro, #8A2018); font-weight: 600; }
+  td.esc.falta { color: var(--texto-suave); text-align: center; }
+  td.esc.es-dq { color: var(--peligro, #8A2018); font-weight: 700; text-align: center; }
+
+  /* El puesto y el nombre, fijos al desplazar la tabla de costado. */
+  .tabla-ancha td.puesto, .tabla-ancha th.fijo-1 {
+    position: sticky; left: 0; z-index: 1; background: var(--fondo);
+  }
+  .tabla-ancha td.tirador, .tabla-ancha th.fijo-2 {
+    position: sticky; left: 54px; z-index: 1; background: var(--fondo);
+  }
+  /* En un renglón: partido en dos, cada fila ocupa el doble de alto y la
+     tabla de 56 tiradores no entra en ninguna pantalla. */
+  .tabla-ancha td.tirador { white-space: nowrap; }
+
+  /* La versión de teléfono: una línea por escenario adentro de la
+     tarjeta. En la pantalla ancha no se usa. */
+  td.esc-movil { display: none; }
+
   /* En el celular cada tirador es una tarjeta: una tabla de siete
      columnas no entra de ninguna manera, y esto se mira sobre todo desde
      el teléfono, parado en el polígono. */
@@ -135,6 +183,24 @@
     td.tirador { font-size: 17px; }
     td.chico::before, td.etapas::before { content: attr(data-campo) ': '; }
     td.etapas { text-align: left; }
+
+    /* En el teléfono no hay columnas: los escenarios van en su línea. */
+    .tabla-ancha { overflow: visible; }
+    td.esc { display: none; }
+    .tabla-ancha td.puesto, .tabla-ancha td.tirador {
+      position: absolute; background: transparent;
+    }
+    .tabla-ancha td.tirador { position: static; white-space: normal; }
+    td.esc-movil { display: block; margin: 6px 0 2px; }
+    .esc-movil .linea {
+      display: flex; gap: 10px; font-size: 13px;
+      font-variant-numeric: tabular-nums; padding: 2px 0;
+      border-top: 1px dashed var(--borde);
+    }
+    .esc-movil .linea b { color: var(--acento); min-width: 18px; }
+    .esc-movil .linea .penal { color: var(--peligro, #8A2018); font-weight: 600; }
+    .esc-movil .linea.falta { color: var(--texto-suave); }
+    .esc-movil .linea.es-dq { color: var(--peligro, #8A2018); font-weight: 700; }
   }
 
   /* La cartelera: un match por tarjeta. */
@@ -218,20 +284,11 @@
 
     <div class="filtros" id="filtros"></div>
 
-    <div>
+    <div class="tabla-ancha">
       <table id="tabla">
-        <thead>
-          <tr>
-            <th>#</th>
-            <th>Tirador</th>
-            <th class="chico">Nº IDPA</th>
-            <th class="chico">Club</th>
-            <th class="chico">Div.</th>
-            <th class="chico">Clase</th>
-            <th style="text-align:center">Etapas</th>
-            <th style="text-align:right">Tiempo</th>
-          </tr>
-        </thead>
+        <!-- Lo arma envivo.js: lleva una columna por escenario y la
+             cantidad de escenarios la decide cada match. -->
+        <thead id="cabeza"></thead>
         <tbody></tbody>
       </table>
       <p class="aviso-vacio" id="vacio" hidden>Todavía no hay puntajes cargados. La tabla se llena sola.</p>
@@ -270,6 +327,6 @@
   </div>
 </footer>
 
-<script src="envivo.js?v=12"></script>
+<script src="envivo.js?v=14"></script>
 </body>
 </html>
