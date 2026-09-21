@@ -121,7 +121,10 @@
       fondo.className = 'barra-fondo';
       const llena = document.createElement('div');
       llena.className = 'barra-llena';
-      llena.style.width = pct + '%';
+      // Terminado es terminado: la barra va llena aunque haya quedado algún
+      // inscripto que no se presentó. Con 151 de 166 planillas, la de la
+      // segunda fecha parecía un torneo que alguien dejó sin cargar.
+      llena.style.width = (completo ? 100 : pct) + '%';
       fondo.appendChild(llena);
       a.appendChild(fondo);
 
@@ -575,6 +578,18 @@
         timer = setInterval(traer, ritmo);
       }
 
+      // **Resultados fijados**: pasó una hora desde que el torneo se
+      // completó y la tabla no va a cambiar más. Se dice, y se deja de
+      // preguntar: seguir cada siete segundos sería pagar por leer lo mismo.
+      if (d.congelado) {
+        clearInterval(timer);
+        timer = null;
+        ritmoActual = null;
+        $('m-vivo').classList.add('parado');
+        texto($('m-actualizado'), 'resultados finales');
+        return;
+      }
+
       $('m-vivo').classList.toggle('parado', esperando || descansando);
       texto(
         $('m-actualizado'),
@@ -590,6 +605,7 @@
 
   // El reloj del "hace tanto" corre aunque no lleguen datos nuevos.
   setInterval(() => {
+    if (datos && datos.congelado) return;
     if (faltaParaLargar()) {
       texto($('m-actualizado'), cuantoFalta(datos.arranca));
     } else if (ultimoCambio) {

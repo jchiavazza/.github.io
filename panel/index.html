@@ -1249,7 +1249,8 @@
         et.className = 'marca-estado ' + (!m.oculto && enCurso ? 'vivo' : 'quieto');
         et.textContent = m.oculto ? 'SUSPENDIDO'
           : programado ? 'PROGRAMADO'
-          : enCurso ? 'EN VIVO' : 'TERMINADO';
+          : enCurso ? 'EN VIVO'
+          : m.congelado ? 'FIJADO' : 'TERMINADO';
         titulo.appendChild(et);
         caja.appendChild(titulo);
 
@@ -1301,6 +1302,46 @@
           accionEnVivo(m.clave, m.oculto ? 'publicar' : 'suspender');
         });
         botones.appendChild(cambiar);
+
+        // **Fijar y descongelar.** Un torneo completo se fija solo una hora
+        // después de completarse; desde acá se puede fijar antes, o abrirlo
+        // otra vez para corregir algo. Al archivado (`final`) no le hace
+        // falta: su match ya no está en la nube y no puede cambiar.
+        const completo = m.posibles > 0 && m.cargados >= m.posibles;
+        if (!m.final && (completo || m.congelado)) {
+          const fijo = document.createElement('p');
+          fijo.className = 'datos';
+          if (m.congelado) {
+            fijo.textContent = 'Resultados fijados' + (m.congeladoEn
+              ? ' el ' + new Date(m.congeladoEn).toLocaleString('es-AR',
+                  { day: '2-digit', month: '2-digit', hour: '2-digit', minute: '2-digit' })
+              : '') + ': aunque se abra la app, la web no cambia más.';
+          } else if (m.terminadoEn) {
+            const aLas = new Date(m.terminadoEn + 60 * 60 * 1000);
+            fijo.textContent = 'Completo. Se fija solo a las ' +
+              aLas.toLocaleTimeString('es-AR', { hour: '2-digit', minute: '2-digit' }) +
+              ' del ' + aLas.toLocaleDateString('es-AR', { day: '2-digit', month: '2-digit' }) +
+              '; hasta entonces se puede corregir.';
+          } else {
+            fijo.textContent = 'Completo. Se fija una hora después de la próxima sincronización.';
+          }
+          caja.appendChild(fijo);
+
+          const fijar = document.createElement('button');
+          fijar.type = 'button';
+          fijar.textContent = m.congelado ? 'Descongelar' : 'Fijar resultados ya';
+          fijar.addEventListener('click', function () {
+            if (m.congelado) {
+              if (confirm('Los resultados vuelven a actualizarse con la próxima sincronización de la app, ' +
+                'y se fijan de nuevo una hora después de que el torneo esté completo. ¿Seguir?')) {
+                accionEnVivo(m.clave, 'descongelar');
+              }
+            } else {
+              accionEnVivo(m.clave, 'fijar');
+            }
+          });
+          botones.appendChild(fijar);
+        }
 
         const borrar = document.createElement('button');
         borrar.type = 'button';
