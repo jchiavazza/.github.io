@@ -207,7 +207,8 @@
   .publicado .datos { color: var(--texto-suave); font-size: 13px; margin: 4px 0 10px; }
   .publicado .datos a { word-break: break-all; }
   .publicado .botones { display: flex; gap: 8px; flex-wrap: wrap; }
-  .publicado .botones button {
+  .publicado .botones button, .publicado .datos button {
+    width: auto;
     padding: 8px 14px; border-radius: 10px; font-size: 13px;
     border: 1px solid var(--borde); background: var(--fondo);
     color: var(--acento); font-weight: 600; font-family: inherit;
@@ -1343,6 +1344,21 @@
           botones.appendChild(fijar);
         }
 
+        // Rearmar la tabla ya, sin esperar a la largada: para ver en la web
+        // un inscripto nuevo o una corrección hecha en la app. No se
+        // ofrece en el fijado —ahí primero hay que descongelar— ni en el
+        // archivado, cuyo match ya no está en la nube.
+        if (!m.final && !m.congelado) {
+          const actualizar = document.createElement('button');
+          actualizar.type = 'button';
+          actualizar.textContent = 'Actualizar la tabla';
+          actualizar.title = 'Trae lo que tiene hoy el match en la app: inscriptos, escenarios y puntajes.';
+          actualizar.addEventListener('click', function () {
+            accionEnVivo(m.clave, 'actualizar');
+          });
+          botones.appendChild(actualizar);
+        }
+
         const borrar = document.createElement('button');
         borrar.type = 'button';
         borrar.className = 'peligro';
@@ -1388,6 +1404,10 @@
           ? 'Larga el ' + new Date(d.arranca).toLocaleString('es-AR',
               { day: '2-digit', month: '2-digit', hour: '2-digit', minute: '2-digit' })
           : 'Sin hora: cuenta como arrancado.',
+        actualizada: 'Tabla actualizada: ' + d.tiradores + ' tiradores y ' + d.etapas +
+          ' escenarios, como están hoy en la app.',
+        fijado: 'Resultados fijados: la web ya no cambia aunque se abra la app.',
+        descongelado: 'Descongelado: se actualiza con la próxima sincronización.',
       }[d.estado] || 'Listo.';
       traerPublicados();
     } catch (e) {
