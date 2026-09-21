@@ -169,7 +169,22 @@
 
   $('p-alias').textContent = torneo.alias;
   $('p-titular').textContent = torneo.titularAlias || '';
-  $('p-nota').textContent = torneo.notaPago || '';
+  // Los importes de la nota, remarcados: "te sale $40.000" es lo que el
+  // asociado tiene que ver de un vistazo, y en el gris chico de la nota
+  // pasaba de largo. Se arma con nodos de texto y no con innerHTML, así la
+  // nota nunca se interpreta como HTML aunque alguien escriba un "<".
+  const nota = $('p-nota');
+  nota.textContent = '';
+  String(torneo.notaPago || '').split(/(\$\s?[\d.]+)/).forEach((trozo, i) => {
+    if (!trozo) return;
+    if (i % 2 === 1) {
+      const s = document.createElement('strong');
+      s.textContent = trozo;
+      nota.appendChild(s);
+    } else {
+      nota.appendChild(document.createTextNode(trozo));
+    }
+  });
   recalcular();
 
   // ------------------------------------------------------------------

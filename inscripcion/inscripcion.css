@@ -127,6 +127,15 @@
   color: var(--texto-suave);
 }
 
+/* El importe dentro de la nota —el precio de asociado—: dorado, como el
+   alias, y un poco más grande que el resto de la nota, sin llegar al
+   tamaño del total, que sigue siendo lo primero que hay que ver. */
+.chapa.pago .nota strong {
+  color: var(--acento);
+  font-size: 1.2em;
+  white-space: nowrap;
+}
+
 .chapa.pago .alias {
   display: grid;
   grid-template-columns: auto 1fr;
