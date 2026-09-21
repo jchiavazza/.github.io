@@ -191,16 +191,46 @@
     return 'está por arrancar';
   }
 
+  // **Con una clase elegida se filtra la división y se numera de nuevo,
+  // en el mismo orden.** El puesto que manda el servidor es sólo la
+  // posición en esa lista (`conPuestos` en functions/en-vivo.js), así que
+  // numerar la clase acá es la misma cuenta: no se ordena ni se calcula
+  // nada distinto. Mandar además una tabla por clase desde el servidor
+  // habría sido una tercera copia de cada fila, cada siete segundos.
   function filasDelFiltro() {
     if (!datos) return [];
-    if (filtro.tipo === 'division') return datos.porDivision[filtro.division] || [];
-    return datos.general;
+    if (filtro.tipo !== 'division') return datos.general;
+    const division = datos.porDivision[filtro.division] || [];
+    if (!filtro.clase) return division;
+    return division
+      .filter((f) => (f.clase || '') === filtro.clase)
+      .map((f, i) => ({ ...f, puesto: i + 1 }));
   }
-
   function nombreDelFiltro() {
-    if (filtro.tipo === 'division') return 'div:' + filtro.division;
+    if (filtro.tipo === 'division') {
+      return 'div:' + filtro.division + (filtro.clase ? '|' + filtro.clase : '');
+    }
     return 'general';
   }
+
+  // Las clases, de la más alta a la más baja, como las ordena IDPA. Una
+  // que no esté en la lista —mal cargada, o de otra disciplina— va al
+  // final, y se muestra igual: esconderla escondería a sus tiradores.
+  const ORDEN_CLASES = ['MA', 'EX', 'SS', 'MM', 'NV', 'UN'];
+  function clasesDe(division) {
+    const hay = [...new Set((datos.porDivision[division] || []).map((f) => f.clase || '').filter(Boolean))];
+    const lugar = (c) => (ORDEN_CLASES.indexOf(c) < 0 ? 99 : ORDEN_CLASES.indexOf(c));
+    return hay.sort((a, b) => lugar(a) - lugar(b) || a.localeCompare(b));
+  }
+
+  // Qué botones hay que mostrar. Si no cambió, no se rehacen: rehacerlos
+  // en cada refresco podía comerse un toque justo en ese momento.
+  function firmaDeFiltros() {
+    const divisiones = (datos.divisiones || []).join(',');
+    const clases = filtro.tipo === 'division' ? clasesDe(filtro.division).join(',') : '';
+    return divisiones + '/' + clases;
+  }
+  let filtrosDibujados = '';
 
   function dibujarFiltros() {
     const cont = $('filtros');
@@ -217,11 +247,43 @@
 
     boton('General', filtro.tipo === 'general', () => { filtro = { tipo: 'general' }; });
 
-    // Sólo las divisiones. La clase se ve en la fila de cada tirador.
+    // Primero las divisiones; la clase, en el renglón de abajo.
     (datos.divisiones || []).forEach((d) => {
       boton(d, filtro.tipo === 'division' && filtro.division === d,
         () => { filtro = { tipo: 'division', division: d }; });
     });
+
+    // **Las clases, sólo con una división elegida**: todas juntas eran
+    // veinte botones para grupos de uno o dos, y así son a lo sumo seis.
+    // "Todas" es la división completa, que es lo que se ve si no se elige
+    // ninguna.
+    const renglon = $('filtros-clase');
+    renglon.innerHTML = '';
+    const clases = filtro.tipo === 'division' ? clasesDe(filtro.division) : [];
+    renglon.hidden = clases.length === 0;
+    if (clases.length) {
+      const rotulo = document.createElement('span');
+      rotulo.className = 'rotulo';
+      rotulo.textContent = 'Clase';
+      renglon.appendChild(rotulo);
+
+      const deClase = (etiqueta, clase) => {
+        const b = document.createElement('button');
+        b.type = 'button';
+        b.textContent = etiqueta;
+        if ((filtro.clase || null) === clase) b.className = 'actual';
+        b.addEventListener('click', () => {
+          filtro = { tipo: 'division', division: filtro.division, clase };
+          dibujarFiltros();
+          dibujarTabla(true);
+        });
+        renglon.appendChild(b);
+      };
+      deClase('Todas', null);
+      clases.forEach((c) => deClase(c, c));
+    }
+
+    filtrosDibujados = firmaDeFiltros();
   }
 
   // Los puntos y las penalizaciones son enteros casi siempre: "3" se lee
@@ -487,10 +549,9 @@
 
       dibujarCabecera();
       dibujarCabeza();
-      if (primeraVez) dibujarFiltros();
-      else if ((d.divisiones || []).length !== $('filtros').children.length - 1) {
-        dibujarFiltros(); // apareció una división nueva
-      }
+      // Una división o una clase nueva —un inscripto de último momento—
+      // tiene que aparecer sin recargar la página.
+      if (primeraVez || firmaDeFiltros() !== filtrosDibujados) dibujarFiltros();
 
       // En la primera vuelta no se destella: todo sería "nuevo".
       dibujarTabla(primeraVez);

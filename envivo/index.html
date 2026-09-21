@@ -76,6 +76,16 @@
   }
   .filtros button.actual { box-shadow: var(--hundido); color: var(--texto); }
 
+  /* El segundo renglón, el de las clases: más chico y pegado al de las
+     divisiones, para que se lea como "adentro de" la división elegida y
+     no como otro filtro al mismo nivel. */
+  .filtros.clases { margin: -8px 0 18px; align-items: center; }
+  .filtros.clases .rotulo {
+    font-size: 12px; text-transform: uppercase; letter-spacing: .05em;
+    color: var(--texto-suave); margin-right: 2px;
+  }
+  .filtros.clases button { padding: 6px 13px; font-size: 13px; border-radius: 10px; }
+
   table { border-collapse: collapse; width: 100%; font-size: 15px; }
   th, td { text-align: left; padding: 10px 12px; border-bottom: 1px solid var(--borde); }
   th {
@@ -283,6 +293,9 @@
     </div>
 
     <div class="filtros" id="filtros"></div>
+    <!-- Las clases de la división elegida. Aparece sólo con una división
+         elegida: debajo de la general no hay nada que separar. -->
+    <div class="filtros clases" id="filtros-clase" hidden></div>
 
     <div class="tabla-ancha">
       <table id="tabla">
@@ -327,6 +340,6 @@
   </div>
 </footer>
 
-<script src="envivo.js?v=14"></script>
+<script src="envivo.js?v=15"></script>
 </body>
 </html>
