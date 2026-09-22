@@ -125,10 +125,13 @@
       (datos.fechas || []).forEach((f, k) => {
         const td = document.createElement('td');
         const valor = deLaFecha(t, k);
-        // Descartada: la peor de las que corrió, que no suma. Sólo tiene
-        // sentido marcarla en la general, que es donde se eligen las
-        // cuatro que cuentan.
-        const fuera = mirando === 'general' && (t.descartadas || []).indexOf(k) >= 0;
+        // Descartada: la peor de las que corrió, que no suma. **En cada
+        // tabla la suya**: en la general, la peor contra el mejor de
+        // todos; en un grupo, la peor contra el mejor del grupo, que
+        // puede ser otra fecha. Así lo tachado es justo lo que el total
+        // de esa tabla deja afuera.
+        const tachadas = mirando === 'general' ? t.descartadas : t.descartadasGrupo;
+        const fuera = (tachadas || []).indexOf(k) >= 0;
         td.className = 'fecha' + (valor === null ? ' vacia' : '') + (fuera ? ' descartada' : '');
         td.dataset.campo = ordinal(k);
         td.textContent = porciento(valor);
