@@ -192,6 +192,33 @@
     }
   }
 
+  // Los años ya cerrados. Cada uno tiene su propia página, que no cambia
+  // más: es el acta de ese campeonato. Se pide una sola vez, al abrir.
+  function cerrados() {
+    fetch(API + '/anualArchivado')
+      .then((r) => r.json())
+      .then((d) => {
+        const anios = (d && d.anios) || [];
+        if (!anios.length) return;
+
+        const caja = $('lista-cerrados');
+        caja.innerHTML = '';
+        anios.forEach((a) => {
+          const enlace = document.createElement('a');
+          enlace.href = '/anual/' + a.slug + '/';
+          const titulo = document.createElement('strong');
+          titulo.textContent = (a.nombre || 'Torneo Anual') + ' ' + a.anio;
+          const detalle = document.createElement('span');
+          detalle.textContent = a.fechas + ' fechas · ' + a.tiradores + ' tiradores';
+          enlace.appendChild(titulo);
+          enlace.appendChild(detalle);
+          caja.appendChild(enlace);
+        });
+        $('cerrados').hidden = false;
+      })
+      .catch(() => {});
+  }
+
   // Mientras una fecha se corre, todo lo que se ve es provisorio: el
   // 100% de esa fecha es el mejor de los que ya terminaron, así que los
   // porcentajes bajan a medida que entran los rápidos y los puestos se
@@ -272,4 +299,5 @@
   }
 
   cargar();
+  cerrados();
 })();

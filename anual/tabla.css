@@ -1,0 +1,143 @@
+/* La tabla del torneo anual.
+ *
+ * La comparten la pantalla del campeonato en curso —/anual/— y la de cada
+ * año ya cerrado —/anual/<año>-torneo-homenaje/—: es la misma tabla, y
+ * tenerla en dos lugares terminaba con dos tablas distintas.
+ */
+
+  .envoltorio.ancho { max-width: 1100px; }
+
+  .cabecera-anual { text-align: center; margin-bottom: 8px; }
+  .cabecera-anual h1 { margin-bottom: 6px; }
+  .cabecera-anual .datos { color: var(--texto-suave); font-size: 15px; margin: 0; }
+
+  /* Cómo se puntúa, en dos renglones: es lo primero que pregunta todo el
+     mundo cuando ve una tabla de porcentajes. */
+  .como-se-cuenta {
+    max-width: 640px; margin: 20px auto 0;
+    padding: 14px 18px; border-radius: 12px;
+    border: 1px solid var(--borde); box-shadow: var(--hundido);
+    color: var(--texto-suave); font-size: 14px;
+  }
+  .como-se-cuenta p { margin: 0 0 6px; }
+  .como-se-cuenta p:last-child { margin-bottom: 0; }
+
+  /* Mientras una fecha se está corriendo, el total de todos es
+     provisorio: el 100% de esa fecha es el mejor de los que ya
+     terminaron y baja cuando entran los rápidos. Sin este cartel, el
+     que mira a media mañana se lleva un puesto que no es. */
+  .en-curso {
+    max-width: 640px; margin: 18px auto 0;
+    display: flex; align-items: center; gap: 10px;
+    padding: 12px 18px; border-radius: 12px;
+    border: 1px solid var(--ok); box-shadow: var(--relieve-chico);
+    font-size: 14px;
+  }
+  .en-curso .punto {
+    flex: none; width: 10px; height: 10px; border-radius: 50%;
+    background: var(--ok); animation: latido 1.6s ease-in-out infinite;
+  }
+  @keyframes latido { 0%, 100% { opacity: 1; } 50% { opacity: .25; } }
+
+  /* La columna de esa fecha, marcada en el encabezado. */
+  th.fecha.corriendo { color: var(--ok); }
+
+  .filtros { display: flex; flex-wrap: wrap; gap: 8px; justify-content: center; margin: 24px 0 18px; }
+  .filtros button {
+    padding: 9px 16px; border-radius: 12px;
+    border: 1px solid var(--borde); background: var(--fondo);
+    color: var(--acento); font-weight: 600; font-size: 14px;
+    font-family: inherit; cursor: pointer;
+    box-shadow: var(--relieve-chico);
+  }
+  .filtros button.actual { box-shadow: var(--hundido); color: var(--texto); }
+
+  table { border-collapse: collapse; width: 100%; font-size: 15px; }
+  th, td { text-align: left; padding: 10px 12px; border-bottom: 1px solid var(--borde); }
+  th {
+    font-size: 12px; text-transform: uppercase; letter-spacing: .05em;
+    color: var(--texto-suave); white-space: nowrap;
+  }
+  td.puesto { font-weight: 700; font-size: 17px; width: 54px; }
+  /* El que todavía no sumó lleva su número, pero apagado. */
+  td.puesto.sin-puntos { color: var(--texto-suave); font-weight: 500; }
+  td.tirador { font-weight: 600; }
+  td.chico, th.chico { font-size: 13px; color: var(--texto-suave); }
+
+  /* Cuántas fechas corrió: es lo primero que ordena la tabla, así que
+     tiene que estar a la vista o el orden parece un error. */
+  td.corridas { text-align: center; font-variant-numeric: tabular-nums; }
+
+  th.fecha, td.fecha { text-align: right; font-variant-numeric: tabular-nums; white-space: nowrap; }
+  td.fecha.vacia { color: var(--texto-suave); }
+  /* La peor de las cinco no suma: se muestra igual, tachada, para que se
+     vea que el tirador corrió y por qué no la cuenta. */
+  td.fecha.descartada { color: var(--texto-suave); text-decoration: line-through; }
+  th.total, td.total {
+    text-align: right; font-variant-numeric: tabular-nums;
+    font-weight: 700; white-space: nowrap;
+  }
+
+  tr.podio td.puesto { color: var(--acento); }
+
+  /* El que no sumó nada va al final, y ahí conviene decir por qué: no es
+     lo mismo haber ido y quedar descalificado que no haber ido. */
+  .marca-dq {
+    font-size: 11px; font-weight: 700; letter-spacing: .04em;
+    color: var(--peligro, #8A2018); border: 1px solid currentColor;
+    border-radius: 6px; padding: 1px 5px; margin-left: 6px;
+  }
+  tr.sin-sumar td { color: var(--texto-suave); }
+
+  .aviso-vacio { text-align: center; color: var(--texto-suave); padding: 30px 0; }
+
+  /* Las fechas, abajo de todo: qué número es cada una. */
+  .pie-fechas {
+    margin: 26px 0 0; padding-top: 16px; border-top: 1px solid var(--borde);
+    color: var(--texto-suave); font-size: 13px;
+  }
+  .pie-fechas ol { margin: 8px 0 0; padding-left: 20px; }
+  .pie-fechas li { margin-bottom: 3px; }
+  .pie-fechas a { color: inherit; }
+
+  /* En el celular, cada tirador es una tarjeta: nueve columnas no entran
+     de ninguna manera. */
+  @media (max-width: 860px) {
+    table, tbody, tr, td { display: block; width: 100%; }
+    thead { display: none; }
+    tr {
+      position: relative;
+      border: 1px solid var(--borde); border-radius: 12px;
+      box-shadow: var(--relieve-chico);
+      padding: 12px 14px 12px 58px;
+      margin-bottom: 12px;
+    }
+    td { border: 0; padding: 2px 0; }
+    td.puesto {
+      position: absolute; left: 14px; top: 12px;
+      width: 34px; text-align: center; font-size: 22px;
+    }
+    td.tirador { font-size: 17px; }
+    td.chico::before, td.fecha::before, td.total::before,
+    td.corridas::before { content: attr(data-campo) ': '; }
+    td.corridas { text-align: left; }
+    td.fecha, td.total { text-align: left; }
+    /* En el teléfono las cinco fechas van en un solo renglón, separadas
+       por comas, y no una abajo de la otra. */
+    td.fecha { display: inline; padding-right: 10px; }
+    td.total { display: block; margin-top: 6px; font-size: 17px; }
+  }
+
+/* Los campeonatos ya cerrados, al pie de la pantalla del anual en curso.
+   Cada uno lleva a su propia página, que es el acta de ese año. */
+.cerrados { margin: 30px 0 0; padding-top: 18px; border-top: 1px solid var(--borde); }
+.cerrados h2 { font-size: 18px; margin-bottom: 12px; }
+.cerrados a {
+  display: block; text-decoration: none; color: inherit;
+  padding: 14px 18px; border-radius: 12px; margin-bottom: 10px;
+  border: 1px solid var(--borde); box-shadow: var(--relieve-chico);
+  transition: transform .15s ease;
+}
+.cerrados a:hover { transform: translateY(-2px); }
+.cerrados a strong { color: var(--acento); font-size: 17px; }
+.cerrados a span { display: block; color: var(--texto-suave); font-size: 13px; margin-top: 4px; }

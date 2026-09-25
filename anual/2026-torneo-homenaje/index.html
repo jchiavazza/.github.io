@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<!--
+  El campeonato 2026, ya cerrado.
+
+  Muestra la foto que se guardó cuando terminó el año: la tabla final y
+  las fechas que la compusieron. No recalcula nada — ver anual/archivo.js.
+
+  Para el año que viene se copia esta carpeta cambiando el año en tres
+  lugares: el nombre de la carpeta, `data-anio` y los textos. El resto lo
+  llena la función con lo que se archivó.
+-->
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Torneo Homenaje a Jorge Pastor 2026 — Club 9x19 Shooting</title>
+<meta name="description" content="Resultados finales del Torneo Homenaje a Jorge Pastor 2026: las cinco fechas del campeonato de IDPA del Club 9x19 Shooting y la clasificación anual.">
+<link rel="icon" href="../../assets/icono.png">
+<link rel="stylesheet" href="../../estilo.css?v=67">
+<link rel="stylesheet" href="../tabla.css?v=1">
+
+<meta property="og:type" content="website">
+<meta property="og:title" content="Torneo Homenaje a Jorge Pastor 2026">
+<meta property="og:description" content="Los resultados finales del campeonato: cinco fechas, se computan las cuatro mejores.">
+<meta property="og:url" content="https://9x19shooting.com.ar/anual/2026-torneo-homenaje/">
+<meta property="og:locale" content="es_AR">
+
+<style>
+  /* El año, grande abajo del nombre del campeonato. */
+  .cabecera-anual .anio {
+    font-size: clamp(30px, 7vw, 46px);
+    font-weight: 700; color: var(--acento);
+    line-height: 1; margin: 2px 0 8px;
+  }
+
+  /* Es un archivo, no una pantalla que se actualiza: se dice una vez y
+     no se repite en cada tabla. */
+  .es-archivo {
+    max-width: 640px; margin: 18px auto 0;
+    padding: 12px 18px; border-radius: 12px;
+    border: 1px solid var(--borde); box-shadow: var(--relieve-chico);
+    color: var(--texto-suave); font-size: 14px; text-align: center;
+  }
+</style>
+</head>
+<body data-anio="2026">
+
+<div class="envoltorio ancho">
+  <div class="barra">
+    <a class="marca" href="/"><img src="../../assets/logo-club.png" alt="Club 9x19 Shooting"></a>
+    <img class="medalla" src="../../assets/medalla.png" alt="Medalla del club: 9x19 Shooting, IDPA Argentina">
+    <nav class="corto">
+      <a href="/">← Volver al inicio</a>
+      <a href="/anual/">← Torneo Anual</a>
+      <a href="/envivo/">Torneos</a>
+    </nav>
+  </div>
+</div>
+
+<main class="envoltorio ancho">
+
+  <header class="cabecera-anual">
+    <h1 id="a-titulo">Torneo Homenaje a Jorge Pastor</h1>
+    <p class="anio" id="a-anio">2026</p>
+    <p class="datos" id="a-datos"></p>
+  </header>
+
+  <!-- Mientras el campeonato no haya terminado. -->
+  <p class="aviso-vacio" id="sin-cerrar" hidden>
+    El campeonato todavía no terminó. Podés seguirlo en
+    <a href="/anual/">el torneo anual</a>, que se actualiza con cada fecha.
+  </p>
+
+  <div id="cuerpo">
+    <div class="es-archivo">
+      <strong>Resultados finales.</strong> Se computaron las cuatro mejores fechas
+      de cada tirador; la descartada se muestra tachada. Esta página no cambia:
+      quedó así el día que terminó el campeonato.
+    </div>
+
+    <div class="filtros" id="filtros"></div>
+
+    <div>
+      <table id="tabla">
+        <thead>
+          <tr id="encabezado">
+            <th>#</th>
+            <th>Tirador</th>
+            <th class="chico">Nº IDPA</th>
+            <th class="chico">Div.</th>
+            <th class="chico">Clase</th>
+            <th class="chico" style="text-align:center">Fechas</th>
+          </tr>
+        </thead>
+        <tbody></tbody>
+      </table>
+    </div>
+
+    <div class="pie-fechas" id="pie" hidden>
+      <strong>Las fechas</strong>
+      <ol id="lista-fechas"></ol>
+      <p id="nota-avisos" hidden></p>
+    </div>
+  </div>
+
+</main>
+
+<footer>
+  <div class="envoltorio">
+    <p>
+      Club 9x19 Shooting · Club organizador de eventos de IDPA ·
+      <a href="mailto:9x19shooting@gmail.com">9x19shooting@gmail.com</a> ·
+      <a href="https://www.instagram.com/9x19_shooting/" target="_blank" rel="noopener">@9x19_shooting</a>
+    </p>
+    <p><a href="/privacidad/">Política de privacidad</a></p>
+  </div>
+</footer>
+
+<script src="../archivo.js?v=1"></script>
+</body>
+</html>
