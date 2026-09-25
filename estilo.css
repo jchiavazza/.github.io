@@ -416,6 +416,12 @@ section > .acciones {
   gap: 18px;
 }
 
+/* El JavaScript esconde la fecha que ya pasó poniéndole `hidden`, y sin
+   esta regla no pasaba nada: `display: flex` le gana al `display: none`
+   que el navegador le da a [hidden], así que los torneos viejos seguían
+   anunciados. */
+.proxima-fecha[hidden] { display: none; }
+
 .proxima-fecha {
   display: flex;
   gap: 24px;
