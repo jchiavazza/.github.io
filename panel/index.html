@@ -1258,7 +1258,8 @@
         const datos = document.createElement('p');
         datos.className = 'datos';
         const fecha = m.fecha ? m.fecha.split('-').reverse().join('/') + ' · ' : '';
-        datos.textContent = fecha + m.tiradores + ' tiradores · ' + pct + '% cargado · ';
+        datos.textContent = fecha + m.tiradores + ' tiradores · ' + pct + '% cargado · ' +
+          (m.anual ? 'cuenta para el anual · ' : 'no cuenta para el anual · ');
         const a = document.createElement('a');
         a.href = 'https://9x19shooting.com.ar/envivo/?c=' + m.clave;
         a.target = '_blank';
@@ -1359,6 +1360,22 @@
           botones.appendChild(actualizar);
         }
 
+        // **Qué torneos suman para el campeonato anual.** En la cartelera se
+        // publica todo lo que corre el club —una liga, un torneo invitado,
+        // un entrenamiento—, y eso no puntúa. Mientras no haya ninguno
+        // marcado cuentan todos los del año, así que en cuanto se marca el
+        // primero hay que marcar también a los demás que sí cuentan.
+        const anual = document.createElement('button');
+        anual.type = 'button';
+        anual.textContent = m.anual ? 'No contar para el anual' : 'Contar para el anual';
+        anual.title = m.anual
+          ? 'Hoy suma para el torneo anual.'
+          : 'Hoy no suma para el torneo anual.';
+        anual.addEventListener('click', function () {
+          accionEnVivo(m.clave, 'anual', null, m.anual ? '0' : '1');
+        });
+        botones.appendChild(anual);
+
         const borrar = document.createElement('button');
         borrar.type = 'button';
         borrar.className = 'peligro';
@@ -1378,7 +1395,7 @@
     }
   }
 
-  async function accionEnVivo(claveMatch, accion, cuando) {
+  async function accionEnVivo(claveMatch, accion, cuando, vale) {
     const estadoEV = document.getElementById('estado-envivo');
     estadoEV.className = 'estado';
     estadoEV.textContent = 'Un momento…';
@@ -1386,7 +1403,8 @@
       const r = await fetch(
         FUNCIONES + '/administrarEnVivo?clave=' + encodeURIComponent(clave.value.trim()) +
         '&c=' + encodeURIComponent(claveMatch) + '&accion=' + accion +
-        (cuando ? '&cuando=' + encodeURIComponent(cuando) : ''),
+        (cuando ? '&cuando=' + encodeURIComponent(cuando) : '') +
+        (vale ? '&vale=' + encodeURIComponent(vale) : ''),
         { method: 'POST', body: '' }
       );
       const d = await r.json();
@@ -1408,6 +1426,8 @@
           ' escenarios, como están hoy en la app.',
         fijado: 'Resultados fijados: la web ya no cambia aunque se abra la app.',
         descongelado: 'Descongelado: se actualiza con la próxima sincronización.',
+        'cuenta para el anual': 'Listo: este torneo suma para el campeonato anual.',
+        'no cuenta': 'Listo: este torneo ya no suma para el campeonato anual.',
       }[d.estado] || 'Listo.';
       traerPublicados();
     } catch (e) {
