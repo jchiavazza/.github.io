@@ -65,7 +65,7 @@ window.TORNEOS = {
 
     // Una línea más abajo del importe, para lo que no entra en el resto.
     // Si no hace falta, se deja en '' y no se muestra nada.
-    notaPago: 'Si estás asociado a IDPA la inscripción te sale $40.000 y tenés bonificación en la comida: transferí ese importe y avisanos.',
+    notaPago: 'Si estás asociado a IDPA la inscripción te sale $40.000: transferí ese importe y avisanos.',
 
     // Hasta cuándo se puede inscribir. Pasada esa fecha la página lo dice
     // y no deja enviar; la función tampoco acepta. Dos formas:
