@@ -36,6 +36,38 @@ La leyenda "Aplicación no oficial, sin relación con IDPA" va solo en la
 página de la app, y tiene que quedarse: el club sí está afiliado, pero la
 app no es un producto de IDPA ni está avalada por ellos.
 
+## La galería de cada torneo
+
+Cada fecha tiene su carpeta en `galeria/<slug>/`: las miniaturas en
+`mini/`, las grandes del visor en `g/` y los videos en `v/`, con su
+fotograma de portada en `v/mini/`. La página del torneo dice cuántos hay
+(`data-fotos` y `data-videos`) y `torneos/galeria.js` arma la grilla —los
+videos van primero, con el triángulo encima—.
+
+Las fotos las procesa un script por torneo, `scripts/fotos-<slug>.ps1`,
+copiado del anterior: reduce a 480 px con calidad 78 para la miniatura y
+a 1500 px con calidad 82 para el visor.
+
+**El orden es por fecha de captura, no por nombre.** En una misma carpeta
+conviven fotos del celular (`20260925_…`), reenviadas por WhatsApp
+(`IMG-…`) y descargadas (`WhatsApp Image…`): ordenadas por nombre, los
+días quedan mezclados. La primera foto es la que se ve en la tarjeta del
+torneo, así que conviene forzar una grupal al frente.
+
+**Los videos hay que mirarlos antes de subirlos.** Se copian tal cual, y
+uno del celular puede venir en 1080p a 17 Mbps: 79 MB por 38 segundos,
+que quedan para siempre en el historial del repositorio y se los baja
+enteros cualquiera que abra el video desde el celular. Con ffmpeg:
+
+```bash
+ffmpeg -i entrada.mp4 -vf "scale=720:-2" -c:v libx264 -preset slow -crf 27   -pix_fmt yuv420p -c:a aac -b:a 128k -movflags +faststart salida.mp4
+```
+
+Eso lo dejó en 11 MB, indistinguible en pantalla —se compararon los
+fotogramas al 100%—. Los de WhatsApp ya vienen en 720p y comprimidos: ahí
+sólo vale `-c copy -movflags +faststart`, que mueve el índice al principio
+del archivo para que el video arranque sin bajarse entero.
+
 ## Cómo se publica
 
 Repo `jchiavazza/.github.io`, rama `main`, GitHub Pages desde la raíz. El
