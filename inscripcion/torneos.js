@@ -67,6 +67,10 @@ window.TORNEOS = {
     // Si no hace falta, se deja en '' y no se muestra nada.
     notaPago: 'Si estás asociado a IDPA la inscripción te sale $40.000: transferí ese importe y avisanos.',
 
+    // El pre match del sábado tiene cupo. Acá sólo se dice qué días lo
+    // tienen: el número y la cuenta viven en `functions/inscripciones.js`.
+    cupos: { sabado: true },
+
     // Hasta cuándo se puede inscribir. Pasada esa fecha la página lo dice
     // y no deja enviar; la función tampoco acepta. Dos formas:
     //   '2026-10-08'        el día entero, inclusive
