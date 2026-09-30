@@ -513,7 +513,29 @@ section > .acciones {
    con un hueco a la izquierda. */
 .proxima-fecha.sin-afiche .cuando { width: 190px; }
 
+/* El escudo del club va arriba a la derecha, en el hueco que quedaba
+   libre: al lado del nombre de la sede entraba a 34 px y no se
+   distinguía cuál era. El `padding-right` es lo que evita que el título
+   o el hito se le metan abajo. */
 .proxima-fecha .que { min-width: 0; }
+/* Va flotado y no absoluto: el título y la sede lo rodean, y de ahí para
+   abajo el texto recupera todo el ancho. Con un hueco reservado a la
+   derecha, en el celular quedaba una columna angosta hasta el final. */
+.proxima-fecha .logo-sede {
+  float: right;
+  width: 104px;
+  height: 104px;
+  margin: 0 0 10px 16px;
+  object-fit: contain;
+  background: #FFFFFF;
+  border: 1px solid var(--borde);
+  border-radius: 14px;
+  box-shadow: var(--relieve-chico);
+  padding: 7px;
+}
+/* Los botones no rodean nada: si el logo es más alto que el texto, van
+   abajo de todo y no apretados contra él. */
+.proxima-fecha .acciones { clear: both; }
 
 /* Lo que hace especial a esta fecha, arriba del título. */
 .proxima-fecha .hito {
@@ -547,17 +569,6 @@ section > .acciones {
 .proxima-fecha .donde {
   margin-bottom: 10px;
   font-weight: 600;
-}
-.proxima-fecha .donde img {
-  height: 34px;
-  width: 34px;
-  object-fit: contain;
-  background: #FFFFFF;
-  border: 1px solid var(--borde);
-  border-radius: 8px;
-  padding: 3px;
-  vertical-align: -11px;
-  margin-right: 8px;
 }
 .proxima-fecha .direccion,
 .proxima-fecha .detalle-torneo {
@@ -631,6 +642,11 @@ section > .acciones {
   .proxima-fecha .qr { margin-top: 10px; }
   .proxima-fecha .qr img { width: 76px; height: 76px; }
   .proxima-fecha .qr span { font-size: 11px; text-align: center; }
+
+  .proxima-fecha .logo-sede {
+    width: 72px; height: 72px; border-radius: 12px; padding: 5px;
+    margin-left: 12px;
+  }
 
   .proxima-fecha h3 { font-size: 19px; }
   .proxima-fecha .tier { vertical-align: 2px; }
