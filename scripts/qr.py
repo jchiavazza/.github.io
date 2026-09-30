@@ -20,6 +20,7 @@ fechas = [
     ('santa-fe', 'https://9x19shooting.com.ar/inscripcion/?t=santa-fe'),
     ('parana',   'https://form.jotform.com/253155748498674'),
     ('esperanza','https://9x19shooting.com.ar/inscripcion/?t=esperanza'),
+    ('san-jeronimo-sud', 'https://9x19shooting.com.ar/inscripcion/?t=san-jeronimo-sud'),
 ]
 
 for nombre, url in fechas:

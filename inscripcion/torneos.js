@@ -80,6 +80,32 @@ window.TORNEOS = {
     // divisiones: ['SSP', 'ESP', 'CDP'],
   },
 
+  'san-jeronimo-sud': {
+    titulo: '1º Torneo de IDPA',
+    subtitulo: 'El primero en San Jerónimo Sud',
+    sede: 'Tiro Federal Argentino de San Jerónimo Sud',
+    ciudad: 'San Jerónimo Sud, Santa Fe',
+    direccion: 'Av. 1 de Junio 50',
+    fecha: '14 y 15 de noviembre de 2026',
+    horaComienzo: '8:30',
+
+    dias: [
+      { valor: 'sabado', texto: 'Sábado 14 — Pre Match' },
+      { valor: 'domingo', texto: 'Domingo 15 — Torneo' },
+    ],
+
+    precio: 45000,
+    precioSegundaArma: 20000,
+
+    alias: '9x19shooting.nx',
+    titularAlias: 'José Chiavazza',
+
+    notaPago: 'Si estás asociado a IDPA la inscripción te sale $40.000: transferí ese importe y avisanos.',
+
+    // A las 12 del mediodía del jueves, no a medianoche.
+    cierra: '2026-11-12T12:00',
+  },
+
   'santa-fe': {
     titulo: '4º Torneo Social de IDPA',
     subtitulo: 'Torneo Anual 2026 · Homenaje a Jorge Pastor',
