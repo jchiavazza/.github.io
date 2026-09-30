@@ -81,7 +81,7 @@ window.TORNEOS = {
   },
 
   'san-jeronimo-sud': {
-    titulo: '1º Torneo de IDPA',
+    titulo: '1º Torneo Social de IDPA',
     subtitulo: 'El primero en San Jerónimo Sud',
     sede: 'Tiro Federal Argentino de San Jerónimo Sud',
     ciudad: 'San Jerónimo Sud, Santa Fe',
