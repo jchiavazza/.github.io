@@ -7,7 +7,7 @@
 <meta name="description" content="Formulario de inscripción a los torneos de IDPA que organiza el Club 9x19 Shooting.">
 <link rel="icon" href="/assets/icono.png">
 <link rel="stylesheet" href="/estilo.css?v=70">
-<link rel="stylesheet" href="inscripcion.css?v=4">
+<link rel="stylesheet" href="inscripcion.css?v=5">
 
 <!-- Fuera de los buscadores: a esta página se llega por el botón del
      torneo o por el QR del afiche, no por una búsqueda. Tampoco está en
@@ -145,8 +145,8 @@
     <div class="campo">
       <label for="i-idpa">Número de asociado IDPA</label>
       <input id="i-idpa" name="idpa" type="text" inputmode="numeric" maxlength="20"
-             autocapitalize="off" spellcheck="false">
-      <p class="ayuda">Dejalo vacío si no estás asociado. No hace falta poner nada.</p>
+             value="AR" autocapitalize="characters" spellcheck="false">
+      <p class="ayuda">Viene con el <strong>AR</strong> puesto: escribí los números a continuación. Si no estás asociado, dejalo así o borralo.</p>
     </div>
 
     <h2 class="sub">Cómo vas a participar</h2>
@@ -260,6 +260,6 @@
 </footer>
 
 <script src="torneos.js?v=12"></script>
-<script src="inscripcion.js?v=7"></script>
+<script src="inscripcion.js?v=8"></script>
 </body>
 </html>

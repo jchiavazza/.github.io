@@ -25,6 +25,17 @@
   // cambian de un torneo a otro: por eso viven acá y no en `torneos.js`,
   // que es lo que se edita en cada torneo. Un torneo que corra solo
   // algunas divisiones las recorta con `divisiones: [...]` en su bloque.
+  // El número de IDPA se manda siempre igual: AR y los dígitos, en
+  // mayúsculas. Un "AR" solo es el campo vacío — el que no está asociado
+  // no tiene que borrar nada. **La función hace esta misma cuenta**: acá
+  // es para que la persona vea lo que se va a guardar.
+  function normalizarIdpa(valor) {
+    const limpio = String(valor || '').toUpperCase().replace(/\s+/g, '');
+    if (!limpio || limpio === 'AR') return '';
+    if (/^\d+$/.test(limpio)) return 'AR' + limpio;
+    return limpio;
+  }
+
   const DIVISIONES = [
     { valor: 'CDP', texto: 'CDP — Custom Defensive Pistol' },
     { valor: 'ESP', texto: 'ESP — Enhanced Service Pistol' },
@@ -177,6 +188,13 @@
       })
       .catch(function () { /* informativo: si no contesta, no se toca nada */ });
   }
+
+  // Al salir del campo queda ordenado a la vista: mayúsculas y el AR
+  // adelante si escribió sólo los números.
+  $('i-idpa').addEventListener('blur', function () {
+    const listo = normalizarIdpa(this.value);
+    this.value = listo || 'AR';
+  });
 
   // La división de la segunda arma solo aparece si dijo que corre con una.
   $('i-segunda').addEventListener('change', function () {
@@ -415,7 +433,7 @@
       celular: $('i-celular').value.trim(),
       clu: $('i-clu').value.trim(),
       cluVence: $('i-clu-vence').value,
-      idpa: $('i-idpa').value.trim(),
+      idpa: normalizarIdpa($('i-idpa').value),
       division: elegido_('division'),
       clase: elegido_('clase'),
       categoria: elegido_('categoria'),

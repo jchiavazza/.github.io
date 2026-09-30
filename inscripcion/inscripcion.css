@@ -44,6 +44,9 @@
   margin-bottom: 8px;
 }
 
+/* El número de IDPA, siempre en mayúsculas mientras se escribe. */
+#i-idpa { text-transform: uppercase; }
+
 .opciones {
   display: grid;
   gap: 8px;
