@@ -102,6 +102,12 @@ window.TORNEOS = {
 
     notaPago: 'Si estás asociado a IDPA la inscripción te sale $40.000: transferí ese importe y avisanos.',
 
+    // El sábado tiene cupo. Acá sólo hace falta decir qué días lo tienen:
+    // cuántos lugares quedan lo cuenta el servidor y lo devuelve la lista
+    // de inscriptos, para no contar dos veces al que corre con dos armas.
+    // El número vive en `functions/inscripciones.js`, que es quien decide.
+    cupos: { sabado: true },
+
     // A las 12 del mediodía del jueves, no a medianoche.
     cierra: '2026-11-12T12:00',
   },

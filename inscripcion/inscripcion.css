@@ -78,6 +78,25 @@
 }
 .opcion:has(input:focus-visible) { outline: 2px solid var(--acento); outline-offset: 2px; }
 
+/* Los lugares que quedan en un día con cupo, y el día que ya se llenó. */
+.opcion .quedan {
+  display: inline-block;
+  margin-left: 8px;
+  padding: 2px 8px;
+  border-radius: 999px;
+  background: var(--borde);
+  color: var(--texto-suave);
+  font-size: 13px;
+  font-weight: 600;
+  white-space: nowrap;
+}
+.opcion.completo {
+  cursor: not-allowed;
+  opacity: .55;
+  box-shadow: none;
+}
+.opcion.completo .quedan { color: #a33; }
+
 /* Las casillas sueltas —segunda arma, compromiso— son una línea, no un
    grupo, así que no llevan chapa: alcanzan la casilla y su texto. */
 /* El `.campo label` de estilo.css las pone en negrita, que es lo que

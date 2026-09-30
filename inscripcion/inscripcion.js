@@ -15,6 +15,12 @@
   const INSCRIBIRSE =
     'https://us-central1-x19shooting-sync.cloudfunctions.net/inscribirse';
 
+  // De acá salen los cupos de cada día, ya contados: la página no los
+  // cuenta sola porque la lista viene con las segundas armas desdobladas
+  // y daría de más.
+  const LISTA =
+    'https://us-central1-x19shooting-sync.cloudfunctions.net/listaDeInscriptos';
+
   // Las divisiones, las clases y las categorías son las de IDPA y no
   // cambian de un torneo a otro: por eso viven acá y no en `torneos.js`,
   // que es lo que se edita en cada torneo. Un torneo que corra solo
@@ -118,11 +124,58 @@
   opciones('opciones-clase', 'clase', CLASES);
   opciones('opciones-categoria', 'categoria', CATEGORIAS);
   opciones('opciones-dia', 'dia', torneo.dias);
+  mostrarCupos();
   opciones('opciones-segunda', 'segundaDivision', divisiones);
   opciones('opciones-segunda-clase', 'segundaClase', CLASES);
 
   if (torneo.horaComienzo) {
     $('ayuda-hora').textContent = 'El torneo comienza a las ' + torneo.horaComienzo + ' hs.';
+  }
+
+  // ------------------------------------------------------------------
+  // Los cupos de cada día
+  //
+  // Un día con tope muestra cuántos lugares quedan, y cuando se llena su
+  // opción queda deshabilitada. Esto es para que la persona lo vea: el
+  // que decide es el servidor, que revisa el cupo al recibir el envío.
+  //
+  // Si la consulta falla no pasa nada: el formulario queda como estaba y
+  // el que mande una inscripción a un día lleno recibe el aviso de la
+  // función. Es preferible a no dejar inscribir a nadie porque una
+  // consulta que es sólo informativa no contestó.
+
+  function mostrarCupos() {
+    if (!torneo.cupos) return;
+
+    fetch(LISTA + '?torneo=' + encodeURIComponent(slug))
+      .then((r) => r.json())
+      .then((d) => {
+        if (!d || !d.ok || !d.cupos) return;
+
+        torneo.dias.forEach((o, i) => {
+          const cupo = d.cupos[o.valor];
+          if (!cupo) return;
+
+          const input = document.getElementById('dia-' + i);
+          if (!input) return;
+          const chapa = input.closest('.opcion');
+          const texto = chapa.querySelector('span');
+
+          if (cupo.libres > 0) {
+            texto.insertAdjacentHTML('beforeend',
+              ' <span class="quedan">' +
+              (cupo.libres === 1 ? 'queda 1 lugar' : 'quedan ' + cupo.libres + ' lugares') +
+              '</span>');
+            return;
+          }
+
+          input.disabled = true;
+          input.checked = false;
+          chapa.classList.add('completo');
+          texto.insertAdjacentHTML('beforeend', ' <span class="quedan">COMPLETO</span>');
+        });
+      })
+      .catch(function () { /* informativo: si no contesta, no se toca nada */ });
   }
 
   // La división de la segunda arma solo aparece si dijo que corre con una.
