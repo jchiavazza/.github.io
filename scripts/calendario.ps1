@@ -24,10 +24,10 @@ $fechas = @(
   @{ mes = 'Junio';      dia = '14';      sede = 'Tiro Federal Argentino de Santa Fe' },
   @{ mes = 'Julio';      dia = '12';      sede = 'Tiro Federal de Esperanza' },
   @{ mes = 'Agosto';     dia = '22 y 23'; sede = 'Tiro Federal de Tucumán' },
-  @{ mes = 'Septiembre'; dia = '20';      sede = 'Tiro Federal Argentino de Santa Fe' },
+  @{ mes = 'Septiembre'; dia = '19 y 20'; sede = 'Tiro Federal Argentino de Santa Fe' },
   @{ mes = 'Septiembre'; dia = '26 y 27'; sede = 'Tiro Federal de Paraná'; tipo = 'Clínica y Clasificación' },
-  @{ mes = 'Octubre';    dia = '11';      sede = 'Tiro Federal de Esperanza' },
-  @{ mes = 'Noviembre';  dia = '—';       sede = 'A confirmar' }
+  @{ mes = 'Octubre';    dia = '10 y 11'; sede = 'Tiro Federal de Esperanza' },
+  @{ mes = 'Noviembre';  dia = '14 y 15'; sede = 'Tiro Federal de San Jerónimo Sud' }
 )
 
 # --- lienzo
