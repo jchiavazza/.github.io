@@ -136,6 +136,15 @@
   opciones('opciones-categoria', 'categoria', CATEGORIAS);
   opciones('opciones-dia', 'dia', torneo.dias);
   mostrarCupos();
+
+  // La pregunta del almuerzo aparece sólo donde lo hay.
+  if (torneo.almuerzo) {
+    opciones('opciones-almuerzo', 'almuerzo', [
+      { valor: 'si', texto: 'Sí, me quedo' },
+      { valor: 'no', texto: 'No' },
+    ]);
+    $('grupo-almuerzo').hidden = false;
+  }
   opciones('opciones-segunda', 'segundaDivision', divisiones);
   opciones('opciones-segunda-clase', 'segundaClase', CLASES);
 
@@ -383,6 +392,10 @@
     if (!elegido_('clase')) problemas.push([$('opciones-clase'), 'Elegí la clase']);
     if (!elegido_('dia')) problemas.push([$('opciones-dia'), 'Elegí qué día venís']);
 
+    if (torneo.almuerzo && !elegido_('almuerzo')) {
+      problemas.push([$('opciones-almuerzo'), 'Decinos si te quedás al almuerzo']);
+    }
+
     if ($('i-segunda').checked && !elegido_('segundaDivision')) {
       problemas.push([$('grupo-segunda'), 'Elegí la división de la segunda arma']);
     }
@@ -438,6 +451,7 @@
       clase: elegido_('clase'),
       categoria: elegido_('categoria'),
       dia: elegido_('dia'),
+      almuerzo: elegido_('almuerzo') === 'si',
       segundaArma: $('i-segunda').checked,
       segundaDivision: $('i-segunda').checked ? elegido_('segundaDivision') : '',
       segundaClase: $('i-segunda').checked ? elegido_('segundaClase') : '',

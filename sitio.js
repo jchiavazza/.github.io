@@ -430,9 +430,10 @@
     if (e.key === 'Escape' && !fondo.hidden) cerrarLaLista();
   });
 
-  function unConteo(numero, texto, destacado) {
+  function unConteo(numero, texto, destacado, clase) {
     const caja = document.createElement('div');
     if (destacado) caja.className = 'total';
+    if (clase) caja.classList.add(clase);
     const b = document.createElement('b');
     b.textContent = numero;
     const span = document.createElement('span');
@@ -484,6 +485,12 @@
       unConteo(porDia[clave] || 0, corto);
     });
     unConteo(gente.length, 'en total', true);
+    // Los del almuerzo los cuenta el servidor sobre las inscripciones:
+    // la lista viene con las segundas armas desdobladas y el que corre
+    // con dos aparecería dos veces en la mesa.
+    if (d.almuerzo) unConteo(d.almuerzo.cuantos, 'al almuerzo', false, 'almuerzo');
+
+    tabla.querySelector('.th-almuerzo').hidden = !d.almuerzo;
 
     const cuerpo = tabla.querySelector('tbody');
     cuerpo.innerHTML = '';
@@ -497,6 +504,10 @@
         { campo: 'Clase', texto: CLASES[i.clase] || i.clase },
         { campo: 'D\u00eda', texto: (d.torneo.dias && d.torneo.dias[i.dia]) || i.dia },
       ];
+      // El tilde del almuerzo, sólo en el torneo que lo tiene.
+      if (d.almuerzo) {
+        celdas.push({ clase: 'almuerzo', campo: 'Almuerzo', texto: i.almuerzo ? '✔' : '' });
+      }
       celdas.forEach((c) => {
         const td = document.createElement('td');
         if (c.clase) td.className = c.clase;

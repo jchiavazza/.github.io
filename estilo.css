@@ -1352,6 +1352,12 @@ footer a:hover { text-decoration: underline; }
 /* El total, en el color de acento: es el número que se busca. */
 .conteo-lista .total b { color: var(--acento); }
 
+/* Los del almuerzo van separados, contra el borde derecho: no son una
+   parte del total como los días, son otra cuenta. En rojo, igual que el
+   tilde de cada fila. */
+.conteo-lista .almuerzo { margin-left: auto; }
+.conteo-lista .almuerzo b { color: #C62828; }
+
 .caja-lista .tabla-envoltorio { overflow-x: auto; }
 .caja-lista table {
   border-collapse: collapse;
@@ -1376,6 +1382,16 @@ footer a:hover { text-decoration: underline; }
   white-space: nowrap;
 }
 .caja-lista td.quien { font-weight: 600; }
+
+/* El que se queda al almuerzo lleva un tilde rojo: de un vistazo se ve
+   para cuántos hay que poner la mesa. */
+.caja-lista td.almuerzo {
+  color: #C62828;
+  font-weight: 700;
+  font-size: 17px;
+  text-align: center;
+}
+.caja-lista th:last-child:not(:first-child) { text-align: center; }
 
 /* En el celular la tabla no entra: cada inscripto pasa a ser una tarjeta
    con el nombre del dato al lado del valor, igual que en el panel. */
@@ -1408,4 +1424,6 @@ footer a:hover { text-decoration: underline; }
      busca de un vistazo. */
   .caja-lista td.quien { font-size: 17px; padding-bottom: 6px; }
   .caja-lista td.quien::before { content: none; }
+  .caja-lista td.almuerzo { text-align: left; }
+  .caja-lista td.almuerzo:empty { display: none; }
 }

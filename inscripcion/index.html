@@ -6,7 +6,7 @@
 <title>Inscripción — Club 9x19 Shooting</title>
 <meta name="description" content="Formulario de inscripción a los torneos de IDPA que organiza el Club 9x19 Shooting.">
 <link rel="icon" href="/assets/icono.png">
-<link rel="stylesheet" href="/estilo.css?v=70">
+<link rel="stylesheet" href="/estilo.css?v=71">
 <link rel="stylesheet" href="inscripcion.css?v=5">
 
 <!-- Fuera de los buscadores: a esta página se llega por el botón del
@@ -173,6 +173,13 @@
       <p class="ayuda" id="ayuda-hora"></p>
     </fieldset>
 
+    <!-- Sólo en los torneos que tienen almuerzo: lo prende `torneos.js`. -->
+    <fieldset class="campo grupo" id="grupo-almuerzo" hidden>
+      <legend>¿Te quedás al almuerzo de camaradería? <span class="obligatorio">*</span></legend>
+      <div class="opciones" id="opciones-almuerzo"></div>
+      <p class="ayuda">Es para saber cuántos somos a la mesa.</p>
+    </fieldset>
+
     <div class="campo">
       <label class="casilla">
         <input type="checkbox" id="i-segunda" name="segundaArma">
@@ -259,7 +266,7 @@
   </div>
 </footer>
 
-<script src="torneos.js?v=12"></script>
-<script src="inscripcion.js?v=8"></script>
+<script src="torneos.js?v=13"></script>
+<script src="inscripcion.js?v=9"></script>
 </body>
 </html>
