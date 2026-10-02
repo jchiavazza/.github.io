@@ -512,7 +512,9 @@
         const td = document.createElement('td');
         if (c.clase) td.className = c.clase;
         td.dataset.campo = c.campo;
-        td.textContent = c.texto || '\u2014';
+        // La columna del almuerzo queda en blanco cuando no se queda: un
+        // guión ahí se lee como un dato que falta, y no es eso.
+        td.textContent = c.texto || (c.clase === 'almuerzo' ? '' : '—');
         tr.appendChild(td);
       });
       cuerpo.appendChild(tr);
