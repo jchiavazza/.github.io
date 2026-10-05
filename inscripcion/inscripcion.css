@@ -44,6 +44,15 @@
   margin-bottom: 8px;
 }
 
+/* La pregunta que no corresponde al día elegido: se ve, pero apagada. La
+   ayuda de abajo dice por qué. */
+.campo.apagado legend { color: var(--texto-suave); }
+.campo.apagado .opcion {
+  opacity: .5;
+  cursor: not-allowed;
+  box-shadow: none;
+}
+
 /* El número de IDPA, siempre en mayúsculas mientras se escribe. */
 #i-idpa { text-transform: uppercase; }
 

@@ -71,9 +71,10 @@ window.TORNEOS = {
     // tienen: el número y la cuenta viven en `functions/inscripciones.js`.
     cupos: { sabado: true },
 
-    // Este torneo tiene almuerzo de camaradería: el formulario pregunta
-    // si se queda. El torneo que no lo tenga no lleva esta línea.
-    almuerzo: true,
+    // El almuerzo de camaradería es el domingo: al que viene al pre match
+    // del sábado no se le pregunta. El valor es la clave del día, la
+    // misma de `dias`. El torneo que no lo tenga no lleva esta línea.
+    almuerzo: 'domingo',
 
     // Hasta cuándo se puede inscribir. Pasada esa fecha la página lo dice
     // y no deja enviar; la función tampoco acepta. Dos formas:

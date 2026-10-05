@@ -137,13 +137,53 @@
   opciones('opciones-dia', 'dia', torneo.dias);
   mostrarCupos();
 
-  // La pregunta del almuerzo aparece sólo donde lo hay.
+  // La pregunta del almuerzo aparece sólo donde lo hay, y sólo se puede
+  // contestar el día en que se come: el que viene al pre match del
+  // sábado la ve apagada, con el motivo escrito. Apagarla y no
+  // esconderla es a propósito —así se entera de que el almuerzo existe y
+  // cuándo es, por si quiere cambiar de día—.
   if (torneo.almuerzo) {
     opciones('opciones-almuerzo', 'almuerzo', [
       { valor: 'si', texto: 'Sí, me quedo' },
       { valor: 'no', texto: 'No' },
     ]);
     $('grupo-almuerzo').hidden = false;
+    form.querySelectorAll('[name="dia"]').forEach((r) => {
+      r.addEventListener('change', acomodarAlmuerzo);
+    });
+    acomodarAlmuerzo();
+  }
+
+  function leToca() {
+    return torneo.almuerzo === true || torneo.almuerzo === elegido_('dia');
+  }
+
+  function comoSeLlamaElDia(valor) {
+    const d = torneo.dias.filter((o) => o.valor === valor)[0];
+    return d ? d.texto.split('—')[0].trim() : valor;
+  }
+
+  function acomodarAlmuerzo() {
+    const grupo = $('grupo-almuerzo');
+    const puede = leToca();
+
+    grupo.classList.toggle('apagado', !puede);
+    form.querySelectorAll('[name="almuerzo"]').forEach((r) => {
+      r.disabled = !puede;
+      if (!puede) r.checked = false;
+    });
+
+    const ayuda = grupo.querySelector('.ayuda');
+    if (puede) {
+      ayuda.textContent = 'Es para saber cuántos somos a la mesa.';
+    } else if (!elegido_('dia')) {
+      ayuda.textContent = 'El almuerzo es el ' +
+        comoSeLlamaElDia(torneo.almuerzo).toLowerCase() + ': elegí primero qué día venís.';
+    } else {
+      ayuda.textContent = 'El almuerzo es el ' +
+        comoSeLlamaElDia(torneo.almuerzo).toLowerCase() + ', así que no corre para el ' +
+        comoSeLlamaElDia(elegido_('dia')).toLowerCase() + '.';
+    }
   }
   opciones('opciones-segunda', 'segundaDivision', divisiones);
   opciones('opciones-segunda-clase', 'segundaClase', CLASES);
@@ -392,7 +432,7 @@
     if (!elegido_('clase')) problemas.push([$('opciones-clase'), 'Elegí la clase']);
     if (!elegido_('dia')) problemas.push([$('opciones-dia'), 'Elegí qué día venís']);
 
-    if (torneo.almuerzo && !elegido_('almuerzo')) {
+    if (torneo.almuerzo && leToca() && !elegido_('almuerzo')) {
       problemas.push([$('opciones-almuerzo'), 'Decinos si te quedás al almuerzo']);
     }
 
