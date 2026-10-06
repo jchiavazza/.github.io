@@ -305,7 +305,15 @@
   // se borró de la nube. Sin esta pregunta, un torneo terminado mostraría
   // "falta" en todos los escenarios de todos los tiradores.
   function hayEscenarios() {
-    return (datos.general || []).some((f) => Array.isArray(f.escenarios));
+    if ((datos.general || []).some((f) => Array.isArray(f.escenarios))) return true;
+
+    // Y antes de que se tire el primer puntaje tampoco hay detalle, pero
+    // los nombres de los escenarios sí: es lo que deja ver cómo quedó
+    // armado el match el día que se publica, con el torneo todavía sin
+    // empezar. Una tabla vieja sin detalle no entra por acá: tiene
+    // puntajes cargados, que es lo que la distingue.
+    const m = datos.match || {};
+    return m.cargados === 0 && ((m.etapas || []).length > 0);
   }
   function escenariosAMostrar() {
     return hayEscenarios() ? (datos.match && datos.match.etapas) || [] : [];
