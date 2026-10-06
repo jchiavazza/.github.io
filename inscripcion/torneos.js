@@ -81,8 +81,8 @@ window.TORNEOS = {
     //   '2026-10-08'        el día entero, inclusive
     //   '2026-09-17T12:00'  hasta esa hora, en hora de Argentina
     // Tiene que coincidir con functions/inscripciones.js del repo de Score.
-    // A las 12 del mediodía del jueves, no a medianoche.
-    cierra: '2026-10-08T12:00',
+    // A las 21 del jueves, no a medianoche.
+    cierra: '2026-10-08T21:00',
 
     // Opcional: si un torneo corre solo algunas divisiones, se listan acá
     // y el formulario muestra únicamente esas. Sin esta línea salen todas.
