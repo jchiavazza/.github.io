@@ -129,19 +129,36 @@
      una pantalla ancha entra todo, y en una angosta la tabla se desplaza
      de costado con el puesto y el nombre fijos, para no perder de quién
      es cada renglón. */
-  main.envoltorio.ancho.con-escenarios { max-width: 1560px; }
+  /* Con siete escenarios la tabla mide unos 1620 px: con el tope viejo
+     de 1560 quedaba cortada incluso en un monitor ancho, por poco. El
+     98vw deja el margen justo para que no toque el borde. */
+  main.envoltorio.ancho.con-escenarios { max-width: min(98vw, 1800px); }
   .tabla-ancha { overflow-x: auto; }
   .tabla-ancha table { min-width: 100%; }
+
+  /* La barra de arriba: sólo la barra, sin contenido. Queda pegada al
+     borde de la pantalla mientras se recorre la tabla, así no hay que
+     bajar hasta el último renglón para correrla de costado. */
+  .barra-correr {
+    overflow-x: auto;
+    overflow-y: hidden;
+    position: sticky;
+    top: 0;
+    z-index: 4;
+    background: var(--fondo);
+    padding-top: 6px;
+  }
+  .barra-correr > div { height: 1px; }
 
   th.escenario {
     text-align: center; text-transform: none; letter-spacing: 0;
     font-size: 12px; color: var(--texto); padding: 8px 6px 2px;
-    border-bottom: 0; max-width: 170px;
+    border-bottom: 0; max-width: 150px;
     overflow: hidden; text-overflow: ellipsis;
   }
   th.escenario b { color: var(--acento); margin-right: 4px; }
   th.sub, td.esc {
-    text-align: right; padding: 10px 7px;
+    text-align: right; padding: 10px 5px;
     font-variant-numeric: tabular-nums; white-space: nowrap;
   }
   td.esc { font-size: 14px; }
@@ -196,6 +213,7 @@
 
     /* En el teléfono no hay columnas: los escenarios van en su línea. */
     .tabla-ancha { overflow: visible; }
+    .barra-correr { display: none; }
     td.esc { display: none; }
     .tabla-ancha td.puesto, .tabla-ancha td.tirador {
       position: absolute; background: transparent;
@@ -297,7 +315,13 @@
          elegida: debajo de la general no hay nada que separar. -->
     <div class="filtros clases" id="filtros-clase" hidden></div>
 
-    <div class="tabla-ancha">
+    <!-- La barra para correr la tabla de costado, arriba y pegada: con
+         siete escenarios la tabla no entra en ninguna pantalla, y la
+         barra propia del contenedor queda al pie de 34 renglones. La
+         arma y la sincroniza envivo.js; sin escenarios no se muestra. -->
+    <div class="barra-correr" id="barra-correr" aria-hidden="true" hidden><div></div></div>
+
+    <div class="tabla-ancha" id="tabla-ancha">
       <table id="tabla">
         <!-- Lo arma envivo.js: lleva una columna por escenario y la
              cantidad de escenarios la decide cada match. -->
@@ -340,6 +364,6 @@
   </div>
 </footer>
 
-<script src="envivo.js?v=17"></script>
+<script src="envivo.js?v=18"></script>
 </body>
 </html>

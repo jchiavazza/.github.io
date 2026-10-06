@@ -505,6 +505,40 @@
     });
 
     puestosAntes[nombreDelFiltro()] = ahora;
+    acomodarBarra();
+  }
+
+  // La barra de arriba es una barra de desplazamiento y nada más: se le
+  // da el ancho real de la tabla y las dos se siguen. Aparece sólo cuando
+  // la tabla no entra, así que en una pantalla ancha no se ve.
+  //
+  // `avisando` evita el ida y vuelta: mover una dispara el scroll de la
+  // otra, que volvería a mover la primera.
+  let avisando = false;
+  function acomodarBarra() {
+    const barra = $('barra-correr');
+    const caja = $('tabla-ancha');
+    if (!barra || !caja) return;
+
+    const sobra = caja.scrollWidth - caja.clientWidth;
+    barra.hidden = sobra < 8;
+    if (barra.hidden) return;
+
+    barra.firstElementChild.style.width = caja.scrollWidth + 'px';
+    barra.scrollLeft = caja.scrollLeft;
+
+    if (barra.dataset.atada) return;
+    barra.dataset.atada = '1';
+
+    const seguir = (de, a) => de.addEventListener('scroll', () => {
+      if (avisando) return;
+      avisando = true;
+      a.scrollLeft = de.scrollLeft;
+      avisando = false;
+    });
+    seguir(barra, caja);
+    seguir(caja, barra);
+    window.addEventListener('resize', acomodarBarra);
   }
 
   function dibujarCabecera() {
