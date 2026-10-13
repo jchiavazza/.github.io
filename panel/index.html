@@ -1109,6 +1109,10 @@
     ['Direccion', (f) => (f.esSegunda ? '' : f.direccion || '')],
     ['Tenia que pagar', (f) => (f.esSegunda ? '' : f.total || '')],
     ['Comprobante', (f) => (f.esSegunda ? '' : (f.trajoComprobante ? 'si' : 'no'))],
+    // Las inscripciones anteriores al aviso de condiciones no lo tienen:
+    // van vacias, no como un "no" que diria algo que no pasó.
+    ['Acepto las condiciones', (f) =>
+      (f.esSegunda || f.condiciones === undefined ? '' : (f.condiciones ? 'si' : 'NO'))],
   ];
 
   // Quien corre con dos armas es **dos tiradores** para 9x19 Score: la app

@@ -7,7 +7,7 @@
 <meta name="description" content="Formulario de inscripción a los torneos de IDPA que organiza el Club 9x19 Shooting.">
 <link rel="icon" href="/assets/icono.png">
 <link rel="stylesheet" href="/estilo.css?v=71">
-<link rel="stylesheet" href="inscripcion.css?v=7">
+<link rel="stylesheet" href="inscripcion.css?v=8">
 
 <!-- Fuera de los buscadores: a esta página se llega por el botón del
      torneo o por el QR del afiche, no por una búsqueda. Tampoco está en
@@ -87,6 +87,106 @@
          robots y por eso el envío se descarta. La misma del formulario
          de contacto de la portada. -->
     <input type="checkbox" name="botcheck" class="trampa" tabindex="-1" autocomplete="off">
+
+    <!-- Las condiciones del calendario 2027. Van adentro del formulario y
+         arriba de todo: lo de la membresía cambia quién entra al match de
+         resultados, y enterarse después del torneo es tarde. Estando
+         adentro del form, aparecen y desaparecen con él —no se ven cuando
+         el torneo no existe o ya cerró— sin que el guion haga nada.
+
+         El texto completo se despliega acá mismo y no en otra página: el
+         que lo va a leer, lo lee ahora; mandarlo a otro lado es perderlo.
+         Abajo de todo hay que aceptarlo, y esa aceptación se guarda. -->
+    <section class="chapa aviso-grande condiciones">
+      <p class="titulo-aviso">Aviso importante</p>
+      <ul>
+        <li>
+          Sólo los tiradores con <strong>membresía activa en idpa.com</strong>
+          forman parte del match de resultados.
+        </li>
+        <li>
+          Los tiradores no miembros participan como <strong>invitados</strong>
+          y no figuran en los resultados oficiales.
+        </li>
+        <li>
+          La inscripción cierra indefectiblemente
+          <strong>el jueves anterior al torneo, a las 21:00</strong>.
+        </li>
+        <li>No se aceptan inscripciones fuera de término ni el día del evento.</li>
+      </ul>
+
+      <details id="condiciones-completas">
+        <summary>Leer las condiciones completas antes de registrarte</summary>
+
+        <p>
+          Con el inicio del calendario 2027, informamos las condiciones de
+          participación y organización aplicables a los torneos de IDPA que
+          realiza el Club 9x19 Shooting.
+        </p>
+
+        <h3>Condiciones de participación</h3>
+        <ul>
+          <li>
+            Forman parte del match de resultados únicamente los tiradores
+            que se encuentren registrados como <strong>miembros activos en
+            idpa.com</strong> al momento del torneo.
+          </li>
+          <li>
+            Los tiradores que no cuenten con membresía activa pueden
+            participar del evento, pero son considerados <strong>tiradores
+            invitados</strong>: no forman parte del match en las divisiones y
+            categorías oficiales de IDPA, ni del medallero del torneo.
+          </li>
+          <li>
+            Los tiradores nuevos, que nunca hayan participado previamente en
+            torneos de IDPA, pueden registrarse como invitados hasta un
+            máximo de <strong>tres (3) torneos</strong>, con el objetivo de
+            conocer la disciplina antes de gestionar su membresía.
+          </li>
+          <li>
+            La responsabilidad de contar con la membresía activa al momento
+            del torneo recae exclusivamente en cada tirador.
+          </li>
+        </ul>
+        <p>
+          Estas disposiciones tienen como objetivo ordenar, profesionalizar y
+          alinear los torneos con los estándares internacionales de IDPA.
+        </p>
+
+        <h3>Consideraciones organizativas</h3>
+        <ul>
+          <li>
+            La conformación de escuadras, la asignación de oficiales de
+            seguridad y el armado de las etapas se realizan en función del
+            número real de tiradores registrados.
+          </li>
+          <li>Las ausencias sin aviso generan demoras y afectan la organización del evento.</li>
+          <li>
+            Sólo se devuelve la inscripción si el torneo se suspende, sin
+            excepción: la preinscripción es un compromiso.
+          </li>
+        </ul>
+
+        <h3>Inscripción</h3>
+        <ul>
+          <li>
+            La inscripción se realiza exclusivamente a través del formulario
+            de <strong>www.9x19shooting.com.ar</strong>, donde cada tirador se
+            registra y elige su escuadra.
+          </li>
+          <li>
+            El torneo cuenta con cupos limitados. Inscribite únicamente si
+            tenés la certeza de asistir.
+          </li>
+          <li>No se aceptan inscripciones fuera de término ni el día del evento.</li>
+        </ul>
+
+        <p class="nota">
+          La inscripción al torneo implica la aceptación de estas condiciones
+          de participación y organización.
+        </p>
+      </details>
+    </section>
 
     <h2 class="sub">Tus datos</h2>
 
@@ -233,6 +333,15 @@
     </div>
 
     <div class="campo">
+      <label class="casilla">
+        <input type="checkbox" id="i-condiciones" name="condiciones" required>
+        <span>Leí y acepto las
+          <a href="#condiciones-completas">condiciones de participación y
+          organización</a> de los torneos del club.</span>
+      </label>
+    </div>
+
+    <div class="campo">
       <label for="i-comprobante">Comprobante de la transferencia</label>
       <input id="i-comprobante" name="comprobante" type="file"
              accept="image/*,application/pdf">
@@ -276,6 +385,6 @@
 </footer>
 
 <script src="torneos.js?v=19"></script>
-<script src="inscripcion.js?v=12"></script>
+<script src="inscripcion.js?v=13"></script>
 </body>
 </html>

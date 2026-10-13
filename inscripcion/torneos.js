@@ -135,8 +135,8 @@ window.TORNEOS = {
     // de la función; acá está para que la página pregunte.
     escuadras: { cuantas: 5, desde: 2, porEscuadra: 12, dia: 'domingo' },
 
-    // A las 12 del mediodía del jueves, no a medianoche.
-    cierra: '2026-11-12T12:00',
+    // El jueves a las 21, como dice el aviso del formulario.
+    cierra: '2026-11-12T21:00',
   },
 
   'santa-fe': {

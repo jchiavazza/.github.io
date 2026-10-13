@@ -261,3 +261,42 @@
   .opcion { padding: 12px 14px; }
   .marca-idpa { margin-top: 36px; }
 }
+
+/* ---------------------------------- las condiciones del torneo */
+
+/* El aviso que abre el formulario. Es la misma chapa de aviso del resto
+   de la página, con las viñetas y el desplegable del texto largo. */
+.condiciones { margin: 0 0 26px; }
+
+.condiciones .titulo-aviso {
+  font-weight: 700;
+  letter-spacing: 0.02em;
+  text-transform: uppercase;
+  margin: 0 0 10px;
+}
+
+.condiciones ul {
+  margin: 0;
+  padding-left: 20px;
+}
+.condiciones li { margin-bottom: 7px; }
+.condiciones li:last-child { margin-bottom: 0; }
+
+.condiciones details { margin-top: 14px; }
+
+/* Se toca entero, no sólo la flechita: en el celular el blanco de un
+   triangulito de ocho píxeles no se acierta. */
+.condiciones summary {
+  cursor: pointer;
+  font-weight: 600;
+  padding: 8px 0;
+}
+
+.condiciones details[open] summary { margin-bottom: 6px; }
+
+.condiciones details h3 {
+  font-size: 1rem;
+  margin: 18px 0 8px;
+}
+.condiciones details p { margin: 0 0 10px; }
+.condiciones details ul { margin-bottom: 12px; }

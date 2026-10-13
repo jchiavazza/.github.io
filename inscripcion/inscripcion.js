@@ -235,6 +235,15 @@
       ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]));
   }
 
+  // El enlace del tilde abre el desplegable de arriba: sin esto saltaba a
+  // un `details` cerrado y parecia que no habia nada que leer.
+  const alDesplegable = document.querySelector('a[href="#condiciones-completas"]');
+  if (alDesplegable) {
+    alDesplegable.addEventListener('click', () => {
+      $('condiciones-completas').open = true;
+    });
+  }
+
   if (torneo.escuadras) {
     form.querySelectorAll('[name="dia"]').forEach((r) => {
       r.addEventListener('change', dibujarEscuadras);
@@ -536,6 +545,11 @@
       problemas.push([$('grupo-segunda-clase'), 'Elegí la clase de la segunda arma']);
     }
 
+    if (!$('i-condiciones').checked) {
+      problemas.push([$('i-condiciones'),
+        'Para inscribirte tenés que aceptar las condiciones de participación']);
+    }
+
     if (!$('i-compromiso').checked) {
       problemas.push([$('i-compromiso'), 'Para inscribirte tenés que aceptar el compromiso de pago']);
     }
@@ -589,6 +603,7 @@
       segundaDivision: $('i-segunda').checked ? elegido_('segundaDivision') : '',
       segundaClase: $('i-segunda').checked ? elegido_('segundaClase') : '',
       compromiso: $('i-compromiso').checked,
+      condiciones: $('i-condiciones').checked,
       botcheck: form.botcheck.checked,
       comprobante: adjunto,
     };

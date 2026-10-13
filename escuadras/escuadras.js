@@ -87,6 +87,7 @@
     $('escuadras').innerHTML = (datos.escuadras || []).map((e) => {
       const llena = e.libres !== null && e.libres <= 0;
       const aca = !!(datos.mia && datos.mia.escuadra === e.numero);
+      const cuando = e.preMatch ? (e.nota || '') : (t.dia || '');
       const quienes = e.tiradores.length
         ? e.tiradores.map((x) =>
             '<li>' + esc(x.apellido + ', ' + x.nombre) +
@@ -102,7 +103,10 @@
       return (
         '<div class="escuadra' + (llena ? ' completa' : '') + (aca ? ' aca' : '') + '">' +
         '<span class="cabeza"><b>Escuadra ' + e.numero +
-        (e.preMatch && e.nota ? ' · ' + esc(e.nota) : '') +
+        // El día al lado del número, en todas: el pre match trae el suyo y
+        // las demás son las del día del torneo. Son dos días distintos en
+        // la misma lista y el número solo no lo dice.
+        (cuando ? ' · ' + esc(cuando) : '') +
         (aca ? ' — estás acá' : '') + '</b>' +
         '<span class="cuantos">' + (llena ? 'COMPLETA' : e.ocupados + '/' + e.tope) + '</span>' +
         '</span><ul>' + quienes + '</ul>' + boton + '</div>');
