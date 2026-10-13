@@ -18,16 +18,16 @@ $salida = $Destino
 # --- las fechas del año
 
 $fechas = @(
-  @{ mes = 'Marzo';      dia = '22';      sede = 'Tiro Federal Argentino de Santa Fe' },
-  @{ mes = 'Abril';      dia = '12';      sede = 'Club Fénix, San Luis' },
-  @{ mes = 'Mayo';       dia = '31';      sede = 'Tiro Federal de Esperanza' },
-  @{ mes = 'Junio';      dia = '14';      sede = 'Tiro Federal Argentino de Santa Fe' },
-  @{ mes = 'Julio';      dia = '12';      sede = 'Tiro Federal de Esperanza' },
-  @{ mes = 'Agosto';     dia = '22 y 23'; sede = 'Tiro Federal de Tucumán' },
-  @{ mes = 'Septiembre'; dia = '19 y 20'; sede = 'Tiro Federal Argentino de Santa Fe' },
-  @{ mes = 'Septiembre'; dia = '26 y 27'; sede = 'Tiro Federal de Paraná'; tipo = 'Clínica y Clasificación' },
-  @{ mes = 'Octubre';    dia = '10 y 11'; sede = 'Tiro Federal de Esperanza' },
-  @{ mes = 'Noviembre';  dia = '14 y 15'; sede = 'Tiro Federal de San Jerónimo Sud' }
+  @{ mes = 'Febrero';    dia = '20 y 21'; sede = 'Tiro Federal de Esperanza'; tipo = ([char]0x43 + 'lasificaci' + [char]0xF3 + 'n') },
+  @{ mes = 'Marzo';      dia = '13';      sede = 'Tiro Federal de Esperanza'; tipo = ('1' + [char]0xAA + ' fecha') },
+  @{ mes = 'Abril';      dia = '11';      sede = 'Tiro Federal Argentino de Santa Fe'; tipo = ('2' + [char]0xAA + ' fecha') },
+  @{ mes = 'Mayo';       dia = '16';      sede = ('Tiro Federal de San Jer' + [char]0xF3 + 'nimo Sud'); tipo = ('3' + [char]0xAA + ' fecha') },
+  @{ mes = 'Junio';      dia = '13';      sede = 'Tiro Federal de Esperanza'; tipo = ('4' + [char]0xAA + ' fecha') },
+  @{ mes = 'Julio';      dia = '11';      sede = 'Tiro Federal Argentino de Santa Fe'; tipo = ('5' + [char]0xAA + ' fecha') },
+  @{ mes = 'Agosto';     dia = '8';       sede = ('Tiro Federal de San Jer' + [char]0xF3 + 'nimo Sud'); tipo = ('6' + [char]0xAA + ' fecha') },
+  @{ mes = 'Septiembre'; dia = '5';       sede = 'Tiro Federal de Esperanza'; tipo = ('7' + [char]0xAA + ' fecha') },
+  @{ mes = 'Octubre';    dia = '10';      sede = 'Tiro Federal Argentino de Santa Fe'; tipo = ('8' + [char]0xAA + ' fecha ' + [char]0xB7 + ' Copa') },
+  @{ mes = 'Noviembre';  dia = '7';       sede = 'Tiro Federal de Esperanza'; tipo = ('9' + [char]0xAA + ' fecha') }
 )
 
 # --- lienzo
@@ -119,7 +119,7 @@ $brochaDorado = New-Object System.Drawing.SolidBrush $dorado
 
 # "CALENDARIO 2026" en dos colores, medido para quedar centrado
 $t1 = 'CALENDARIO '
-$t2 = '2026'
+$t2 = '2027'
 $a1 = $g.MeasureString($t1, $fTitulo).Width
 $a2 = $g.MeasureString($t2, $fTitulo).Width
 $x = ($W - ($a1 + $a2)) / 2
@@ -133,7 +133,7 @@ $y += 108
 
 $fSub = Fuente 'Segoe UI' 34 ([System.Drawing.FontStyle]::Regular)
 $gris = New-Object System.Drawing.SolidBrush ([System.Drawing.Color]::FromArgb(168, 160, 148))
-ConSombra $g 'Fechas tentativas año 2026' $fSub $blanco (New-Object System.Drawing.RectangleF 0, $y, $W, 44) $centro
+ConSombra $g 'Fechas tentativas año 2027' $fSub $blanco (New-Object System.Drawing.RectangleF 0, $y, $W, 44) $centro
 $y += 62
 
 # Línea separadora
