@@ -53,6 +53,34 @@
   box-shadow: none;
 }
 
+/* Las escuadras: cada una es una tarjeta con su gente a la vista, que es
+   justamente para lo que se elige. */
+.escuadras { display: grid; gap: 10px; }
+.escuadra {
+  display: block; padding: 12px 14px;
+  border-radius: 12px; border: 1px solid var(--borde);
+  background: var(--fondo); box-shadow: var(--relieve-chico);
+  cursor: pointer;
+}
+.escuadra .cabeza { display: flex; align-items: center; gap: 10px; }
+.escuadra input { width: 20px; height: 20px; accent-color: var(--acento); flex: 0 0 auto; }
+.escuadra b { font-size: 16px; }
+.escuadra .cuantos {
+  margin-left: auto; font-size: 13px; font-weight: 700;
+  color: var(--texto-suave); white-space: nowrap;
+}
+.escuadra ul {
+  margin: 8px 0 0; padding: 0 0 0 30px; list-style: none;
+  font-size: 14px; color: var(--texto-suave);
+}
+.escuadra li { padding: 1px 0; }
+.escuadra li span { font-size: 12px; opacity: .8; }
+.escuadra li.vacia { font-style: italic; opacity: .75; }
+.escuadra:has(input:checked) { box-shadow: var(--hundido); }
+.escuadra:has(input:checked) b { color: var(--acento); }
+.escuadra.completa { opacity: .55; cursor: not-allowed; box-shadow: none; }
+.escuadra.completa .cuantos { color: #a33; }
+
 /* El número de IDPA, siempre en mayúsculas mientras se escribe. */
 #i-idpa { text-transform: uppercase; }
 

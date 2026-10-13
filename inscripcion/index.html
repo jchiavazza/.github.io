@@ -7,7 +7,7 @@
 <meta name="description" content="Formulario de inscripción a los torneos de IDPA que organiza el Club 9x19 Shooting.">
 <link rel="icon" href="/assets/icono.png">
 <link rel="stylesheet" href="/estilo.css?v=71">
-<link rel="stylesheet" href="inscripcion.css?v=6">
+<link rel="stylesheet" href="inscripcion.css?v=7">
 
 <!-- Fuera de los buscadores: a esta página se llega por el botón del
      torneo o por el QR del afiche, no por una búsqueda. Tampoco está en
@@ -180,6 +180,15 @@
       <p class="ayuda">Es para saber cuántos somos a la mesa.</p>
     </fieldset>
 
+    <!-- Sólo en los torneos que arman escuadras, y sólo el día que se
+         corre: lo prende `torneos.js`. Cada escuadra muestra quiénes ya
+         están, que es para lo que sirve elegirla. -->
+    <fieldset class="campo grupo" id="grupo-escuadra" hidden>
+      <legend>¿En qué escuadra querés tirar? <span class="obligatorio">*</span></legend>
+      <div class="escuadras" id="opciones-escuadra"></div>
+      <p class="ayuda" id="ayuda-escuadra"></p>
+    </fieldset>
+
     <div class="campo">
       <label class="casilla">
         <input type="checkbox" id="i-segunda" name="segundaArma">
@@ -266,7 +275,7 @@
   </div>
 </footer>
 
-<script src="torneos.js?v=15"></script>
-<script src="inscripcion.js?v=10"></script>
+<script src="torneos.js?v=16"></script>
+<script src="inscripcion.js?v=11"></script>
 </body>
 </html>

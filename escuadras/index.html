@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<!--
+  Las escuadras de un torneo, como van quedando.
+
+  Entrar sin más es mirar. Con `&k=<llave>` —la que le llega a cada
+  inscripto en su correo— aparecen los botones para moverse: esa llave
+  mueve una sola inscripción y ninguna otra, así que no hace falta
+  ninguna cuenta.
+
+  Los datos salen de `escuadrasDelTorneo`, en el repositorio de la App.
+-->
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Escuadras — Club 9x19 Shooting</title>
+<meta name="description" content="Cómo van quedando las escuadras del torneo: quiénes están en cada una y cuántos lugares quedan.">
+<link rel="icon" href="/assets/icono.png">
+<link rel="stylesheet" href="/estilo.css?v=71">
+<link rel="stylesheet" href="/inscripcion/inscripcion.css?v=7">
+
+<meta name="robots" content="noindex">
+<meta property="og:type" content="website">
+<meta property="og:title" content="Escuadras del torneo">
+<meta property="og:locale" content="es_AR">
+
+<style>
+  .cabecera-escuadras { text-align: center; margin-bottom: 6px; }
+  .cabecera-escuadras h1 { font-size: 28px; margin-bottom: 4px; }
+  .cabecera-escuadras .datos { color: var(--texto-suave); font-size: 15px; }
+
+  /* El cartel de arriba: dice si estás mirando o si podés moverte. */
+  .soy {
+    max-width: 640px; margin: 16px auto 0; padding: 12px 18px;
+    border-radius: 12px; border: 1px solid var(--borde);
+    box-shadow: var(--relieve-chico); text-align: center; font-size: 15px;
+  }
+  .soy b { color: var(--acento); }
+  .soy.mal { color: var(--peligro, #8A2018); }
+
+  .escuadras { max-width: 720px; margin: 18px auto 0; }
+  .escuadra { cursor: default; }
+  .escuadra .mover {
+    margin-left: 30px; margin-top: 10px;
+    padding: 8px 16px; font-size: 14px;
+  }
+  .escuadra.aca { box-shadow: var(--hundido); }
+  .escuadra.aca b { color: var(--acento); }
+  .aviso-escuadras { text-align: center; color: var(--texto-suave); margin-top: 18px; }
+  .aviso-escuadras.mal { color: var(--peligro, #8A2018); }
+</style>
+</head>
+<body>
+
+<div class="envoltorio">
+  <div class="barra">
+    <a class="marca" href="/"><img src="/assets/logo-club.png" alt="Club 9x19 Shooting"></a>
+    <img class="medalla" src="/assets/medalla.png" alt="Medalla del club: 9x19 Shooting, IDPA Argentina">
+    <nav class="corto">
+      <a href="/">← Volver al inicio</a>
+    </nav>
+  </div>
+</div>
+
+<main class="envoltorio">
+  <header class="cabecera-escuadras">
+    <h1 id="e-titulo">Escuadras</h1>
+    <p class="datos" id="e-datos"></p>
+  </header>
+
+  <div class="soy" id="soy" hidden></div>
+  <div class="escuadras" id="escuadras"></div>
+  <p class="aviso-escuadras" id="aviso">Buscando…</p>
+</main>
+
+<footer>
+  <div class="envoltorio">
+    <p>
+      Club 9x19 Shooting · Club organizador de eventos de IDPA ·
+      <a href="mailto:9x19shooting@gmail.com">9x19shooting@gmail.com</a>
+    </p>
+    <p><a href="/privacidad/">Política de privacidad</a></p>
+  </div>
+</footer>
+
+<script src="/inscripcion/torneos.js?v=16"></script>
+<script src="escuadras.js?v=1"></script>
+</body>
+</html>

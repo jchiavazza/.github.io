@@ -198,6 +198,10 @@
           <div class="acciones">
             <a class="boton principal" href="/inscripcion/?t=san-jeronimo-sud">Inscribirme</a>
             <button class="boton" type="button" data-inscriptos="san-jeronimo-sud">Inscriptos</button>
+            <!-- Aparece sólo si el torneo arma escuadras: lo prende
+                 `sitio.js` mirando `torneos.js`, así no hay que acordarse
+                 de borrar el botón en el torneo que no las usa. -->
+            <a class="boton" data-escuadras="san-jeronimo-sud" href="/escuadras/?t=san-jeronimo-sud" hidden>Escuadras</a>
           </div>
         </div>
       </article>
@@ -633,6 +637,7 @@
   </div>
 </footer>
 
-<script src="sitio.js?v=41"></script>
+<script src="inscripcion/torneos.js?v=16"></script>
+<script src="sitio.js?v=42"></script>
 </body>
 </html>

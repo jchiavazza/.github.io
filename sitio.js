@@ -526,6 +526,14 @@
   document.querySelectorAll('[data-inscriptos]').forEach((b) => {
     b.addEventListener('click', () => mostrar(b.dataset.inscriptos, b));
   });
+
+  // El botón de escuadras sólo en el torneo que las arma. Se mira
+  // `torneos.js`, que es donde ya se declara: un botón a mano se
+  // olvidaría puesto en el torneo siguiente.
+  document.querySelectorAll('[data-escuadras]').forEach((b) => {
+    const t = (window.TORNEOS || {})[b.dataset.escuadras];
+    b.hidden = !(t && t.escuadras);
+  });
 })();
 
 

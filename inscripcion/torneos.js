@@ -29,6 +29,17 @@
 // a la página. Es la misma duplicación deliberada que DIAS_VENCIMIENTO
 // entre la App y sus Cloud Functions.
 // ---------------------------------------------------------------------
+//
+// LAS ESCUADRAS
+//
+// El torneo que las arma lleva `escuadras: { cuantas: 5, porEscuadra: 15,
+// dia: 'domingo' }`. El formulario muestra las cinco con quiénes ya están
+// y el tirador elige la suya; después puede cambiarse desde el enlace que
+// le llega en el correo, mientras haya lugar.
+//
+// **El número manda del lado de la función**, igual que los precios: acá
+// está para que la página sepa que hay que preguntar.
+// ---------------------------------------------------------------------
 
 window.TORNEOS = {
 

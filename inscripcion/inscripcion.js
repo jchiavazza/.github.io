@@ -21,6 +21,10 @@
   const LISTA =
     'https://us-central1-x19shooting-sync.cloudfunctions.net/listaDeInscriptos';
 
+  // Cómo van las escuadras: cuántos hay en cada una y quiénes.
+  const ESCUADRAS =
+    'https://us-central1-x19shooting-sync.cloudfunctions.net/escuadrasDelTorneo';
+
   // Las divisiones, las clases y las categorías son las de IDPA y no
   // cambian de un torneo a otro: por eso viven acá y no en `torneos.js`,
   // que es lo que se edita en cada torneo. Un torneo que corra solo
@@ -152,6 +156,85 @@
       r.addEventListener('change', acomodarAlmuerzo);
     });
     acomodarAlmuerzo();
+  }
+
+  // ------------------------------------------------------------------
+  // Las escuadras
+  //
+  // Se muestran con los que ya eligieron: la gracia de elegir escuadra es
+  // poder quedar con los conocidos, y para eso hay que verlos. Sólo
+  // aparecen el día que se corre —al pre match no se le pregunta— y la
+  // que llegó a su tope queda deshabilitada.
+  //
+  // Si la consulta falla, el grupo no se muestra y la inscripción sigue:
+  // la función avisa que falta elegir y se arregla recargando. Dejar a
+  // alguien sin poder anotarse porque una lista no cargó sería peor.
+
+  let escuadras = null;
+
+  function hayEscuadras() {
+    const e = torneo.escuadras;
+    if (!e || !e.cuantas) return false;
+    return !e.dia || e.dia === elegido_('dia');
+  }
+
+  function traerEscuadras() {
+    if (!torneo.escuadras || escuadras) return Promise.resolve();
+    return fetch(ESCUADRAS + '?torneo=' + encodeURIComponent(slug))
+      .then((r) => r.json())
+      .then((d) => { if (d && d.ok) escuadras = d.escuadras; })
+      .catch(function () { /* informativo: se sigue sin la lista */ });
+  }
+
+  function dibujarEscuadras() {
+    const grupo = $('grupo-escuadra');
+    if (!torneo.escuadras) return;
+
+    if (!hayEscuadras()) {
+      grupo.hidden = true;
+      form.querySelectorAll('[name="escuadra"]').forEach((r) => { r.checked = false; });
+      return;
+    }
+
+    traerEscuadras().then(() => {
+      if (!escuadras) { grupo.hidden = true; return; }
+      grupo.hidden = false;
+
+      $('opciones-escuadra').innerHTML = escuadras.map((e) => {
+        const llena = e.libres !== null && e.libres <= 0;
+        const quienes = e.tiradores.length
+          ? e.tiradores.map((x) =>
+              '<li>' + esc(x.apellido + ', ' + x.nombre) +
+              ' <span>' + esc(x.division + ' ' + x.clase) + '</span></li>').join('')
+          : '<li class="vacia">Todavía no eligió nadie</li>';
+
+        return (
+          '<label class="escuadra' + (llena ? ' completa' : '') + '">' +
+          '<span class="cabeza">' +
+          '<input type="radio" name="escuadra" value="' + e.numero + '"' +
+          (llena ? ' disabled' : '') + '>' +
+          '<b>Escuadra ' + e.numero + '</b>' +
+          '<span class="cuantos">' + (llena ? 'COMPLETA' : e.ocupados + '/' + e.tope) + '</span>' +
+          '</span><ul>' + quienes + '</ul></label>');
+      }).join('');
+
+      const libres = escuadras.filter((e) => e.libres === null || e.libres > 0).length;
+      $('ayuda-escuadra').textContent = libres
+        ? 'Elegí dónde querés tirar. Después podés cambiarte desde el enlace que te llega por correo.'
+        : 'No queda lugar en ninguna escuadra: escribinos y lo resolvemos.';
+    });
+  }
+
+  function esc(s) {
+    return String(s).replace(/[&<>"]/g, (c) =>
+      ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]));
+  }
+
+  if (torneo.escuadras) {
+    form.querySelectorAll('[name="dia"]').forEach((r) => {
+      r.addEventListener('change', dibujarEscuadras);
+    });
+    dibujarEscuadras();
   }
 
   function leToca() {
@@ -436,6 +519,10 @@
       problemas.push([$('opciones-almuerzo'), 'Decinos si te quedás al almuerzo']);
     }
 
+    if (hayEscuadras() && !$('grupo-escuadra').hidden && !elegido_('escuadra')) {
+      problemas.push([$('opciones-escuadra'), 'Elegí en qué escuadra querés tirar']);
+    }
+
     if ($('i-segunda').checked && !elegido_('segundaDivision')) {
       problemas.push([$('grupo-segunda'), 'Elegí la división de la segunda arma']);
     }
@@ -492,6 +579,7 @@
       categoria: elegido_('categoria'),
       dia: elegido_('dia'),
       almuerzo: elegido_('almuerzo') === 'si',
+      escuadra: Number(elegido_('escuadra')) || 0,
       segundaArma: $('i-segunda').checked,
       segundaDivision: $('i-segunda').checked ? elegido_('segundaDivision') : '',
       segundaClase: $('i-segunda').checked ? elegido_('segundaClase') : '',
