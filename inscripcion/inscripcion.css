@@ -300,3 +300,15 @@
 }
 .condiciones details p { margin: 0 0 10px; }
 .condiciones details ul { margin-bottom: 12px; }
+
+/* El renglón que cierra las condiciones: hundido en la chapa y en negrita,
+   como el total a pagar. Es lo que firma el que se inscribe. */
+.condiciones .cierre {
+  margin: 20px 0 0;
+  padding: 14px 16px;
+  border-radius: 12px;
+  box-shadow: var(--hundido);
+  color: var(--texto);
+  font-weight: 700;
+  line-height: 1.45;
+}
