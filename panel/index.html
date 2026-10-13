@@ -1058,7 +1058,10 @@
     ['Clase', (f) => f.clase || ''],
     ['Categoria especial', (f) => COMO_SE_DICE[f.categoria] || f.categoria || ''],
     ['Club', () => ''],
-    ['Escuadra', () => ''],
+    // La escuadra que eligió al inscribirse, si el torneo las arma. El que
+    // corre con dos armas baja en dos renglones y va en la misma: es una
+    // persona y tira una vez con cada una.
+    ['Escuadra', (f) => f.escuadra || ''],
     // De acá para abajo, lo que la app no importa y al club le sirve.
     ['Arma', (f) => (f.esSegunda ? 'Segunda' : 'Primera')],
     ['Dia', (f) => DIA_LARGO[f.dia] || f.dia || ''],
