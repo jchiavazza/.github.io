@@ -215,6 +215,20 @@
     cursor: pointer; box-shadow: var(--relieve-chico);
   }
   .publicado .botones button.peligro { color: var(--peligro, #8A2018); }
+
+  /* Mientras la orden viaja, el botón queda hundido y no se puede volver a
+     tocar. El aviso de cómo salió está arriba de la lista, que con varios
+     torneos publicados queda fuera de la pantalla: sin esto, tocar un
+     botón parecía no hacer nada. */
+  .publicado .botones button.trabajando,
+  .publicado .datos button.trabajando {
+    box-shadow: var(--hundido);
+    opacity: .75;
+    cursor: default;
+  }
+
+  /* Y el resultado, en la caja del torneo que se tocó. */
+  .publicado .estado { margin: 10px 0 0; font-size: 13px; }
   .marca-estado {
     font-size: 11px; font-weight: 700; letter-spacing: .05em;
     padding: 2px 8px; border-radius: 6px; margin-left: 8px;
@@ -1339,6 +1353,17 @@
       d.matches.forEach((m) => {
         const caja = document.createElement('div');
         caja.className = 'publicado' + (m.oculto ? ' suspendido' : '');
+        // La lista se rehace entera después de cada orden, así que el aviso
+        // de la que se acaba de dar se vuelve a poner acá, en la caja de su
+        // torneo. Arriba de la lista no se veía: con varios publicados
+        // queda fuera de la pantalla.
+        let avisoSuyo = null;
+        if (elUltimoAviso && elUltimoAviso.clave === m.clave) {
+          avisoSuyo = document.createElement('p');
+          avisoSuyo.className = 'estado ' + (elUltimoAviso.mal ? 'mal' : 'ok');
+          avisoSuyo.textContent = elUltimoAviso.texto;
+          elUltimoAviso = null;
+        }
 
         const programado = m.arranca && Date.now() < m.arranca && !m.cargados;
         const enCurso = !m.final && !programado && m.posibles > 0 && m.cargados < m.posibles;
@@ -1387,7 +1412,7 @@
         ponerHora.type = 'button';
         ponerHora.textContent = m.arranca ? 'Cambiar la hora' : 'Programar';
         ponerHora.addEventListener('click', function () {
-          accionEnVivo(m.clave, 'programar', campo.value.trim());
+          accionEnVivo(m.clave, 'programar', campo.value.trim(), null, this);
         });
         cuando.textContent = m.arranca
           ? 'Arranca el ' + new Date(m.arranca).toLocaleString('es-AR',
@@ -1404,7 +1429,7 @@
         cambiar.type = 'button';
         cambiar.textContent = m.oculto ? 'Volver a publicar' : 'Suspender';
         cambiar.addEventListener('click', function () {
-          accionEnVivo(m.clave, m.oculto ? 'publicar' : 'suspender');
+          accionEnVivo(m.clave, m.oculto ? 'publicar' : 'suspender', null, null, this);
         });
         botones.appendChild(cambiar);
 
@@ -1436,13 +1461,14 @@
           fijar.type = 'button';
           fijar.textContent = m.congelado ? 'Descongelar' : 'Fijar resultados ya';
           fijar.addEventListener('click', function () {
+            const boton = this;
             if (m.congelado) {
               if (confirm('Los resultados vuelven a actualizarse con la próxima sincronización de la app, ' +
                 'y se fijan de nuevo una hora después de que el torneo esté completo. ¿Seguir?')) {
-                accionEnVivo(m.clave, 'descongelar');
+                accionEnVivo(m.clave, 'descongelar', null, null, boton);
               }
             } else {
-              accionEnVivo(m.clave, 'fijar');
+              accionEnVivo(m.clave, 'fijar', null, null, boton);
             }
           });
           botones.appendChild(fijar);
@@ -1458,7 +1484,7 @@
           actualizar.textContent = 'Actualizar la tabla';
           actualizar.title = 'Trae lo que tiene hoy el match en la app: inscriptos, escenarios y puntajes.';
           actualizar.addEventListener('click', function () {
-            accionEnVivo(m.clave, 'actualizar');
+            accionEnVivo(m.clave, 'actualizar', null, null, this);
           });
           botones.appendChild(actualizar);
         }
@@ -1475,7 +1501,7 @@
           ? 'Hoy suma para el torneo anual.'
           : 'Hoy no suma para el torneo anual.';
         anual.addEventListener('click', function () {
-          accionEnVivo(m.clave, 'anual', null, m.anual ? '0' : '1');
+          accionEnVivo(m.clave, 'anual', null, m.anual ? '0' : '1', this);
         });
         botones.appendChild(anual);
 
@@ -1486,11 +1512,12 @@
         borrar.addEventListener('click', function () {
           // Se avisa qué se borra y qué no: el match sigue en la nube y en
           // los teléfonos, acá sólo se va lo que ve el público.
-          if (confirm(AVISO_BORRAR)) accionEnVivo(m.clave, 'borrar');
+          if (confirm(AVISO_BORRAR)) accionEnVivo(m.clave, 'borrar', null, null, this);
         });
         botones.appendChild(borrar);
 
         caja.appendChild(botones);
+        if (avisoSuyo) caja.appendChild(avisoSuyo);
         cont.appendChild(caja);
       });
     } catch (e) {
@@ -1498,10 +1525,33 @@
     }
   }
 
-  async function accionEnVivo(claveMatch, accion, cuando, vale) {
+  // El aviso de la última orden, para volver a ponerlo en la caja de su
+  // torneo cuando la lista se rehace.
+  let elUltimoAviso = null;
+
+  async function accionEnVivo(claveMatch, accion, cuando, vale, boton) {
     const estadoEV = document.getElementById('estado-envivo');
     estadoEV.className = 'estado';
     estadoEV.textContent = 'Un momento…';
+
+    // Lo que se ve en el acto, donde está mirando el que tocó: el botón se
+    // hunde, dice que está trabajando y no se puede volver a tocar. Las
+    // órdenes tardan un segundo o dos y antes no pasaba nada a la vista.
+    let comoDecia = '';
+    if (boton) {
+      comoDecia = boton.textContent;
+      boton.textContent = 'Un momento…';
+      boton.classList.add('trabajando');
+      boton.disabled = true;
+    }
+
+    const devolverElBoton = () => {
+      if (!boton) return;
+      boton.textContent = comoDecia;
+      boton.classList.remove('trabajando');
+      boton.disabled = false;
+    };
+
     try {
       const r = await fetch(
         FUNCIONES + '/administrarEnVivo?clave=' + encodeURIComponent(clave.value.trim()) +
@@ -1514,6 +1564,16 @@
       if (!d.ok) {
         estadoEV.className = 'estado mal';
         estadoEV.textContent = d.error || 'No se pudo.';
+        devolverElBoton();
+        // La lista no se rehace cuando falla, así que el aviso se escribe
+        // en la caja a mano.
+        if (boton) {
+          const caja = boton.closest('.publicado');
+          const malAviso = caja.querySelector('.estado') || document.createElement('p');
+          malAviso.className = 'estado mal';
+          malAviso.textContent = d.error || 'No se pudo.';
+          caja.appendChild(malAviso);
+        }
         return;
       }
       estadoEV.className = 'estado ok';
@@ -1532,10 +1592,21 @@
         'cuenta para el anual': 'Listo: este torneo suma para el campeonato anual.',
         'no cuenta': 'Listo: este torneo ya no suma para el campeonato anual.',
       }[d.estado] || 'Listo.';
+      // La lista se rehace y el aviso reaparece en la caja de este torneo.
+      elUltimoAviso = { clave: claveMatch, texto: estadoEV.textContent, mal: false };
+      devolverElBoton();
       traerPublicados();
     } catch (e) {
       estadoEV.className = 'estado mal';
       estadoEV.textContent = 'No se pudo conectar.';
+      devolverElBoton();
+      if (boton) {
+        const caja = boton.closest('.publicado');
+        const malAviso = caja.querySelector('.estado') || document.createElement('p');
+        malAviso.className = 'estado mal';
+        malAviso.textContent = 'No se pudo conectar.';
+        caja.appendChild(malAviso);
+      }
     }
   }
 

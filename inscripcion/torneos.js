@@ -79,7 +79,7 @@ window.TORNEOS = {
 
     // Una línea más abajo del importe, para lo que no entra en el resto.
     // Si no hace falta, se deja en '' y no se muestra nada.
-    notaPago: 'Si estás asociado a IDPA la inscripción te sale $40.000: transferí ese importe y avisanos.',
+    notaPago: 'Si estás asociado a IDPA la inscripción te sale $40.000: transferí ese importe.',
 
     // El pre match del sábado tiene cupo. Acá sólo se dice qué días lo
     // tienen: el número y la cuenta viven en `functions/inscripciones.js`.
