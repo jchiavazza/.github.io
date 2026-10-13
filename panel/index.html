@@ -1054,18 +1054,39 @@
   // plantilla ya llena, y se importa sin tocarle nada. La app las busca
   // por nombre (MatchScreen.js), así que una renombrada acá entra vacía
   // allá sin dar ningún error.
+  // Las opciones de las cuatro columnas que en la plantilla son un
+  // desplegable. Son las mismas que ofrece la app al cargar un tirador a
+  // mano (NewCompetitorScreen.js): lo que no esta en estas listas, la app
+  // lo guarda igual pero no lo agrupa ni lo premia.
+  const OPCIONES = {
+    Division: ['SSP', 'ESP', 'CDP', 'CCP', 'CO', 'REV', 'BUG', 'PCC'],
+    Clase: ['DM', 'MA', 'EX', 'SS', 'MM', 'NV', 'UN'],
+    'Categoria especial': ['Lady', 'Senior', 'Distinguido Senior'],
+    Escuadra: ['ESCUADRA 1', 'ESCUADRA 2', 'ESCUADRA 3', 'ESCUADRA 4',
+      'ESCUADRA 5', 'ESCUADRA 6'],
+  };
+
+  // El formulario del sitio dice "Super Senior (+65)" y la app llama a esa
+  // misma categoria "Distinguido Senior". Acá va como la nombra la app,
+  // que es la que tiene que reconocerla: con el texto de COMO_SE_DICE
+  // —"Senior (+50)"— el tirador entraba sin ninguna categoria especial y
+  // no competia por su premio.
+  const CATEGORIA_EN_LA_APP = {
+    Lady: 'Lady', Senior: 'Senior', SuperSenior: 'Distinguido Senior',
+  };
+
   const COLUMNAS = [
     ['Apellido', (f) => (f.apellido || '').toUpperCase()],
     ['Nombre', (f) => (f.nombre || '').toUpperCase()],
     ['Numero de IDPA', (f) => f.idpa || ''],
-    ['Division', (f) => f.division || ''],
-    ['Clase', (f) => f.clase || ''],
-    ['Categoria especial', (f) => COMO_SE_DICE[f.categoria] || f.categoria || ''],
+    ['Division', (f) => (f.division || '').toUpperCase()],
+    ['Clase', (f) => (f.clase || '').toUpperCase()],
+    ['Categoria especial', (f) => CATEGORIA_EN_LA_APP[f.categoria] || f.categoria || ''],
     ['Club', () => ''],
     // La escuadra que eligió al inscribirse, si el torneo las arma. El que
     // corre con dos armas baja en dos renglones y va en la misma: es una
     // persona y tira una vez con cada una.
-    ['Escuadra', (f) => f.escuadra || ''],
+    ['Escuadra', (f) => f.laEscuadra],
   ];
 
   // Lo que le sirve al club y la plantilla no tiene, en una segunda hoja.
@@ -1115,13 +1136,43 @@
       (a.esSegunda ? 1 : 0) - (b.esSegunda ? 1 : 0));
   }
 
+  // Con qué escuadra entra cada uno a la app.
+  //
+  // El pre match es la ESCUADRA 1, y las que eligieron los del día del
+  // torneo corren un lugar: la escuadra 1 del sitio es la ESCUADRA 2 de la
+  // app. Los dos días entran al mismo match, así que el que tiró el sábado
+  // no puede compartir escuadra con una del domingo.
+  //
+  // El día de las escuadras no se le pregunta al torneo: es el de los que
+  // eligieron. Si nadie eligió, el torneo no las arma y la columna va
+  // vacía, para asignarlas en la app.
+  //
+  // Son cinco escuadras más el pre match, y la app ofrece hasta la
+  // ESCUADRA 6: si alguna vez se arman seis, la sexta cae fuera de esa
+  // lista y hay que sumarla en la app.
+  function diaDeLasEscuadras(inscriptos) {
+    const eligio = inscriptos.find((i) => i.escuadra);
+    return eligio ? eligio.dia : '';
+  }
+
+  function laEscuadra(i, diaConEscuadras) {
+    if (!diaConEscuadras) return '';
+    if (i.dia !== diaConEscuadras) return 'ESCUADRA 1';
+    return i.escuadra ? 'ESCUADRA ' + (Number(i.escuadra) + 1) : '';
+  }
+
   function comoTiradores(inscriptos) {
+    const dia = diaDeLasEscuadras(inscriptos);
     const filas = [];
     inscriptos.forEach((i) => {
-      filas.push(Object.assign({}, i, { esSegunda: false }));
+      // La segunda arma va en la misma escuadra: es una persona, que tira
+      // una vez con cada una.
+      const escuadra = laEscuadra(i, dia);
+      filas.push(Object.assign({}, i, { esSegunda: false, laEscuadra: escuadra }));
       if (i.segundaArma && i.segundaDivision) {
         filas.push(Object.assign({}, i, {
           esSegunda: true,
+          laEscuadra: escuadra,
           division: i.segundaDivision,
           clase: i.segundaClase || i.clase,
         }));
@@ -1142,11 +1193,35 @@
         '<Cell><Data ss:Type="String">' + enXml(c) + '</Data></Cell>').join('') + '</Row>';
 
     const tiradores = comoTiradores(inscriptos);
-    const hoja = (nombre, columnas) =>
-      '<Worksheet ss:Name="' + nombre + '"><Table>' +
+
+    // Hasta donde llegan los desplegables: los inscriptos y unos renglones
+    // mas, para el que se anota el mismo dia del torneo y se agrega a
+    // mano. Sin ExpandedRowCount, Excel no deja elegir en una fila que
+    // todavia no existe.
+    const HASTA = Math.max(tiradores.length + 1, 60);
+
+    // La lista de cada columna, como la plantilla: Excel la muestra con la
+    // flechita y rechaza lo que no este en ella.
+    const desplegables = (columnas) => columnas.map((c, i) => {
+      const lista = OPCIONES[c[0]];
+      if (!lista) return '';
+      const col = 'C' + (i + 1);
+      return '<DataValidation xmlns="urn:schemas-microsoft-com:office:excel">' +
+        '<Range>R2' + col + ':R' + HASTA + col + '</Range>' +
+        '<Type>List</Type><CellRangeList/>' +
+        '<Value>&quot;' + enXml(lista.join(',')) + '&quot;</Value>' +
+        '</DataValidation>';
+    }).join('');
+
+    const hoja = (nombre, columnas, conOpciones) =>
+      '<Worksheet ss:Name="' + nombre + '">' +
+      '<Table ss:ExpandedColumnCount="' + columnas.length + '"' +
+      ' ss:ExpandedRowCount="' + (conOpciones ? HASTA : tiradores.length + 1) + '">' +
       [fila(columnas.map((c) => c[0]))]
         .concat(tiradores.map((f) => fila(columnas.map((c) => c[1](f)))))
-        .join('') + '</Table></Worksheet>';
+        .join('') + '</Table>' +
+      (conOpciones ? desplegables(columnas) : '') +
+      '</Worksheet>';
 
     return '<?xml version="1.0" encoding="UTF-8"?>' +
       '<?mso-application progid="Excel.Sheet"?>' +
@@ -1154,8 +1229,8 @@
       ' xmlns:ss="urn:schemas-microsoft-com:office:spreadsheet">' +
       // 'Tiradores' va primera y con ese nombre, como en la plantilla: la
       // app importa la primera hoja del archivo.
-      hoja('Tiradores', COLUMNAS) +
-      hoja('Datos del club', COLUMNAS_CLUB) +
+      hoja('Tiradores', COLUMNAS, true) +
+      hoja('Datos del club', COLUMNAS_CLUB, false) +
       '</Workbook>';
   }
 
