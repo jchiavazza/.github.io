@@ -182,7 +182,12 @@
     if (!torneo.escuadras || escuadras) return Promise.resolve();
     return fetch(ESCUADRAS + '?torneo=' + encodeURIComponent(slug))
       .then((r) => r.json())
-      .then((d) => { if (d && d.ok) escuadras = d.escuadras; })
+      .then((d) => {
+        // La del pre match viene en la lista para que /escuadras/ la
+        // muestre, pero acá no es una opción: ese día se arma en la
+        // cancha y el servidor la rechaza.
+        if (d && d.ok) escuadras = (d.escuadras || []).filter((e) => !e.preMatch);
+      })
       .catch(function () { /* informativo: se sigue sin la lista */ });
   }
 

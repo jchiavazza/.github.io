@@ -93,13 +93,17 @@
             ' <span>' + esc(x.division + ' ' + x.clase) + '</span></li>').join('')
         : '<li class="vacia">Todavía no eligió nadie</li>';
 
-      const boton = puedeMoverse && !aca && !llena
+      // En el pre match no hay nada que elegir: se viene y se arma en la
+      // cancha. Está en la lista para ver quién viene cada día.
+      const boton = puedeMoverse && !aca && !llena && !e.preMatch
         ? '<button class="boton mover" type="button" data-escuadra="' + e.numero + '">Moverme acá</button>'
         : '';
 
       return (
         '<div class="escuadra' + (llena ? ' completa' : '') + (aca ? ' aca' : '') + '">' +
-        '<span class="cabeza"><b>Escuadra ' + e.numero + (aca ? ' — estás acá' : '') + '</b>' +
+        '<span class="cabeza"><b>Escuadra ' + e.numero +
+        (e.preMatch && e.nota ? ' · ' + esc(e.nota) : '') +
+        (aca ? ' — estás acá' : '') + '</b>' +
         '<span class="cuantos">' + (llena ? 'COMPLETA' : e.ocupados + '/' + e.tope) + '</span>' +
         '</span><ul>' + quienes + '</ul>' + boton + '</div>');
     }).join('');
