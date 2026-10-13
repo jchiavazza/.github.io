@@ -1138,18 +1138,18 @@
 
   // Con qué escuadra entra cada uno a la app.
   //
-  // El pre match es la ESCUADRA 1, y las que eligieron los del día del
-  // torneo corren un lugar: la escuadra 1 del sitio es la ESCUADRA 2 de la
-  // app. Los dos días entran al mismo match, así que el que tiró el sábado
-  // no puede compartir escuadra con una del domingo.
+  // El pre match es la ESCUADRA 1. Las del día del torneo ya vienen
+  // numeradas de la 2 en adelante desde el formulario —los dos días entran
+  // al mismo match y no pueden compartir escuadra—, así que acá el número
+  // se escribe tal como se eligió.
   //
   // El día de las escuadras no se le pregunta al torneo: es el de los que
   // eligieron. Si nadie eligió, el torneo no las arma y la columna va
   // vacía, para asignarlas en la app.
   //
   // Son cinco escuadras más el pre match, y la app ofrece hasta la
-  // ESCUADRA 6: si alguna vez se arman seis, la sexta cae fuera de esa
-  // lista y hay que sumarla en la app.
+  // ESCUADRA 6: si alguna vez se arman seis el día del torneo, la última
+  // cae fuera de esa lista y hay que sumarla en la app.
   function diaDeLasEscuadras(inscriptos) {
     const eligio = inscriptos.find((i) => i.escuadra);
     return eligio ? eligio.dia : '';
@@ -1158,7 +1158,7 @@
   function laEscuadra(i, diaConEscuadras) {
     if (!diaConEscuadras) return '';
     if (i.dia !== diaConEscuadras) return 'ESCUADRA 1';
-    return i.escuadra ? 'ESCUADRA ' + (Number(i.escuadra) + 1) : '';
+    return i.escuadra ? 'ESCUADRA ' + Number(i.escuadra) : '';
   }
 
   function comoTiradores(inscriptos) {

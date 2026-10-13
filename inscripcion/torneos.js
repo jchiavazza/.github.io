@@ -129,9 +129,11 @@ window.TORNEOS = {
     // El número vive en `functions/inscripciones.js`, que es quien decide.
     cupos: { sabado: true },
 
-    // Cinco escuadras de doce, sólo el día del torneo. El número manda
-    // del lado de la función; acá está para que la página pregunte.
-    escuadras: { cuantas: 5, porEscuadra: 12, dia: 'domingo' },
+    // Cinco escuadras de doce, sólo el día del torneo, **numeradas de la
+    // 2 a la 6**: la ESCUADRA 1 es el pre match del sábado, porque los dos
+    // días entran al mismo match de 9x19 Score. El número manda del lado
+    // de la función; acá está para que la página pregunte.
+    escuadras: { cuantas: 5, desde: 2, porEscuadra: 12, dia: 'domingo' },
 
     // A las 12 del mediodía del jueves, no a medianoche.
     cierra: '2026-11-12T12:00',

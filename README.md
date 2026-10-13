@@ -179,6 +179,14 @@ en una segunda hoja, `Datos del club`. **No como columnas de más en la
 primera**: ahí la planilla dejaría de ser igual a la plantilla, y la app
 importa sólo la primera hoja, así que una segunda no le molesta.
 
+Las cuatro columnas que en la plantilla son un desplegable lo traen
+también acá, con las mismas opciones, y los valores son los que la app
+reconoce: `Senior` y no `Senior (+50)`, que es como lo muestra el sitio
+—con ese texto el tirador entraba sin categoría especial y no competía
+por su premio—. **Las escuadras del día del torneo se numeran desde la
+2** (`desde: 2` en el torneo), porque los dos días entran al mismo match
+y la `ESCUADRA 1` es el pre match del sábado.
+
 Sale en formato SpreadsheetML —un `.xls` que por dentro es XML— y no en
 CSV: la app filtra el selector de archivos por planilla de Excel, así que
 un `.csv` no se puede ni elegir. Que la app la siga leyendo, y que la
