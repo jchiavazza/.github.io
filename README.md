@@ -167,11 +167,23 @@ dos armas baja como dos renglones**, uno por arma: la app distingue a un
 tirador por apellido, nombre, división y clase, así que el mismo
 competidor en otra división es un registro aparte. Con un solo renglón,
 la segunda arma habría que cargarla a mano, que es lo que la planilla
-viene a evitar. Esa planilla sale
-en formato SpreadsheetML —un `.xls` que por dentro es XML— y no en CSV:
-la app filtra el selector de archivos por planilla de Excel, así que un
-`.csv` no se puede ni elegir. Que la app la siga leyendo se comprueba
-desde el otro repositorio:
+viene a evitar.
+
+Lo que baja es **`Plantilla_Tiradores_9x19Shooting.xlsx` ya llena**: la
+primera hoja se llama `Tiradores` y trae exactamente sus columnas, en el
+mismo orden. Así importar lo que bajó del panel y cargar la plantilla a
+mano son la misma cosa, y el que ya conoce una reconoce la otra. Lo que
+le sirve al club y la plantilla no tiene —el correo, el celular, el DNI,
+el CLU, la dirección, el día, con qué arma y lo que tenía que pagar— va
+en una segunda hoja, `Datos del club`. **No como columnas de más en la
+primera**: ahí la planilla dejaría de ser igual a la plantilla, y la app
+importa sólo la primera hoja, así que una segunda no le molesta.
+
+Sale en formato SpreadsheetML —un `.xls` que por dentro es XML— y no en
+CSV: la app filtra el selector de archivos por planilla de Excel, así que
+un `.csv` no se puede ni elegir. Que la app la siga leyendo, y que la
+primera hoja siga siendo igual a la plantilla, se comprueba desde el otro
+repositorio:
 
 ```bash
 node scripts/verificar-planilla-inscriptos.js

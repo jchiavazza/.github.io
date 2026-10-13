@@ -1049,10 +1049,14 @@
   // ignora, así que las últimas son para el club.
   // -------------------------------------------------------------------
 
+  // Las mismas columnas que `Plantilla_Tiradores_9x19Shooting.xlsx`, en el
+  // mismo orden y con los mismos nombres: lo que baja de acá es esa
+  // plantilla ya llena, y se importa sin tocarle nada. La app las busca
+  // por nombre (MatchScreen.js), así que una renombrada acá entra vacía
+  // allá sin dar ningún error.
   const COLUMNAS = [
     ['Apellido', (f) => (f.apellido || '').toUpperCase()],
     ['Nombre', (f) => (f.nombre || '').toUpperCase()],
-    ['Email', (f) => f.correo || ''],
     ['Numero de IDPA', (f) => f.idpa || ''],
     ['Division', (f) => f.division || ''],
     ['Clase', (f) => f.clase || ''],
@@ -1062,12 +1066,21 @@
     // corre con dos armas baja en dos renglones y va en la misma: es una
     // persona y tira una vez con cada una.
     ['Escuadra', (f) => f.escuadra || ''],
-    // De acá para abajo, lo que la app no importa y al club le sirve.
+  ];
+
+  // Lo que le sirve al club y la plantilla no tiene, en una segunda hoja.
+  // No van como columnas de más en la primera: la app importa la hoja 1 y
+  // ésa tiene que ser igual a la plantilla, columna por columna. Apellido
+  // y Nombre se repiten acá para poder leer el renglón.
+  const COLUMNAS_CLUB = [
+    ['Apellido', (f) => (f.apellido || '').toUpperCase()],
+    ['Nombre', (f) => (f.nombre || '').toUpperCase()],
     ['Arma', (f) => (f.esSegunda ? 'Segunda' : 'Primera')],
     ['Dia', (f) => DIA_LARGO[f.dia] || f.dia || ''],
     // Lo personal y lo del pago van una sola vez, en el renglón de la
     // primera arma: repetirlos hace parecer que son dos personas y que
     // cada una tenía que pagar.
+    ['Email', (f) => (f.esSegunda ? '' : f.correo || '')],
     ['Celular', (f) => (f.esSegunda ? '' : f.celular || '')],
     ['DNI', (f) => (f.esSegunda ? '' : f.dni || '')],
     ['CLU', (f) => (f.esSegunda ? '' : f.clu || '')],
@@ -1128,15 +1141,22 @@
       '<Row>' + celdas.map((c) =>
         '<Cell><Data ss:Type="String">' + enXml(c) + '</Data></Cell>').join('') + '</Row>';
 
-    const filas = [fila(COLUMNAS.map((c) => c[0]))]
-      .concat(comoTiradores(inscriptos).map((f) => fila(COLUMNAS.map((c) => c[1](f)))));
+    const tiradores = comoTiradores(inscriptos);
+    const hoja = (nombre, columnas) =>
+      '<Worksheet ss:Name="' + nombre + '"><Table>' +
+      [fila(columnas.map((c) => c[0]))]
+        .concat(tiradores.map((f) => fila(columnas.map((c) => c[1](f)))))
+        .join('') + '</Table></Worksheet>';
 
     return '<?xml version="1.0" encoding="UTF-8"?>' +
       '<?mso-application progid="Excel.Sheet"?>' +
       '<Workbook xmlns="urn:schemas-microsoft-com:office:spreadsheet"' +
       ' xmlns:ss="urn:schemas-microsoft-com:office:spreadsheet">' +
-      '<Worksheet ss:Name="Inscriptos"><Table>' + filas.join('') +
-      '</Table></Worksheet></Workbook>';
+      // 'Tiradores' va primera y con ese nombre, como en la plantilla: la
+      // app importa la primera hoja del archivo.
+      hoja('Tiradores', COLUMNAS) +
+      hoja('Datos del club', COLUMNAS_CLUB) +
+      '</Workbook>';
   }
 
   document.getElementById('bajar-planilla').addEventListener('click', () => {
@@ -1152,13 +1172,14 @@
     const url = URL.createObjectURL(new Blob([xml], { type: 'application/vnd.ms-excel' }));
     const a = document.createElement('a');
     a.href = url;
-    a.download = 'inscriptos-' + (elTorneo ? elTorneo.slug : 'torneo') + '.xls';
+    a.download = 'tiradores-' + (elTorneo ? elTorneo.slug : 'torneo') + '.xls';
     a.click();
     URL.revokeObjectURL(url);
 
     aviso.className = 'estado ok';
     aviso.textContent = comoTiradores(losInscriptos).length +
-      ' tiradores. Se importa desde Utilidades de la app.';
+      ' tiradores en la hoja Tiradores, igual que la plantilla. Se importa' +
+      ' desde Utilidades de la app. La hoja Datos del club trae el resto.';
   });
 
   document.getElementById('entrar').addEventListener('click', pedir);
