@@ -67,8 +67,9 @@ window.TORNEOS = {
     // así que cualquiera escribía cualquier cosa y la página le cobraba
     // cinco mil pesos menos. Lo resuelve el club, que al recibir la
     // inscripción ve el número de IDPA y sabe cuánto tenía que pagar.
-    // **Tampoco se avisa en `notaPago`**: decirlo en el formulario era
-    // explicarle al asociado algo que ya sabe.
+    // Se avisa en `notaPago`, que va destacada abajo del importe: en el
+    // gris chico de una nota pasaba de largo y el asociado terminaba
+    // transfiriendo de más.
     precio: 45000,
     precioSegundaArma: 20000,
 
@@ -78,7 +79,7 @@ window.TORNEOS = {
 
     // Una línea más abajo del importe, para lo que no entra en el resto.
     // Si no hace falta, se deja en '' y no se muestra nada.
-    notaPago: '',
+    notaPago: 'Si estás asociado a IDPA la inscripción te sale $40.000: transferí ese importe y avisanos.',
 
     // El pre match del sábado tiene cupo. Acá sólo se dice qué días lo
     // tienen: el número y la cuenta viven en `functions/inscripciones.js`.

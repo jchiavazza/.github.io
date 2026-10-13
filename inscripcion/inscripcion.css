@@ -312,3 +312,39 @@
   font-weight: 700;
   line-height: 1.45;
 }
+
+/* La nota del pago —hoy, el precio de asociado— es un renglón destacado y
+   no el gris chico de una nota al pie: es plata, y en gris se pasaba de
+   largo. Mismo recuadro hundido que el cierre de las condiciones. */
+.chapa.pago .nota {
+  margin: 14px 0 0;
+  padding: 13px 15px;
+  border-radius: 12px;
+  box-shadow: var(--hundido);
+  color: var(--texto);
+  font-size: 15px;
+  font-weight: 600;
+  line-height: 1.45;
+}
+
+/* El botón de enviar, mientras falten las casillas. Apagado de verdad —no
+   se puede tocar— y se nota: sin relieve, como una tecla hundida que no
+   responde. */
+.acciones-form .boton[disabled] {
+  opacity: 0.45;
+  box-shadow: none;
+  cursor: not-allowed;
+}
+
+.falta-tildar {
+  flex-basis: 100%;
+  margin: 4px 0 0;
+}
+
+/* El botón de enviar mientras falten las casillas: apagado a la vista,
+   pero se puede tocar. Tocarlo es lo que dispara el aviso de qué falta
+   —un `disabled` de verdad no avisa nada—. */
+.acciones-form .boton[aria-disabled="true"] {
+  opacity: 0.5;
+  box-shadow: var(--relieve-chico);
+}

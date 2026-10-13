@@ -237,6 +237,27 @@
 
   // El enlace del tilde abre el desplegable de arriba: sin esto saltaba a
   // un `details` cerrado y parecia que no habia nada que leer.
+  // El botón de enviar se ve apagado hasta que están tildadas las dos
+  // casillas: la del pago y la de las condiciones.
+  //
+  // **Apagado pero no `disabled`.** Un botón deshabilitado de verdad no
+  // avisa nada: no dispara el clic, así que el que lo toca no entiende por
+  // qué no pasa nada. Así, al tocarlo corre la misma revisión de siempre,
+  // que marca en rojo lo que falta y lo dice arriba del botón.
+  const elEnvio = form.querySelector('button[type="submit"]');
+  const lasDosCasillas = [$('i-compromiso'), $('i-condiciones')];
+
+  function mirarLasCasillas() {
+    const listas = lasDosCasillas.every((c) => c.checked);
+    elEnvio.setAttribute('aria-disabled', listas ? 'false' : 'true');
+    $('falta-tildar').hidden = listas;
+  }
+
+  lasDosCasillas.forEach((c) => c.addEventListener('change', mirarLasCasillas));
+  // Borrar el formulario las destilda sin disparar `change`.
+  form.addEventListener('reset', () => { setTimeout(mirarLasCasillas, 0); });
+  mirarLasCasillas();
+
   const alDesplegable = document.querySelector('a[href="#condiciones-completas"]');
   if (alDesplegable) {
     alDesplegable.addEventListener('click', () => {
@@ -392,6 +413,9 @@
   // nota nunca se interpreta como HTML aunque alguien escriba un "<".
   const nota = $('p-nota');
   nota.textContent = '';
+  // Ahora la nota es un recuadro, así que el torneo que no tiene nada que
+  // decir no deja uno vacío.
+  nota.hidden = !torneo.notaPago;
   String(torneo.notaPago || '').split(/(\$\s?[\d.]+)/).forEach((trozo, i) => {
     if (!trozo) return;
     if (i % 2 === 1) {
