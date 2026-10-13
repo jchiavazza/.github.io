@@ -122,15 +122,16 @@ window.TORNEOS = {
 
     notaPago: 'Si estás asociado a IDPA la inscripción te sale $40.000: transferí ese importe y avisanos.',
 
-    // El sábado tiene cupo. Acá sólo hace falta decir qué días lo tienen:
+    // El pre match del sábado tiene cupo. Acá sólo hace falta decir qué
+    // días lo tienen:
     // cuántos lugares quedan lo cuenta el servidor y lo devuelve la lista
     // de inscriptos, para no contar dos veces al que corre con dos armas.
     // El número vive en `functions/inscripciones.js`, que es quien decide.
     cupos: { sabado: true },
 
-    // Cinco escuadras de quince, sólo el día del torneo. El número manda
+    // Cinco escuadras de doce, sólo el día del torneo. El número manda
     // del lado de la función; acá está para que la página pregunte.
-    escuadras: { cuantas: 5, porEscuadra: 15, dia: 'domingo' },
+    escuadras: { cuantas: 5, porEscuadra: 12, dia: 'domingo' },
 
     // A las 12 del mediodía del jueves, no a medianoche.
     cierra: '2026-11-12T12:00',
