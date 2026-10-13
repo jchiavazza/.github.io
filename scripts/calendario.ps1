@@ -19,15 +19,15 @@ $salida = $Destino
 
 $fechas = @(
   @{ mes = 'Febrero';    dia = '20 y 21'; sede = 'Tiro Federal de Esperanza'; tipo = ([char]0x43 + 'lasificaci' + [char]0xF3 + 'n') },
-  @{ mes = 'Marzo';      dia = '13';      sede = 'Tiro Federal de Esperanza'; tipo = ('1' + [char]0xAA + ' fecha') },
-  @{ mes = 'Abril';      dia = '11';      sede = 'Tiro Federal Argentino de Santa Fe'; tipo = ('2' + [char]0xAA + ' fecha') },
-  @{ mes = 'Mayo';       dia = '16';      sede = ('Tiro Federal de San Jer' + [char]0xF3 + 'nimo Sud'); tipo = ('3' + [char]0xAA + ' fecha') },
-  @{ mes = 'Junio';      dia = '13';      sede = 'Tiro Federal de Esperanza'; tipo = ('4' + [char]0xAA + ' fecha') },
-  @{ mes = 'Julio';      dia = '11';      sede = 'Tiro Federal Argentino de Santa Fe'; tipo = ('5' + [char]0xAA + ' fecha') },
-  @{ mes = 'Agosto';     dia = '8';       sede = ('Tiro Federal de San Jer' + [char]0xF3 + 'nimo Sud'); tipo = ('6' + [char]0xAA + ' fecha') },
-  @{ mes = 'Septiembre'; dia = '5';       sede = 'Tiro Federal de Esperanza'; tipo = ('7' + [char]0xAA + ' fecha') },
-  @{ mes = 'Octubre';    dia = '10';      sede = 'Tiro Federal Argentino de Santa Fe'; tipo = ('8' + [char]0xAA + ' fecha ' + [char]0xB7 + ' Copa') },
-  @{ mes = 'Noviembre';  dia = '7';       sede = 'Tiro Federal de Esperanza'; tipo = ('9' + [char]0xAA + ' fecha') }
+  @{ mes = 'Marzo';      dia = '13 y 14';      sede = 'Tiro Federal de Esperanza'; tipo = ('1' + [char]0xAA + ' fecha') },
+  @{ mes = 'Abril';      dia = '10 y 11';      sede = 'Tiro Federal Argentino de Santa Fe'; tipo = ('2' + [char]0xAA + ' fecha') },
+  @{ mes = 'Mayo';       dia = '15 y 16';      sede = ('Tiro Federal de San Jer' + [char]0xF3 + 'nimo Sud'); tipo = ('3' + [char]0xAA + ' fecha') },
+  @{ mes = 'Junio';      dia = '12 y 13';      sede = 'Tiro Federal de Esperanza'; tipo = ('4' + [char]0xAA + ' fecha') },
+  @{ mes = 'Julio';      dia = '10 y 11';      sede = 'Tiro Federal Argentino de Santa Fe'; tipo = ('5' + [char]0xAA + ' fecha') },
+  @{ mes = 'Agosto';     dia = '7 y 8';       sede = ('Tiro Federal de San Jer' + [char]0xF3 + 'nimo Sud'); tipo = ('6' + [char]0xAA + ' fecha') },
+  @{ mes = 'Septiembre'; dia = '4 y 5';       sede = 'Tiro Federal de Esperanza'; tipo = ('7' + [char]0xAA + ' fecha') },
+  @{ mes = 'Octubre';    dia = '9 y 10';      sede = 'Tiro Federal Argentino de Santa Fe'; tipo = ('8' + [char]0xAA + ' fecha ' + [char]0xB7 + ' Copa') },
+  @{ mes = 'Noviembre';  dia = '6 y 7';       sede = 'Tiro Federal de Esperanza'; tipo = ('9' + [char]0xAA + ' fecha') }
 )
 
 # --- lienzo
