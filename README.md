@@ -146,6 +146,17 @@ Para abrir el torneo siguiente se copia el bloque anterior de
 > existe: la página le contesta "No encontramos ese torneo" y esa
 > persona no tiene forma de enterarse de que el problema es suyo.
 
+> **No pidas la dirección con el `?v=` nuevo antes de que GitHub Pages
+> haya publicado.** Cloudflare guarda lo que contesta el origen durante
+> **cuatro horas**, y la query no lo salva: si se pide `?v=23` mientras
+> Pages todavía sirve el archivo viejo, esa respuesta vieja queda
+> cacheada en esa dirección —Ctrl+F5 no la cambia, porque el caché es del
+> CDN y no del navegador— y lo publicado no se ve hasta que vence. Para
+> comprobar si el cambio ya salió, pedir una dirección descartable
+> (`?sincache=123`), y recién cuando aparezca lo nuevo subir el `?v=`
+> definitivo. Si ya pasó, se sube el `?v=` otra vez: la dirección nueva
+> no está cacheada.
+
 > **Paraná sigue en JotForm**, y va a quedar así: es una charla única,
 > no una fecha del calendario, y no vale la pena moverla. Su botón y su
 > QR no se tocaron.
