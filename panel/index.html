@@ -1054,15 +1054,20 @@
       // mismo invitan a creer que borran cosas distintas.
       const accion = document.createElement('td');
       accion.dataset.campo = '';
-      if (!i.esSegunda) {
-        const borrar = document.createElement('button');
-        borrar.type = 'button';
-        borrar.className = 'borrar-inscripto';
-        borrar.textContent = 'Borrar';
+      const borrar = document.createElement('button');
+      borrar.type = 'button';
+      borrar.className = 'borrar-inscripto';
+      borrar.textContent = 'Borrar';
+      if (i.esSegunda) {
+        // Acá no se borra a la persona: se le saca el arma. El que se
+        // arrepiente de la segunda sigue inscripto con la primera.
+        borrar.title = 'Le saca la segunda arma. Sigue inscripto con la primera.';
+        borrar.addEventListener('click', function () { sacarLaSegunda(i, this); });
+      } else {
         borrar.title = 'Borra la inscripción y libera su lugar.';
         borrar.addEventListener('click', function () { borrarInscripto(i, this); });
-        accion.appendChild(borrar);
       }
+      accion.appendChild(borrar);
       tr.appendChild(accion);
 
       cuerpo.appendChild(tr);
@@ -1110,6 +1115,45 @@
       boton.disabled = false;
       aviso.className = 'estado mal';
       aviso.textContent = 'No se pudo borrar: ' + (e.message || 'probá de nuevo');
+    }
+  }
+
+  // Sacarle la segunda arma al que se arrepintió: no se borra a nadie,
+  // queda inscripto con la primera. Libera su segundo lugar en la
+  // escuadra y en el cupo del día, y el importe lo recalcula la función.
+  async function sacarLaSegunda(i, boton) {
+    const quien = (i.apellido || '') + ', ' + (i.nombre || '');
+    const sale = elTorneo && elTorneo.precio ? pesos(elTorneo.precio) : 'el de una sola arma';
+    if (!confirm('¿Borrar la segunda arma de ' + quien + ' (' + (i.division || '') + ')?\n\n' +
+      'Sigue inscripto con su primera arma, pasa a ocupar un solo lugar y lo que ' +
+      'tenía que pagar queda en ' + sale + '.\n\n' +
+      'Para borrarlo del torneo entero, usá el botón de su otro renglón.')) {
+      return;
+    }
+
+    const aviso = document.getElementById('estado-planilla');
+    const comoDecia = boton.textContent;
+    boton.textContent = 'Borrando…';
+    boton.disabled = true;
+    aviso.className = 'estado';
+    aviso.textContent = 'Sacando la segunda arma de ' + quien + '…';
+
+    try {
+      const r = await fetch(INSCRIPTOS + '?clave=' + encodeURIComponent(clave.value.trim()) +
+        '&torneo=' + encodeURIComponent(elTorneo.slug) +
+        '&sacarSegunda=' + encodeURIComponent(i.id),
+        { method: 'POST', body: '' });
+      const d = await r.json();
+      if (!d || !d.ok) throw new Error((d && d.error) || 'no se pudo');
+
+      await pedirLosInscriptos(clave.value.trim(), elTorneo.slug);
+      aviso.className = 'estado ok';
+      aviso.textContent = quien + ' queda con una sola arma.';
+    } catch (e) {
+      boton.textContent = comoDecia;
+      boton.disabled = false;
+      aviso.className = 'estado mal';
+      aviso.textContent = 'No se pudo: ' + (e.message || 'probá de nuevo');
     }
   }
 
