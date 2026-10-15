@@ -205,8 +205,14 @@
       if (!escuadras) { grupo.hidden = true; return; }
       grupo.hidden = false;
 
+      // El que corre con dos armas tira cada etapa dos veces: ocupa dos
+      // lugares, así que una escuadra con uno solo libre no le sirve. Lo
+      // revisa igual el servidor; acá es para no dejarlo elegir una que
+      // después le van a rechazar con el formulario entero completo.
+      const necesita = $('i-segunda').checked ? 2 : 1;
+
       $('opciones-escuadra').innerHTML = escuadras.map((e) => {
-        const llena = e.libres !== null && e.libres <= 0;
+        const llena = e.libres !== null && e.libres < necesita;
         const quienes = e.tiradores.length
           ? e.tiradores.map((x) =>
               '<li>' + esc(x.apellido + ', ' + x.nombre) +
@@ -219,14 +225,18 @@
           '<input type="radio" name="escuadra" value="' + e.numero + '"' +
           (llena ? ' disabled' : '') + '>' +
           '<b>Escuadra ' + e.numero + '</b>' +
-          '<span class="cuantos">' + (llena ? 'COMPLETA' : e.ocupados + '/' + e.tope) + '</span>' +
+          '<span class="cuantos">' +
+          (llena ? (e.libres > 0 ? 'SIN LUGAR PARA DOS' : 'COMPLETA')
+                 : e.ocupados + '/' + e.tope) + '</span>' +
           '</span><ul>' + quienes + '</ul></label>');
       }).join('');
 
-      const libres = escuadras.filter((e) => e.libres === null || e.libres > 0).length;
+      const libres = escuadras.filter((e) => e.libres === null || e.libres >= necesita).length;
       $('ayuda-escuadra').textContent = libres
         ? 'Elegí dónde querés tirar. Después podés cambiarte desde el enlace que te llega por correo.'
-        : 'No queda lugar en ninguna escuadra: escribinos y lo resolvemos.';
+        : (necesita > 1
+            ? 'No queda ninguna escuadra con dos lugares libres, y con la segunda arma tirás dos veces: escribinos y lo resolvemos.'
+            : 'No queda lugar en ninguna escuadra: escribinos y lo resolvemos.');
     });
   }
 
@@ -371,6 +381,9 @@
       form.querySelectorAll('[name="segundaDivision"], [name="segundaClase"]')
         .forEach((r) => { r.checked = false; });
     }
+    // Las escuadras se vuelven a dibujar: con dos armas hacen falta dos
+    // lugares, así que las que tienen uno solo dejan de ofrecerse.
+    dibujarEscuadras();
     recalcular();
   });
 

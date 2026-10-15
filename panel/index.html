@@ -216,6 +216,16 @@
   }
   .publicado .botones button.peligro { color: var(--peligro, #8A2018); }
 
+  /* El botón de borrar un inscripto, en su renglón de la tabla. Chico y
+     en rojo: es lo único de esa lista que no se deshace. */
+  button.borrar-inscripto {
+    padding: 5px 11px; border-radius: 9px; font-size: 12px;
+    border: 1px solid var(--borde); background: var(--fondo);
+    color: var(--peligro, #8A2018); font-weight: 600; font-family: inherit;
+    cursor: pointer; box-shadow: var(--relieve-chico);
+  }
+  button.borrar-inscripto[disabled] { box-shadow: var(--hundido); opacity: .7; cursor: default; }
+
   /* Mientras la orden viaja, el botón queda hundido y no se puede volver a
      tocar. El aviso de cómo salió está arriba de la lista, que con varios
      torneos publicados queda fuera de la pantalla: sin esto, tocar un
@@ -359,6 +369,7 @@
               <th>Tenía que pagar</th>
               <th>Comprobante</th>
               <th>Estado</th>
+              <th></th>
             </tr>
           </thead>
           <tbody></tbody>
@@ -1037,6 +1048,23 @@
       }
       tr.appendChild(est);
 
+      // Borrar la inscripción: el que no pagó, el que se arrepintió. Va
+      // sólo en el renglón de la primera arma: el de la segunda es la
+      // misma inscripción partida en dos, y dos botones que hacen lo
+      // mismo invitan a creer que borran cosas distintas.
+      const accion = document.createElement('td');
+      accion.dataset.campo = '';
+      if (!i.esSegunda) {
+        const borrar = document.createElement('button');
+        borrar.type = 'button';
+        borrar.className = 'borrar-inscripto';
+        borrar.textContent = 'Borrar';
+        borrar.title = 'Borra la inscripción y libera su lugar.';
+        borrar.addEventListener('click', function () { borrarInscripto(i, this); });
+        accion.appendChild(borrar);
+      }
+      tr.appendChild(accion);
+
       cuerpo.appendChild(tr);
     });
 
@@ -1044,6 +1072,45 @@
       'Ver los ' + tiradores.length + ' tiradores, uno por uno';
 
     bloque.hidden = false;
+  }
+
+  // Borrar una inscripción. Pregunta primero con el nombre adelante:
+  // esto no se deshace y lo que se borra no se puede mirar después.
+  async function borrarInscripto(i, boton) {
+    const quien = (i.apellido || '') + ', ' + (i.nombre || '');
+    if (!confirm('¿Borrar la inscripción de ' + quien + '?\n\n' +
+      'Desaparece de la lista y de la planilla, y su lugar en el cupo y en ' +
+      'la escuadra queda libre. No se puede deshacer.\n\n' +
+      'El correo de confirmación que ya recibió no se puede retirar: avisale vos.')) {
+      return;
+    }
+
+    const aviso = document.getElementById('estado-planilla');
+    const comoDecia = boton.textContent;
+    boton.textContent = 'Borrando…';
+    boton.disabled = true;
+    aviso.className = 'estado';
+    aviso.textContent = 'Borrando a ' + quien + '…';
+
+    try {
+      const r = await fetch(INSCRIPTOS + '?clave=' + encodeURIComponent(clave.value.trim()) +
+        '&torneo=' + encodeURIComponent(elTorneo.slug) +
+        '&borrar=' + encodeURIComponent(i.id),
+        { method: 'POST', body: '' });
+      const d = await r.json();
+      if (!d || !d.ok) throw new Error((d && d.error) || 'no se pudo');
+
+      // La función contesta con la lista ya sin esa inscripción, así que
+      // se vuelve a dibujar con lo que vino: una lectura menos.
+      await pedirLosInscriptos(clave.value.trim(), elTorneo.slug);
+      aviso.className = 'estado ok';
+      aviso.textContent = 'Borrada la inscripción de ' + quien + '.';
+    } catch (e) {
+      boton.textContent = comoDecia;
+      boton.disabled = false;
+      aviso.className = 'estado mal';
+      aviso.textContent = 'No se pudo borrar: ' + (e.message || 'probá de nuevo');
+    }
   }
 
   document.getElementById('torneo-elegido').addEventListener('change', function () {
