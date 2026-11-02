@@ -94,6 +94,23 @@
   }
   td.cuando, td.que { white-space: nowrap; }
 
+  /* **El nombre no se va de la pantalla.** La tabla de inscriptos no
+     entra entera —son diez columnas más los botones—, así que se corre
+     para el costado; y al correrla se iba justamente la primera
+     columna, que es el apellido: quedaban los botones de alguien que no
+     se sabía quién era. Queda clavada a la izquierda, con fondo propio
+     para que el resto pase por debajo. */
+  .tabla-envoltorio th:first-child,
+  .tabla-envoltorio td.que {
+    position: sticky; left: 0; z-index: 1; background: var(--fondo);
+  }
+  /* El renglón que se abre al corregir es una sola celda ancha: ahí no
+     hay columna que clavar. */
+  tr.correccion td { position: static; }
+  /* Y los dos botones en la misma línea: apilados hacían el renglón del
+     doble de alto por una columna que no es la que se lee. */
+  #tabla-inscriptos td:last-child { white-space: nowrap; }
+
   /* Cada tabla va plegada dentro de un desplegable: con cientos de
      descargas la página se hacía interminable y para llegar a las ventas
      o a los inscriptos había que bajar y bajar. Los números de cada
@@ -179,6 +196,9 @@
     /* La primera línea de la tarjeta es qué se bajó, en grande y sin
        rótulo: es lo que se busca de un vistazo. */
     td.que { font-weight: 600; font-size: 16px; padding-bottom: 6px; }
+    /* En tarjeta no hay columnas, así que lo clavado estorba. */
+    .tabla-envoltorio th:first-child,
+    .tabla-envoltorio td.que { position: static; background: none; }
     td.que::before { content: none; }
   }
 
@@ -230,8 +250,12 @@
   button.corregir-inscripto { color: inherit; margin-right: 6px; }
   /* El renglón que se abre debajo, con los campos que se pueden tocar. */
   tr.correccion td { background: rgba(127, 127, 127, .12); }
+  /* Los campos quedan pegados a la izquierda aunque la tabla esté
+     corrida: el renglón que se abre es tan ancho como la tabla, y sin
+     esto había que volver a correrla para encontrarlos. */
   .caja-correccion {
     display: flex; flex-wrap: wrap; gap: 10px; align-items: flex-end; padding: 4px 0;
+    position: sticky; left: 0;
   }
   .caja-correccion label { display: flex; flex-direction: column; gap: 3px; }
   .caja-correccion label span { font-size: 12px; color: var(--texto-suave); }
@@ -1213,6 +1237,22 @@
     caja.appendChild(guardar);
 
     tr.parentNode.insertBefore(fila, tr.nextSibling);
+
+    // Y que no se pase de lo que se ve: el renglón es tan ancho como la
+    // tabla —que no entra en la pantalla—, así que sin esto los últimos
+    // casilleros quedaban cortados contra el borde. El ancho lo sabe el
+    // envoltorio, no el CSS, así que lo pone acá y lo recalcula si la
+    // ventana cambia de tamaño mientras está abierta.
+    const envoltorio = tr.closest('.tabla-envoltorio');
+    const acomodar = () => {
+      if (!fila.isConnected) {
+        window.removeEventListener('resize', acomodar);
+        return;
+      }
+      caja.style.maxWidth = Math.max(240, (envoltorio ? envoltorio.clientWidth : 0) - 28) + 'px';
+    };
+    acomodar();
+    window.addEventListener('resize', acomodar);
   }
 
   // Qué escuadras hay ese día. Sale del propio torneo, igual que en el
