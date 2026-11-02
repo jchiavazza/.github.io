@@ -225,6 +225,20 @@
     cursor: pointer; box-shadow: var(--relieve-chico);
   }
   button.borrar-inscripto[disabled] { box-shadow: var(--hundido); opacity: .7; cursor: default; }
+  /* Corregir no es borrar: el botón va en el color de siempre y no en
+     el rojo del que saca una inscripción. */
+  button.corregir-inscripto { color: inherit; margin-right: 6px; }
+  /* El renglón que se abre debajo, con los campos que se pueden tocar. */
+  tr.correccion td { background: rgba(127, 127, 127, .12); }
+  .caja-correccion {
+    display: flex; flex-wrap: wrap; gap: 10px; align-items: flex-end; padding: 4px 0;
+  }
+  .caja-correccion label { display: flex; flex-direction: column; gap: 3px; }
+  .caja-correccion label span { font-size: 12px; color: var(--texto-suave); }
+  .caja-correccion input, .caja-correccion select {
+    padding: 5px 7px; border: 1px solid var(--texto-suave); border-radius: 4px;
+    font: inherit; min-width: 90px;
+  }
 
   /* Mientras la orden viaja, el botón queda hundido y no se puede volver a
      tocar. El aviso de cómo salió está arriba de la lista, que con varios
@@ -927,6 +941,13 @@
   let losInscriptos = [];
   let elTorneo = null;
 
+  // Las divisiones y las clases de IDPA, para los desplegables de la
+  // corrección. **Están escritas también en la función**, que es la que
+  // manda: acá se muestran, allá se deciden. Si alguna vez cambian, hay
+  // que tocarlas en los dos lados, igual que los precios de los torneos.
+  const DIVISIONES = ['CDP', 'ESP', 'SSP', 'CCP', 'PCC', 'CO'];
+  const CLASES = ['NV', 'MM', 'SS', 'EX', 'MA', 'UN'];
+
   const COMO_SE_DICE = {
     Lady: 'Lady', Senior: 'Senior (+50)', SuperSenior: 'Super Senior (+65)',
     NV: 'Novicio', MM: 'Marksman', SS: 'Sharpshooter',
@@ -1067,6 +1088,24 @@
         borrar.title = 'Borra la inscripción y libera su lugar.';
         borrar.addEventListener('click', function () { borrarInscripto(i, this); });
       }
+      // Corregir lo que se corrige de verdad: la división y la clase del
+      // que se clasificó después de anotarse, un apellido mal tipeado,
+      // el que se pasa de día o de escuadra. Antes eso había que
+      // arreglarlo tocando la base a mano.
+      //
+      // En el renglón de la segunda arma corrige **la segunda**: es la
+      // misma inscripción partida en dos, y el que la mira ahí está
+      // mirando esa arma.
+      const corregir = document.createElement('button');
+      corregir.type = 'button';
+      corregir.className = 'borrar-inscripto corregir-inscripto';
+      corregir.textContent = 'Corregir';
+      corregir.title = i.esSegunda
+        ? 'Cambiar la división y la clase de la segunda arma.'
+        : 'Cambiar el nombre, el número de IDPA, la división, la clase, el día o la escuadra.';
+      corregir.addEventListener('click', function () { abrirLaCorreccion(i, tr, this); });
+      accion.appendChild(corregir);
+
       accion.appendChild(borrar);
       tr.appendChild(accion);
 
@@ -1081,6 +1120,152 @@
 
   // Borrar una inscripción. Pregunta primero con el nombre adelante:
   // esto no se deshace y lo que se borra no se puede mirar después.
+  // Corregir una inscripción, en su propio renglón.
+  //
+  // Se abren debajo los campos que se pueden tocar y nada más: el total,
+  // el estado y el comprobante no están, porque no son cosas que se
+  // corrijan a mano. Y se mandan **sólo los que cambiaron**, así dos
+  // personas corrigiendo cosas distintas de la misma inscripción no se
+  // pisan.
+  function abrirLaCorreccion(i, tr, boton) {
+    // Si ya está abierto, se cierra: el botón hace las dos cosas.
+    if (tr.nextSibling && tr.nextSibling.classList &&
+        tr.nextSibling.classList.contains('correccion')) {
+      tr.nextSibling.remove();
+      boton.textContent = 'Corregir';
+      return;
+    }
+    boton.textContent = 'Cerrar';
+
+    const fila = document.createElement('tr');
+    fila.className = 'correccion';
+    const celda = document.createElement('td');
+    celda.colSpan = tr.children.length;
+    fila.appendChild(celda);
+
+    const caja = document.createElement('div');
+    caja.className = 'caja-correccion';
+    celda.appendChild(caja);
+
+    const campos = {};
+    const sumar = (rotulo, elemento, nombre) => {
+      const l = document.createElement('label');
+      const s = document.createElement('span');
+      s.textContent = rotulo;
+      l.appendChild(s);
+      l.appendChild(elemento);
+      caja.appendChild(l);
+      campos[nombre] = elemento;
+    };
+    const texto = (valor) => {
+      const e = document.createElement('input');
+      e.type = 'text';
+      e.value = valor || '';
+      return e;
+    };
+    const lista = (opciones, valor, comoSeLee) => {
+      const e = document.createElement('select');
+      opciones.forEach((o) => {
+        const op = document.createElement('option');
+        op.value = o;
+        op.textContent = (comoSeLee && comoSeLee[o]) || o;
+        e.appendChild(op);
+      });
+      e.value = valor || '';
+      return e;
+    };
+
+    // La segunda arma sólo tiene división y clase: lo demás —el nombre,
+    // el día, la escuadra— es de la persona y se corrige en su renglón.
+    if (i.esSegunda) {
+      sumar('División', lista(DIVISIONES, i.division), 'segundaDivision');
+      sumar('Clase', lista(CLASES, i.clase, COMO_SE_DICE), 'segundaClase');
+    } else {
+      sumar('Apellido', texto(i.apellido), 'apellido');
+      sumar('Nombre', texto(i.nombre), 'nombre');
+      sumar('N° de IDPA', texto(i.idpa), 'idpa');
+      sumar('División', lista(DIVISIONES, i.division), 'division');
+      sumar('Clase', lista(CLASES, i.clase, COMO_SE_DICE), 'clase');
+      sumar('Día', lista(Object.keys(elTorneo.dias || {}), i.dia, DIA_LARGO), 'dia');
+      if (lasEscuadras(i.dia).length) {
+        sumar('Escuadra', lista(lasEscuadras(i.dia), String(i.escuadra || '')), 'escuadra');
+      }
+    }
+
+    const guardar = document.createElement('button');
+    guardar.type = 'button';
+    guardar.className = 'borrar-inscripto corregir-inscripto';
+    guardar.textContent = 'Guardar';
+    guardar.addEventListener('click', function () {
+      const cambios = {};
+      Object.keys(campos).forEach((nombre) => {
+        const valor = campos[nombre].value.trim();
+        const comoEstaba = nombre === 'segundaDivision' ? i.division
+          : nombre === 'segundaClase' ? i.clase
+          : i[nombre];
+        const antes = comoEstaba === undefined || comoEstaba === null ? '' : String(comoEstaba);
+        if (valor !== antes) {
+          cambios[nombre] = nombre === 'escuadra' ? Number(valor) : valor;
+        }
+      });
+      guardarLaCorreccion(i, cambios, this);
+    });
+    caja.appendChild(guardar);
+
+    tr.parentNode.insertBefore(fila, tr.nextSibling);
+  }
+
+  // Qué escuadras hay ese día. Sale del propio torneo, igual que en el
+  // formulario: un día sin escuadras —el pre match— no las ofrece.
+  function lasEscuadras(dia) {
+    const e = (elTorneo && elTorneo.escuadras) || {};
+    if (!e.cuantas || (e.dia && e.dia !== dia)) return [];
+    const desde = Math.max(1, Math.trunc(Number(e.desde)) || 1);
+    const salida = [];
+    for (let n = desde; n < desde + e.cuantas; n++) salida.push(String(n));
+    return salida;
+  }
+
+  async function guardarLaCorreccion(i, cambios, boton) {
+    const quien = (i.apellido || '') + ', ' + (i.nombre || '');
+    const aviso = document.getElementById('estado-planilla');
+
+    if (!Object.keys(cambios).length) {
+      aviso.className = 'estado';
+      aviso.textContent = 'No cambiaste nada de ' + quien + '.';
+      return;
+    }
+
+    boton.textContent = 'Guardando…';
+    boton.disabled = true;
+    aviso.className = 'estado';
+    aviso.textContent = 'Corrigiendo a ' + quien + '…';
+
+    try {
+      const direccion = INSCRIPTOS +
+        '?clave=' + encodeURIComponent(clave.value.trim()) +
+        '&torneo=' + encodeURIComponent(elTorneo.slug) +
+        '&corregir=' + encodeURIComponent(i.id);
+      const r = await fetch(direccion, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(cambios),
+      });
+      const d = await r.json();
+      if (!d || !d.ok) throw new Error((d && d.error) || 'no se pudo');
+
+      await pedirLosInscriptos(clave.value.trim(), elTorneo.slug);
+      aviso.className = 'estado ok';
+      aviso.textContent = 'Corregida la inscripción de ' + quien + '. ' +
+        'El correo que ya recibió dice lo de antes: avisale vos.';
+    } catch (e) {
+      boton.textContent = 'Guardar';
+      boton.disabled = false;
+      aviso.className = 'estado mal';
+      aviso.textContent = 'No se pudo corregir: ' + (e.message || 'probá de nuevo');
+    }
+  }
+
   async function borrarInscripto(i, boton) {
     const quien = (i.apellido || '') + ', ' + (i.nombre || '');
     if (!confirm('¿Borrar la inscripción de ' + quien + '?\n\n' +
