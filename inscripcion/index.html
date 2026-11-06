@@ -50,6 +50,9 @@
         Puede que la inscripción todavía no esté abierta o que el enlace
         esté incompleto. Mirá los torneos abiertos en la
         <a href="/#torneos">portada del sitio</a>, o escribinos a
+        <!-- Éste es el único que no puede llevar el correo del torneo:
+             se muestra justamente cuando no sabemos de qué torneo se
+             trata. Va el del club, que sabe a quién derivarlo. -->
         <a href="mailto:9x19shooting@gmail.com">9x19shooting@gmail.com</a>.
       </p>
     </div>
@@ -61,7 +64,7 @@
       <p><strong>La inscripción a este torneo ya cerró.</strong></p>
       <p>
         Si necesitás anotarte igual, escribinos a
-        <a href="mailto:9x19shooting@gmail.com">9x19shooting@gmail.com</a>
+        <a data-correo-torneo href="mailto:9x19shooting@gmail.com">9x19shooting@gmail.com</a>
         y vemos si todavía hay lugar.
       </p>
     </div>
@@ -76,7 +79,7 @@
       <p class="nota">
         Si no te llega en unos minutos, revisá el correo no deseado y, si
         tampoco está ahí, escribinos a
-        <a href="mailto:9x19shooting@gmail.com">9x19shooting@gmail.com</a>.
+        <a data-correo-torneo href="mailto:9x19shooting@gmail.com">9x19shooting@gmail.com</a>.
       </p>
     </div>
   </section>
@@ -345,7 +348,7 @@
       <p class="ayuda">
         Una foto o captura de la transferencia, o el PDF. Si todavía no
         transferiste, podés mandarlo después a
-        <a href="mailto:9x19shooting@gmail.com">9x19shooting@gmail.com</a>.
+        <a data-correo-torneo href="mailto:9x19shooting@gmail.com">9x19shooting@gmail.com</a>.
       </p>
       <p class="ayuda archivo-elegido" id="archivo-elegido" hidden></p>
     </div>
@@ -384,7 +387,7 @@
   </div>
 </footer>
 
-<script src="torneos.js?v=25"></script>
-<script src="inscripcion.js?v=17"></script>
+<script src="torneos.js?v=26"></script>
+<script src="inscripcion.js?v=18"></script>
 </body>
 </html>

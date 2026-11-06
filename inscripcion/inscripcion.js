@@ -282,6 +282,13 @@
     dibujarEscuadras();
   }
 
+  // Donde cada día tiene su precio, elegir el día cambia el importe.
+  if (torneo.precios) {
+    form.querySelectorAll('[name="dia"]').forEach((r) => {
+      r.addEventListener('change', recalcular);
+    });
+  }
+
   function leToca() {
     return torneo.almuerzo === true || torneo.almuerzo === elegido_('dia');
   }
@@ -403,19 +410,60 @@
   // no se consulta a ningún lado, así que cualquiera escribía cualquier
   // cosa y se cobraba solo cinco mil pesos menos. Lo del asociado lo
   // resuelve el club al mirar el comprobante.
+  // Lo que sale la inscripción, sin la segunda arma. Un torneo puede
+  // cobrar **por día** —la clasificación de un día y el torneo del otro
+  // valen distinto—, y entonces el importe no existe hasta que el
+  // tirador elige: devuelve null y la pantalla lo dice con todas las
+  // letras en vez de mostrar un número que después cambia.
+  function loQueSale() {
+    if (!torneo.precios) return torneo.precio || 0;
+    const dia = elegido_('dia');
+    return dia && torneo.precios[dia] ? torneo.precios[dia] : null;
+  }
+
   function recalcular() {
     const segunda = $('i-segunda').checked ? (torneo.precioSegundaArma || 0) : 0;
+    const base = loQueSale();
 
-    $('p-total').textContent = plata(torneo.precio + segunda);
+    if (base === null) {
+      // Todavía no eligió el día. Se muestran los precios de cada uno,
+      // que es lo que necesita para elegir.
+      $('p-total').textContent = 'Según el día';
+      $('p-desglose').textContent = torneo.dias
+        .filter((d) => torneo.precios[d.valor])
+        .map((d) => d.texto.split('—')[0].trim() + ' ' + plata(torneo.precios[d.valor]))
+        .join(' · ');
+      $('texto-compromiso').textContent =
+        'Entiendo que tengo que transferir al alias ' + torneo.alias +
+        ' lo que sale el día que elija, y que la inscripción es un compromiso: ' +
+        'solo se reintegra si se suspende el torneo.';
+      return;
+    }
 
-    const partes = ['Inscripción ' + plata(torneo.precio)];
+    $('p-total').textContent = plata(base + segunda);
+
+    const partes = ['Inscripción ' + plata(base)];
     if (segunda) partes.push('Segunda arma ' + plata(segunda));
     $('p-desglose').textContent = partes.join(' · ');
 
     $('texto-compromiso').textContent =
-      'Entiendo que tengo que transferir ' + plata(torneo.precio + segunda) +
+      'Entiendo que tengo que transferir ' + plata(base + segunda) +
       ' al alias ' + torneo.alias + ', y que la inscripción es un compromiso: ' +
       'solo se reintegra si se suspende el torneo.';
+  }
+
+  // A quién le escribe el inscripto: el comprobante que manda después,
+  // los lugares cuando la inscripción cerró, la confirmación que no
+  // llegó. Por defecto al club; en un torneo de otro club, a quien lo
+  // organiza, que es el que cobra y el que sabe si queda lugar.
+  //
+  // El aviso de "no encontramos ese torneo" queda siempre con el del
+  // club: se muestra cuando no se sabe de qué torneo se trata.
+  if (torneo.correoContacto) {
+    document.querySelectorAll('[data-correo-torneo]').forEach((a) => {
+      a.textContent = torneo.correoContacto;
+      a.href = 'mailto:' + torneo.correoContacto;
+    });
   }
 
   $('p-alias').textContent = torneo.alias;

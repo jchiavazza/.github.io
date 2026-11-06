@@ -106,60 +106,6 @@
     <h2>Próximas fechas</h2>
 
     <div class="grilla-proximas">
-      <article class="proxima-fecha" data-hasta="2026-08-23">
-        <a class="afiche" data-sin-zoom data-chico data-izquierda href="assets/afiches/tucuman.jpg?v=2"
-           data-imagen="assets/afiches/tucuman.jpg?v=2"
-           data-texto-imagen="Afiche del Torneo Social IDPA en el Tiro Federal de Tucumán, 22 y 23 de agosto de 2026">
-          <img src="assets/afiches/tucuman-mini.jpg?v=2" alt="Afiche del torneo" loading="lazy">
-          <span class="ver-mas">Tocá para ampliar</span>
-        </a>
-
-        <!-- Suspendida: la columna de la fecha queda en blanco. El contenido
-             original espera acá por si se reprograma.
-          <span class="dia">22 y 23</span>
-          <span class="mes">de agosto</span>
-          <span class="faltan"></span>
-
-          <div class="qr">
-            <img src="assets/qr/tucuman.png" alt="Código QR del formulario de inscripción" loading="lazy">
-            <span>Escaneá para inscribirte</span>
-          </div>
-        -->
-        <div class="cuando"></div>
-
-        <div class="que">
-          <img class="logo-sede" src="assets/logos/tucuman.png" alt="Escudo del Tiro Federal de Tucumán" loading="lazy">
-          <p class="hito">Nuestro primer torneo en esta sede</p>
-          <h3>Torneo Social IDPA <span class="tier">Tier 1</span></h3>
-          <p class="donde">
-            Tiro Federal de Tucumán<br>
-            <span class="direccion">Av. Silvano Bores 585, San Miguel de Tucumán</span>
-          </p>
-          <p class="detalle-torneo">
-            Dos días de competencia · 5 escenarios · 78 disparos<br>
-            Todas las divisiones
-          </p>
-          <p class="detalle-torneo">
-            Match Director: <strong>Maximiliano Pastor</strong> ·
-            Consultas: Instructor César Castro
-          </p>
-
-          <!-- Suspendida. Los botones de inscripción e informes quedan acá
-               comentados para volver a ponerlos si se reprograma:
-            <a class="boton principal" href="https://form.jotform.com/260535458428665"
-               target="_blank" rel="noopener">Inscribirme ↗</a>
-            <a class="boton" href="https://wa.me/5493816350121" target="_blank" rel="noopener">
-              Informes: 381 635 0121
-            </a>
-          -->
-          <div class="acciones">
-            <span class="boton suspendido">Suspendida hasta nuevo aviso</span>
-          </div>
-
-        </div>
-      </article>
-
-
       <article class="proxima-fecha" data-hasta="2026-11-15">
         <a class="afiche" data-sin-zoom data-chico data-izquierda href="assets/afiches/san-jeronimo-sud.jpg?v=2"
            data-imagen="assets/afiches/san-jeronimo-sud.jpg?v=2"
@@ -202,6 +148,57 @@
                  `sitio.js` mirando `torneos.js`, así no hay que acordarse
                  de borrar el botón en el torneo que no las usa. -->
             <a class="boton" data-escuadras="san-jeronimo-sud" href="/escuadras/?t=san-jeronimo-sud" hidden>Escuadras</a>
+          </div>
+        </div>
+      </article>
+
+      <!-- Tucumán, reprogramado. La fecha de agosto se suspendió y esta
+           tarjeta es la misma, con el afiche y las fechas nuevas: el
+           torneo pasó a noviembre y ahora se inscribe por el formulario
+           del sitio, no por JotForm. -->
+      <article class="proxima-fecha" data-hasta="2026-11-22">
+        <a class="afiche" data-sin-zoom data-chico data-izquierda href="assets/afiches/tucuman.jpg?v=3"
+           data-imagen="assets/afiches/tucuman.jpg?v=3"
+           data-texto-imagen="Afiche del Torneo de IDPA en homenaje a Rolando Scaravilli, en el Tiro Federal de Tucumán, 21 y 22 de noviembre de 2026">
+          <img src="assets/afiches/tucuman-mini.jpg?v=3" alt="Afiche del torneo" loading="lazy">
+          <span class="ver-mas">Tocá para ampliar</span>
+        </a>
+
+        <div class="cuando">
+          <span class="dia">21 y 22</span>
+          <span class="mes">de noviembre</span>
+          <span class="faltan"></span>
+
+          <div class="qr">
+            <img src="assets/qr/tucuman.png?v=2" alt="Código QR del formulario de inscripción" loading="lazy">
+            <span>Escaneá para inscribirte</span>
+          </div>
+        </div>
+
+        <div class="que">
+          <img class="logo-sede" src="assets/logos/tucuman.png" alt="Escudo del Tiro Federal de Tucumán" loading="lazy">
+          <p class="hito">Homenaje a Rolando Scaravilli</p>
+          <h3>Torneo de IDPA <span class="tier">Tier 1</span></h3>
+          <p class="donde">
+            Tiro Federal de Tucumán<br>
+            <span class="direccion">Av. Silvano Bores 585, San Miguel de Tucumán</span>
+          </p>
+          <p class="detalle-torneo">
+            <strong>Sábado 21:</strong> clasificación, 72 disparos · $20.000<br>
+            <strong>Domingo 22:</strong> torneo, 78 disparos · $50.000<br>
+            Los dos días comienzan a las 8:30 hs
+          </p>
+          <p class="detalle-torneo">
+            Match Director: <strong>Maximiliano Pastor</strong> ·
+            Encargado organizador: Instructor <strong>César Castro</strong>
+          </p>
+
+          <div class="acciones">
+            <a class="boton principal" href="/inscripcion/?t=tucuman">Inscribirme</a>
+            <button class="boton" type="button" data-inscriptos="tucuman">Inscriptos</button>
+            <a class="boton" href="https://wa.me/5493816350121" target="_blank" rel="noopener">
+              Informes: 381 635 0121
+            </a>
           </div>
         </div>
       </article>
@@ -637,7 +634,7 @@
   </div>
 </footer>
 
-<script src="inscripcion/torneos.js?v=25"></script>
+<script src="inscripcion/torneos.js?v=26"></script>
 <script src="sitio.js?v=42"></script>
 </body>
 </html>

@@ -142,6 +142,47 @@ window.TORNEOS = {
     cierra: '2026-11-12T21:00',
   },
 
+  // **Este torneo lo organiza otro club.** El Tiro Federal de Tucumán lo
+  // corre y 9x19 pone el formulario: el alias es de ellos, así que la
+  // plata no pasa por el club, y el aviso de cada inscripción le llega
+  // también a su organizador. Eso último se decide del lado de la
+  // función, que es la que manda el correo.
+  tucuman: {
+    titulo: 'Torneo de IDPA',
+    subtitulo: 'Homenaje a Rolando Scaravilli',
+    sede: 'Tiro Federal de Tucumán',
+    ciudad: 'San Miguel de Tucumán',
+    direccion: 'Av. Silvano Bores 585',
+    fecha: '21 y 22 de noviembre de 2026',
+    horaComienzo: '8:30',
+
+    dias: [
+      { valor: 'sabado', texto: 'Sábado 21 — Clasificación (72 disparos)' },
+      { valor: 'domingo', texto: 'Domingo 22 — Torneo (78 disparos)' },
+      { valor: 'ambos', texto: 'Los dos días — Clasificación y torneo' },
+    ],
+
+    // **Cada día tiene su precio.** La clasificación y el torneo se pagan
+    // por separado, y el que viene a los dos paga la suma. Donde hay
+    // `precios`, `precio` no se mira — y el total recién se sabe cuando
+    // el tirador elige el día.
+    precios: { sabado: 20000, domingo: 50000, ambos: 70000 },
+    precioSegundaArma: 20000,
+
+    alias: 'Tiro.federal.tucuman',
+    titularAlias: 'Tiro Federal de Tucumán',
+
+    // **A quién le escribe el inscripto.** En un torneo de otro club no
+    // es el club: el comprobante que llega tarde lo mira quien cobra, y
+    // de los lugares y la confirmación sabe quien organiza.
+    correoContacto: 'cesartorrent@gmail.com',
+
+    notaPago: '',
+
+    // El jueves a las 21, como dice el aviso del formulario.
+    cierra: '2026-11-19T21:00',
+  },
+
   'santa-fe': {
     titulo: '4º Torneo Social de IDPA',
     subtitulo: 'Torneo Anual 2026 · Homenaje a Jorge Pastor',

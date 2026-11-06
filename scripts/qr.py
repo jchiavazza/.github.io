@@ -13,10 +13,10 @@ for d in (web, impresion):
     if not os.path.isdir(d):
         os.makedirs(d)
 
-# Esperanza y Santa Fe apuntan al formulario propio del sitio. Parana
-# sigue en JotForm: es una charla unica y no vale la pena moverla.
+# Todas apuntan al formulario propio del sitio, salvo Parana: es una
+# charla unica y no vale la pena moverla.
 fechas = [
-    ('tucuman',  'https://form.jotform.com/260535458428665'),
+    ('tucuman',  'https://9x19shooting.com.ar/inscripcion/?t=tucuman'),
     ('santa-fe', 'https://9x19shooting.com.ar/inscripcion/?t=santa-fe'),
     ('parana',   'https://form.jotform.com/253155748498674'),
     ('esperanza','https://9x19shooting.com.ar/inscripcion/?t=esperanza'),
