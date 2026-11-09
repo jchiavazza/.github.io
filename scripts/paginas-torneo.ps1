@@ -26,6 +26,7 @@ foreach ($t in $torneos) {
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>$($t.titulo) en $($t.sede) — Club 9x19 Shooting</title>
+<link rel="canonical" href="https://9x19shooting.com.ar/torneos/$($t.slug)/">
 <meta name="description" content="Fotos de la $($t.titulo.ToLower()) de IDPA que organizó el Club 9x19 Shooting en $($t.sede), $($t.lugar), el $($t.fecha).">
 <link rel="icon" href="/assets/icono.png">
 <link rel="stylesheet" href="/estilo.css?v=59">

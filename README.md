@@ -36,6 +36,23 @@ La leyenda "Aplicación no oficial, sin relación con IDPA" va solo en la
 página de la app, y tiene que quedarse: el club sí está afiliado, pero la
 app no es un producto de IDPA ni está avalada por ellos.
 
+### Cada página dice cuál es su dirección buena
+
+Todas las que se indexan llevan un `<link rel="canonical">` con su URL,
+pegado al `<title>`. **No es un adorno de SEO:** la misma página contesta
+en más de una dirección —`/score/` y `/score/index.html`, `/envivo/` y
+`/envivo/?c=loquesea`—, las dos con un 200 y el mismo HTML. Sin el
+canónico, Google elige una por su cuenta y avisa por correo
+*"Duplicada: el usuario no ha indicado ninguna versión canónica"*, que es
+lo que pasó el 9/11/2026.
+
+Las tres páginas con `noindex` —`/panel/`, `/inscripcion/` y
+`/escuadras/`— no lo llevan: ya están fuera del índice. Las direcciones
+canónicas son **exactamente** las 21 del `sitemap.xml`; si se agrega una
+página hay que tocar los dos lados. La plantilla de
+`scripts/paginas-torneo.ps1` ya lo escribe, así que una galería nueva
+nace con el suyo.
+
 ## La galería de cada torneo
 
 Cada fecha tiene su carpeta en `galeria/<slug>/`: las miniaturas en
