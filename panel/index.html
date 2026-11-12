@@ -1425,6 +1425,7 @@
     'Categoria especial': ['Lady', 'Senior', 'Distinguido Senior'],
     Escuadra: ['ESCUADRA 1', 'ESCUADRA 2', 'ESCUADRA 3', 'ESCUADRA 4',
       'ESCUADRA 5', 'ESCUADRA 6'],
+    'Segunda arma': ['SI'],
   };
 
   // El formulario del sitio dice "Super Senior (+65)" y la app llama a esa
@@ -1448,6 +1449,12 @@
     // corre con dos armas baja en dos renglones y va en la misma: es una
     // persona y tira una vez con cada una.
     ['Escuadra', (f) => f.laEscuadra],
+    // **Cuál de los dos renglónes es la segunda arma.** El que corre con
+    // dos baja dos veces, una por división, y sin esto la app importaba
+    // las dos como arma principal: había que entrar tirador por tirador a
+    // marcarlo. Va sólo en el renglón de la segunda; el de la principal
+    // queda vacío, que es lo que la app entiende como "no".
+    ['Segunda arma', (f) => (f.esSegunda ? 'SI' : '')],
   ];
 
   // Lo que le sirve al club y la plantilla no tiene, en una segunda hoja.
