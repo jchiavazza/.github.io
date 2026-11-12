@@ -1041,9 +1041,20 @@
       caja(resumenI, losInscriptos.length, 'personas');
     }
 
+    // El que eligió una opción que vale por varios días —"los dos días"—
+    // cuenta en cada uno, y además en la suya: el sábado figuraba vacío
+    // teniendo gente. La regla la declara el torneo (`abarcan`).
+    const abarcan = (elTorneo && elTorneo.abarcan) || {};
     const porDia = {};
-    tiradores.forEach((i) => { porDia[i.dia] = (porDia[i.dia] || 0) + 1; });
-    Object.keys(porDia).forEach((k) => caja(resumenI, porDia[k], DIA_LARGO[k] || k));
+    tiradores.forEach((i) => {
+      const varios = abarcan[i.dia];
+      (varios || [i.dia]).forEach((dia) => { porDia[dia] = (porDia[dia] || 0) + 1; });
+      if (varios) porDia[i.dia] = (porDia[i.dia] || 0) + 1;
+    });
+    // En el orden del torneo, que es como se corre, y no como vinieron.
+    Object.keys(DIA_LARGO).concat(Object.keys(porDia))
+      .filter((k, n, todas) => porDia[k] && todas.indexOf(k) === n)
+      .forEach((k) => caja(resumenI, porDia[k], DIA_LARGO[k] || k));
 
     const sinComprobante = losInscriptos.filter((i) => !i.trajoComprobante).length;
     if (sinComprobante) caja(resumenI, sinComprobante, 'sin comprobante');

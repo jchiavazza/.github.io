@@ -476,8 +476,18 @@
     // Cuántos hay cada día, en el orden en que se corre el torneo, y el
     // total al final. Los días salen del torneo y se muestran cortos: el
     // nombre entero —"Sábado 19 — Pre Match"— no entra en el celular.
+    // El que eligió una opción que vale por varios días —"los dos días"—
+    // cuenta en cada uno: el sábado figuraba vacío teniendo gente. La
+    // opción sigue teniendo su propia caja con los suyos.
+    const abarcan = d.torneo.abarcan || {};
     const porDia = {};
-    gente.forEach((i) => { porDia[i.dia] = (porDia[i.dia] || 0) + 1; });
+    gente.forEach((i) => {
+      const varios = abarcan[i.dia];
+      (varios || [i.dia]).forEach((dia) => { porDia[dia] = (porDia[dia] || 0) + 1; });
+      // Y la opción que vale por varios días conserva su propia caja, con
+      // los que la eligieron.
+      if (varios) porDia[i.dia] = (porDia[i.dia] || 0) + 1;
+    });
 
     conteo.innerHTML = '';
     Object.keys(d.torneo.dias || {}).forEach((clave) => {
