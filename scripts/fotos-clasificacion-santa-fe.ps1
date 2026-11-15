@@ -1,8 +1,8 @@
 $ErrorActionPreference = 'Stop'
 Add-Type -AssemblyName System.Drawing
 
-# La Clasificacion en el Tiro Federal Argentino de Santa Fe, el 6 de
-# junio de 2026.
+# La Clinica y Clasificacion en el Tiro Federal Argentino de Santa Fe,
+# el 6 de junio de 2026.
 #
 # Igual que scripts\fotos-san-jeronimo-sud.ps1 -- mini de 480 px y
 # 1500 px para el visor, y la orientacion del EXIF aplicada.
