@@ -85,6 +85,26 @@ fotogramas al 100%—. Los de WhatsApp ya vienen en 720p y comprimidos: ahí
 sólo vale `-c copy -movflags +faststart`, que mueve el índice al principio
 del archivo para que el video arranque sin bajarse entero.
 
+**Pero un bitrate alto no siempre sobra, así que hay que mirar el
+resultado y no sólo el origen.** En San Jerónimo, cinco videos venían en
+480x854 a más de 3 Mbps —cinco veces lo que esa resolución suele
+necesitar— y recomprimirlos a crf 27 los dejó **más grandes** que el
+original; a crf 30, exactamente iguales. Son **60 fps reales** (se contó
+con `mpdecimate`: 301 cuadros únicos de 301) y de mucho movimiento, así
+que el encoder del teléfono ya había hecho un buen trabajo. Bajarlos a 30
+fps tampoco achicaba, y ahí se perdería fluidez justo en lo que se quiere
+ver.
+
+Por eso `scripts/videos-san-jeronimo-sud.ps1` —el primero que hace esto—
+**prueba y compara**: recomprime a un archivo aparte y lo usa sólo si
+achica al menos un 15%; si no, copia el original con `+faststart`. El
+1080p de esa misma tanda pasó de 22 MB a 2,1 MB, así que la regla deja
+pasar lo que sirve y descarta lo que no.
+
+**En la grilla los videos van antes que las fotos**, así que el primero es
+lo primero que se ve de la galería: conviene forzar uno de cancha a la
+cabeza, por lo mismo que las fotos fuerzan una grupal.
+
 ## Cómo se publica
 
 Repo `jchiavazza/.github.io`, rama `main`, GitHub Pages desde la raíz. El
