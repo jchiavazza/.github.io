@@ -1427,3 +1427,28 @@ footer a:hover { text-decoration: underline; }
   .caja-lista td.almuerzo { text-align: left; }
   .caja-lista td.almuerzo:empty { display: none; }
 }
+
+/* ---------------------------------- el resumen de cada torneo */
+
+/* Encabeza la galeria y dice lo que las fotos no pueden: cuantos
+   corrieron, en cuantos escenarios y quien gano. Lo arma
+   scripts/resumen-de-cada-torneo.py con la tabla ya publicada. */
+.resumen-torneo {
+  max-width: 640px;
+  margin: 0 auto 30px;
+  padding: 18px 22px;
+  border-radius: 14px;
+  background: var(--fondo);
+  box-shadow: var(--relieve-chico);
+  text-align: center;
+}
+.resumen-torneo p { margin: 0; color: var(--texto-suave); }
+.resumen-torneo p + p { margin-top: 10px; }
+.resumen-torneo strong { color: var(--texto); }
+.resumen-torneo a {
+  color: var(--acento);
+  font-weight: 600;
+  text-decoration: none;
+  border-bottom: 1px solid var(--borde);
+}
+.resumen-torneo a:hover { border-bottom-color: var(--acento); }
