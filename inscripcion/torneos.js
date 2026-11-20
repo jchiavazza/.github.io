@@ -210,3 +210,33 @@ window.TORNEOS = {
   },
 
 };
+
+// ¿Ya cerró la inscripción de este torneo?
+//
+// `cierra` puede ser un día entero ('2026-10-08', inclusive: se compara
+// contra el día de hoy, para que el que entra a las once de la noche
+// pueda anotarse) o un día con hora ('2026-09-17T12:00', en hora de
+// Argentina: el -03:00 hace que cierre en el mismo instante para todos,
+// esté donde esté el que mira). Sin `cierra`, el torneo no cierra solo.
+//
+// **Vive acá y no en cada página** porque la miran las dos: el
+// formulario, para mostrar el cartel de cerrado, y la portada, para
+// apagar el botón "Inscribirme" y sacar el QR. Escrita dos veces,
+// tarde o temprano una de las dos diría otra cosa.
+//
+// Ojo: esto es la cortesía de no invitar a lo que ya cerró. **Lo que
+// de verdad cierra la inscripción es la función**, que vuelve a mirar
+// la misma fecha y rechaza lo que llegue tarde: acá cualquiera podría
+// cambiar la hora de su teléfono.
+window.cerroLaInscripcion = function (torneo) {
+  const cierra = typeof torneo === 'string'
+    ? ((window.TORNEOS || {})[torneo] || {}).cierra
+    : (torneo || {}).cierra;
+  if (!cierra) return false;
+  if (cierra.includes('T')) return Date.now() >= Date.parse(cierra + ':00-03:00');
+
+  const d = new Date();
+  const mm = String(d.getMonth() + 1).padStart(2, '0');
+  const dd = String(d.getDate()).padStart(2, '0');
+  return (d.getFullYear() + '-' + mm + '-' + dd) > cierra;
+};

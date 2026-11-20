@@ -10,7 +10,7 @@
      archivo google27f9713e6eb2c514.html. No borrar ninguno de los dos. -->
 <meta name="google-site-verification" content="XFqVQXDWMgoB-UdauIgBkN-bCp5_d6BZNYdiPUPmPRA">
 <link rel="icon" href="assets/icono.png">
-<link rel="stylesheet" href="estilo.css?v=72">
+<link rel="stylesheet" href="estilo.css?v=73">
 
 <meta property="og:type" content="website">
 <meta property="og:title" content="Club 9x19 Shooting">
@@ -143,7 +143,7 @@
           </p>
 
           <div class="acciones">
-            <a class="boton principal" href="/inscripcion/?t=san-jeronimo-sud">Inscribirme</a>
+            <a class="boton principal" data-inscribirse="san-jeronimo-sud" href="/inscripcion/?t=san-jeronimo-sud">Inscribirme</a>
             <button class="boton" type="button" data-inscriptos="san-jeronimo-sud">Inscriptos</button>
             <!-- Aparece sólo si el torneo arma escuadras: lo prende
                  `sitio.js` mirando `torneos.js`, así no hay que acordarse
@@ -170,6 +170,11 @@
           <span class="mes">de noviembre</span>
           <span class="faltan"></span>
 
+          <div class="qr">
+            <img src="assets/qr/tucuman.png?v=2" alt="Código QR del formulario de inscripción" loading="lazy">
+            <span>Escaneá para inscribirte</span>
+          </div>
+
         </div>
 
         <div class="que">
@@ -191,7 +196,7 @@
           </p>
 
           <div class="acciones">
-            <span class="boton pendiente">Inscripción cerrada</span>
+            <a class="boton principal" data-inscribirse="tucuman" href="/inscripcion/?t=tucuman">Inscribirme</a>
             <button class="boton" type="button" data-inscriptos="tucuman">Inscriptos</button>
             <a class="boton" href="https://wa.me/5493816350121" target="_blank" rel="noopener">
               Informes: 381 635 0121
@@ -645,7 +650,7 @@
   </div>
 </footer>
 
-<script src="inscripcion/torneos.js?v=27"></script>
-<script src="sitio.js?v=43"></script>
+<script src="inscripcion/torneos.js?v=28"></script>
+<script src="sitio.js?v=44"></script>
 </body>
 </html>

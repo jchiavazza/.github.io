@@ -198,6 +198,37 @@ Para abrir el torneo siguiente se copia el bloque anterior de
 > no una fecha del calendario, y no vale la pena moverla. Su botón y su
 > QR no se tocaron.
 
+### El cierre se apaga solo en los tres lados
+
+Un torneo cierra con su `cierra` en `torneos.js` —un día entero
+(`'2026-10-08'`, inclusive, para que el que entra a las once de la noche
+todavía pueda) o un día con hora (`'2026-09-17T12:00'`, en hora de
+Argentina)—. Desde ese momento:
+
+- **el formulario** muestra el cartel de cerrado;
+- **la portada** cambia el botón *Inscribirme* por uno apagado que dice
+  «Inscripción cerrada» y esconde el QR de *escaneá para inscribirte*;
+- **la función** `inscribirse` rechaza lo que llegue igual.
+
+Las dos primeras usan `window.cerroLaInscripcion(torneo)`, que vive en
+`torneos.js` porque es el archivo que cargan las dos páginas. La tercera
+vuelve a mirar la misma fecha del lado del servidor, en
+`functions/inscripciones.js` de la App: **ésa es la que cierra de
+verdad**, porque en el navegador cualquiera cambia la hora de su
+teléfono.
+
+> **La tarjeta de la portada necesita `data-inscribirse`** en su botón
+> de inscribirse, con el slug del torneo:
+> `<a class="boton principal" data-inscribirse="tucuman" href="/inscripcion/?t=tucuman">`.
+> Sin eso el botón se queda invitando, que es lo que pasó con Tucumán el
+> 20/11/2026: la inscripción había cerrado la noche anterior y la portada
+> seguía ofreciéndola. Es el mismo patrón que `data-escuadras`.
+
+> **El QR se esconde con `hidden`, y eso necesita su regla en el CSS.**
+> `.proxima-fecha .qr` es `display: flex`, que le gana al `display: none`
+> del atributo. Ya había pasado con las tarjetas vencidas, así que en
+> `estilo.css` están las dos reglas, una al lado de la otra.
+
 El envío lo recibe la Cloud Function `inscribirse`, **que vive en
 `PuntajeApp/functions/inscripciones.js`**, por el mismo motivo que las
 del contador de descargas: un proyecto de Firebase despliega todas sus

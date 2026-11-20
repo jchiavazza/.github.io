@@ -544,6 +544,29 @@
     const t = (window.TORNEOS || {})[b.dataset.escuadras];
     b.hidden = !(t && t.escuadras);
   });
+
+  // Y el de inscribirse, al revés: se apaga cuando el torneo cerró.
+  //
+  // Antes había que acordarse de sacarlo a mano el día del cierre, y
+  // mientras tanto la portada invitaba a un formulario que ya decía
+  // que no. Queda el cartel en lugar del botón --el que entra la
+  // semana del torneo se pregunta justamente eso-- y se va el QR, que
+  // decía "escaneá para inscribirte".
+  //
+  // El resto de la tarjeta no se toca: la dirección, el horario y el
+  // teléfono de informes son lo que más se mira los últimos días.
+  document.querySelectorAll('[data-inscribirse]').forEach((boton) => {
+    if (!window.cerroLaInscripcion(boton.dataset.inscribirse)) return;
+
+    const cartel = document.createElement('span');
+    cartel.className = 'boton pendiente';
+    cartel.textContent = 'Inscripción cerrada';
+    boton.replaceWith(cartel);
+
+    const tarjeta = cartel.closest('.proxima-fecha');
+    const qr = tarjeta && tarjeta.querySelector('.qr');
+    if (qr) qr.hidden = true;
+  });
 })();
 
 

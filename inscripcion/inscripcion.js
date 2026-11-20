@@ -92,24 +92,11 @@
   bajada.push(torneo.fecha);
   $('t-bajada').innerHTML = bajada.join('<br>');
 
-  // ¿Todavía se puede inscribir? `cierra` puede ser un día entero
-  // ('2026-10-08', inclusive: se compara contra el día de hoy, para que el
-  // que entra a las once de la noche pueda anotarse) o un día con hora
-  // ('2026-09-17T12:00', en hora de Argentina: el -03:00 hace que cierre
-  // en el mismo instante para todos, esté donde esté el que mira).
-  const yaCerro = !torneo.cierra ? false
-    : torneo.cierra.includes('T') ? Date.now() >= Date.parse(torneo.cierra + ':00-03:00')
-    : hoyEnTexto() > torneo.cierra;
-  if (yaCerro) {
+  // ¿Todavía se puede inscribir? La cuenta está en torneos.js, que la
+  // comparte con la portada: allá apaga el botón "Inscribirme".
+  if (window.cerroLaInscripcion(torneo)) {
     $('cerrado').hidden = false;
     return;
-  }
-
-  function hoyEnTexto() {
-    const d = new Date();
-    const mm = String(d.getMonth() + 1).padStart(2, '0');
-    const dd = String(d.getDate()).padStart(2, '0');
-    return d.getFullYear() + '-' + mm + '-' + dd;
   }
 
   // ------------------------------------------------------------------

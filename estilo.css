@@ -586,6 +586,11 @@ section > .acciones {
 /* El código QR del formulario, para el que mira desde la computadora y se
    quiere anotar con el teléfono. Va sobre blanco sí o sí: el beige le baja
    el contraste y algunos lectores no lo toman. */
+/* Y lo mismo que arriba con el QR: cuando la inscripcion cierra, el
+   guion le pone `hidden` y sin esta regla el `display: flex` se lo
+   come. Es la segunda vez que pasa en este archivo. */
+.proxima-fecha .qr[hidden] { display: none; }
+
 .proxima-fecha .qr {
   display: flex;
   flex-direction: column;
