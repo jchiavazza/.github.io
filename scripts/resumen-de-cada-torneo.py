@@ -81,7 +81,27 @@ def resumen(clave):
 
     escenarios = max((len(f.get('escenarios') or []) for f in gente), default=0)
     divisiones = [x for x in (d.get('divisiones') or []) if x]
-    gano = next((f for f in gente if f.get('puesto') == 1 and f.get('completo')), None)
+
+    # **El ganador solo cuando el torneo termino.** A mitad de match el
+    # puesto 1 es el mejor DE LOS QUE YA TERMINARON --con uno solo
+    # completo, el unico que termino--: publicarlo como campeon seria
+    # mentir, y encima quedaria escrito.
+    #
+    # Lo dice `congelado` o `final`, las marcas que pone el disparador
+    # cuando la tabla deja de recalcularse... salvo en los torneos
+    # anteriores al 21/9/2026, que son de antes de que eso existiera. Por
+    # eso vale tambien que **haya terminado la mayoria**: un torneo
+    # corrido tiene a casi todos completos --22 de 23 en la primera
+    # fecha, 31 de 34 en la segunda, porque siempre hay quien se retira--
+    # y uno en disputa tiene a casi nadie: 1 de 12 en Tucuman a media
+    # manana. Entre esos dos no hay zona gris.
+    completos = [f for f in gente if f.get('completo')]
+    corriendo = [f for f in gente if not f.get('dq')]
+    termino = (bool(d.get('congelado') or d.get('final')) or
+               len(completos) > len(corriendo) / 2)
+    gano = None
+    if termino:
+        gano = next((f for f in gente if f.get('puesto') == 1 and f.get('completo')), None)
 
     texto = 'Corrieron <strong>' + plural(len(gente), 'tirador', 'tiradores') + '</strong>'
     if escenarios:
@@ -98,7 +118,7 @@ def resumen(clave):
         texto += (' La general la ganó <strong>' + como_nombre(gano) + '</strong>, de ' +
                   gano.get('division', '') + '.')
 
-    return (texto, len(gente))
+    return (texto, len(gente), not gano)
 
 
 def bloque(texto, clave):
@@ -124,7 +144,8 @@ def main():
         if not r:
             print('  sin datos:', slug)
             continue
-        texto, cuantos = r
+        texto, cuantos, enCurso = r
+        aviso = '   (EN CURSO: sin ganador; volver a correrlo al terminar)' if enCurso else ''
 
         s = io.open(pagina, encoding='utf-8', newline='').read()
         fin = '\r\n' if '\r\n' in s else '\n'
@@ -141,7 +162,7 @@ def main():
             s = s.replace(ancla, nuevo + fin + fin + ancla, 1)
 
         io.open(pagina, 'w', encoding='utf-8', newline='').write(s)
-        print('  %-24s %d tiradores' % (slug, cuantos))
+        print('  %-24s %d tiradores%s' % (slug, cuantos, aviso))
         hechos += 1
 
     print('%d galerias con su resumen' % hechos)
