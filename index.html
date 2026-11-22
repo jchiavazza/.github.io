@@ -10,7 +10,7 @@
      archivo google27f9713e6eb2c514.html. No borrar ninguno de los dos. -->
 <meta name="google-site-verification" content="XFqVQXDWMgoB-UdauIgBkN-bCp5_d6BZNYdiPUPmPRA">
 <link rel="icon" href="assets/icono.png">
-<link rel="stylesheet" href="estilo.css?v=73">
+<link rel="stylesheet" href="estilo.css?v=74">
 
 <meta property="og:type" content="website">
 <meta property="og:title" content="Club 9x19 Shooting">
@@ -57,6 +57,12 @@
         <svg class="ico" viewBox="0 0 24 24" aria-hidden="true">
           <rect x="6.5" y="2.5" width="11" height="19" rx="2.5"/>
           <path d="M10.5 18.5h3"/>
+        </svg>
+      </a>
+      <a href="#video-anual">El año en video
+        <svg class="ico" viewBox="0 0 24 24" aria-hidden="true">
+          <circle cx="12" cy="12" r="9"/>
+          <path d="M10 8.5v7l6-3.5-6-3.5Z" class="lleno"/>
         </svg>
       </a>
       <a href="#contacto">Contacto
@@ -317,6 +323,38 @@
     </div>
   </section>
 
+  <!-- El resumen del año en video. Los archivos viven en Cloudflare R2
+       y no en el repositorio: pesan cientos de MB y GitHub no acepta
+       nada de mas de 100 MB. La direccion esta en data-base, que es lo
+       unico que hay que cambiar si alguna vez se mudan.
+
+       **El video no se descarga hasta que le dan play** (preload="none"
+       y su imagen de portada en assets): el que entra a mirar otra cosa
+       no se come 40 MB sin querer. -->
+  <section id="video-anual">
+    <h2>El año en video</h2>
+    <p>
+      El resumen de la temporada 2026: las seis sedes que nos abrieron las
+      puertas, fecha por fecha, y los 9.500 kilómetros que hicimos
+      clasificando tiradores y organizando torneos por todo el país.
+    </p>
+
+    <div class="caja-video" data-base="https://videos.9x19shooting.com.ar">
+      <video controls playsinline preload="none"
+             poster="assets/anual-2026-portada.jpg"
+             src="https://videos.9x19shooting.com.ar/anual-2026-horizontal.mp4"
+             data-vertical="https://videos.9x19shooting.com.ar/anual-2026-vertical.mp4"
+             data-poster-vertical="assets/anual-2026-portada-vertical.jpg">
+        Tu navegador no puede reproducir el video.
+        <a href="https://videos.9x19shooting.com.ar/anual-2026-horizontal.mp4">Descargalo acá</a>.
+      </video>
+    </div>
+
+    <p class="ayuda">
+      Dura 4 minutos y 43 segundos. En el celular se ve la versión vertical
+      y en la computadora la apaisada: es el mismo video.
+    </p>
+  </section>
   <section id="torneos">
     <h2>Nuestros torneos</h2>
     <p>
@@ -658,6 +696,6 @@
 </footer>
 
 <script src="inscripcion/torneos.js?v=28"></script>
-<script src="sitio.js?v=44"></script>
+<script src="sitio.js?v=45"></script>
 </body>
 </html>

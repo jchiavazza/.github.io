@@ -1457,3 +1457,25 @@ footer a:hover { text-decoration: underline; }
   border-bottom: 1px solid var(--borde);
 }
 .resumen-torneo a:hover { border-bottom-color: var(--acento); }
+
+/* ---------------------------------- el video del año */
+
+/* El reproductor se adapta al ancho y no pasa del alto de la
+   pantalla: el vertical, en un monitor, saldria mas alto que la
+   ventana y habria que hacer scroll para ver el final del cuadro. */
+.caja-video {
+  max-width: 900px;
+  margin: 26px auto 14px;
+  border-radius: 16px;
+  overflow: hidden;
+  box-shadow: var(--relieve);
+  background: #000;
+  line-height: 0;
+}
+.caja-video video {
+  display: block;
+  width: 100%;
+  max-height: 78vh;
+  background: #000;
+}
+#video-anual .ayuda { text-align: center; }

@@ -105,6 +105,40 @@ pasar lo que sirve y descarta lo que no.
 lo primero que se ve de la galería: conviene forzar uno de cancha a la
 cabeza, por lo mismo que las fotos fuerzan una grupal.
 
+## El video del año no vive en este repositorio
+
+El resumen de la temporada está montado dos veces —apaisado y vertical—
+y los originales pesan **183 y 202 MB**. No entran acá por dos razones,
+y la primera no se negocia: **GitHub rechaza cualquier archivo de más de
+100 MB**. La segunda es que GitHub Pages sirve **100 GB de tráfico por
+mes**: con un video de 87 MB, mil reproducciones se lo llevan entero y
+el sitio deja de responder para todo lo demás.
+
+Por eso viven en **Cloudflare R2**, que da 10 GB y **no cobra el tráfico
+de salida**, servidos desde `videos.9x19shooting.com.ar`. Es la misma
+cuenta que ya maneja el DNS del dominio.
+
+En el sitio quedan sólo las dos imágenes de portada
+(`assets/anual-2026-portada*.jpg`, 48 KB cada una). **La dirección está
+en un solo lugar**: el `data-base` de la sección `#video-anual` en
+`index.html`, más el `src` del `<video>` y su `data-vertical`.
+
+> **El video no se descarga hasta que le dan play.** El `<video>` va con
+> `preload="none"` y su imagen de portada: el que entra a mirar las
+> próximas fechas no se come 87 MB sin querer. Esto importa más acá que
+> en las galerías, donde lo pesado son miniaturas de 30 KB.
+
+> **El apaisado está en el HTML y el vertical lo pone `sitio.js`** si la
+> pantalla es angosta. Así la página nunca queda sin video —ni sin
+> JavaScript ni con una pantalla ancha— y el cambio se hace una sola vez
+> al cargar: hacerlo al girar el teléfono reiniciaría el video al
+> principio justo mientras alguien lo mira.
+
+Para comprimirlos se usó 1080p con `crf 25` en el apaisado (183 → 87 MB)
+y 720p con `crf 24` en el vertical, que es el que va al celular y
+conviene que pese la mitad. Los originales quedan en
+`PuntajeApp/video-anual-2026`.
+
 ## Cómo se publica
 
 Repo `jchiavazza/.github.io`, rama `main`, GitHub Pages desde la raíz. El

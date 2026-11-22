@@ -626,3 +626,26 @@
     })
     .catch(() => {});
 })();
+
+// El video del año: el vertical en el celular, el apaisado en la
+// computadora. Es el mismo resumen montado dos veces, y cada uno llena
+// la pantalla donde se mira.
+//
+// **El HTML trae el apaisado**, que es el que corresponde si no hay
+// JavaScript o si la pantalla es ancha: asi la pagina nunca queda sin
+// video. Aca solo se cambia por el vertical cuando hace falta.
+//
+// Se hace una sola vez al cargar y no al girar el telefono: cambiar el
+// src vuelve el video al principio, y al que esta mirando se le cortaria
+// por acomodar el aparato.
+
+(function () {
+  const video = document.querySelector("#video-anual video");
+  if (!video || !video.dataset.vertical) return;
+
+  const angosta = window.matchMedia("(max-width: 700px)").matches;
+  if (!angosta) return;
+
+  video.src = video.dataset.vertical;
+  if (video.dataset.posterVertical) video.poster = video.dataset.posterVertical;
+})();
