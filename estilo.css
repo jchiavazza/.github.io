@@ -146,7 +146,11 @@ a { color: var(--acento); }
    sola línea deja el menú más largo que el resto de la página. */
 .barra nav {
   display: grid;
-  grid-template-columns: repeat(3, 1fr);
+  /* Dos columnas y no tres: con ocho botones, 3+3+2 deja un hueco en la
+     ultima fila --y el calendario, que entraba justo al lado de Contacto,
+     quedo descolgado--. En dos columnas son cuatro filas parejas, y de
+     paso los textos largos entran en un renglon en vez de partirse. */
+  grid-template-columns: repeat(2, 1fr);
   gap: 10px;
   max-width: 440px;
   flex: 0 1 440px;
@@ -157,9 +161,9 @@ a { color: var(--acento); }
 /* El calendario no es una sección más de la página: va suelto, después de
    una línea que lo separa del menú, y con el color del acento. */
 .barra .aparte {
-  /* La última fila del menú queda con Contacto solo y dos columnas
-     libres: ahí entra justo el calendario, al lado de ése. */
-  grid-column: 2 / -1;
+  /* A lo ancho de las dos columnas: no es una seccion mas de la pagina
+     y se lee como lo que es, algo aparte. */
+  grid-column: 1 / -1;
   padding: 11px 14px;
   border-radius: 14px;
   border: 1px solid var(--borde);
