@@ -44,6 +44,27 @@ $origen = (Get-ChildItem -LiteralPath $anio -Directory |
 if (-not $origen) { throw "no se encontro la carpeta de videos" }
 
 $dest = "$env:USERPROFILE\Downloads\sitio-9x19\galeria\torneo-tucuman"
+
+# **Lo que no es una foto de la jornada**, por si alguna vez hay que
+# dejar algo afuera: en la carpeta compartida terminan tambien el
+# afiche, el escudo del club y capturas de pantalla. En este torneo van
+# todos --se pidieron asi--, por eso la lista esta vacia; el filtro
+# queda puesto para el que no corresponda.
+$NO_VAN = @()
+
+# **Y los reenvios repetidos.** La misma foto vuelve a llegar horas
+# despues con otro numero de WhatsApp --en esta tanda, siete fotos y
+# cuatro videos--, y por nombre no hay forma de saberlo: pesan igual y
+# el contenido es identico. Se compara el hash y se deja la primera,
+# que por el orden es la que llego antes.
+$vistos = @{}
+function EsRepetida($archivo) {
+  $h = (Get-FileHash -LiteralPath $archivo.FullName -Algorithm MD5).Hash
+  if ($vistos.ContainsKey($h)) { return $true }
+  $vistos[$h] = $archivo.Name
+  return $false
+}
+
 $dVid  = Join-Path $dest 'v'
 $dMini = Join-Path $dVid  'mini'
 New-Item -ItemType Directory -Force $dVid  | Out-Null
@@ -53,6 +74,12 @@ New-Item -ItemType Directory -Force $dMini | Out-Null
 # ve en la cancha, y es lo que ya traen los que vienen bien.
 $TOPE_KBPS  = 2000
 $ANCHO_MAX  = 720
+
+# **Abajo de esto es un toque sin querer.** En esta tanda vino uno de
+# 1,0 segundos: la camara apuntando al pasto y tres pares de zapatos.
+# Una pasada de IDPA no baja de diez segundos, asi que no hay riesgo de
+# descartar algo que alguien quiso filmar.
+$MINIMO_SEGUNDOS = 3
 
 function Medir($ruta) {
   $j = & $FFPROBE -v error -select_streams v:0 `
@@ -71,7 +98,9 @@ function Medir($ruta) {
 # filtrar por extension.
 $todos = Get-ChildItem -LiteralPath $origen -File |
   Where-Object { $_.Extension -match '(?i)\.(mp4|mov)$' } |
-  Sort-Object Name
+  Where-Object { $NO_VAN -notcontains $_.Name } |
+  Sort-Object Name |
+  Where-Object { -not (EsRepetida $_) }
 
 # **En la grilla los videos van antes que las fotos**, asi que el
 # primero es lo primero que ve el que entra a la galeria. Por fecha le
@@ -84,10 +113,19 @@ if ($primero) { $videos += ($todos | Where-Object { $_.Name -eq $primero }) }
 $videos += ($todos | Where-Object { $_.Name -ne $primero })
 
 $n = 0
+# Lo que pesaban los que entraron --sin los descartados--, para poder
+# decir al final cuanto se ahorro.
+$pesoOriginal = 0
 foreach ($f in $videos) {
-  $n++
-  $salida = Join-Path $dVid ('{0:D2}.mp4' -f $n)
   $m = Medir $f.FullName
+  if ($m.Segundos -lt $MINIMO_SEGUNDOS) {
+    '  descartado por corto: {0}  ({1:N1}s)' -f $f.Name, $m.Segundos
+    continue
+  }
+
+  $n++
+  $pesoOriginal += $f.Length
+  $salida = Join-Path $dVid ('{0:D2}.mp4' -f $n)
   $pesaba = [math]::Round($f.Length / 1MB, 1)
 
   if ($m.Kbps -gt $TOPE_KBPS -or $m.Ancho -gt $ANCHO_MAX) {
@@ -129,5 +167,5 @@ foreach ($f in $videos) {
 
 $peso = [math]::Round(((Get-ChildItem $dVid -File | Measure-Object Length -Sum).Sum) / 1MB, 1)
 $pesoM = [math]::Round(((Get-ChildItem $dMini -File | Measure-Object Length -Sum).Sum) / 1MB, 2)
-$antes = [math]::Round((($videos | Measure-Object Length -Sum).Sum) / 1MB, 1)
+$antes = [math]::Round($pesoOriginal / 1MB, 1)
 "torneo-tucuman: $n videos, $antes MB -> $peso MB (portadas $pesoM MB)"

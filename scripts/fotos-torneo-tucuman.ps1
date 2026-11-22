@@ -24,6 +24,27 @@ $origen = (Get-ChildItem -LiteralPath $anio -Directory |
 if (-not $origen) { throw "no se encontro la carpeta de fotos" }
 $dest   = "$env:USERPROFILE\Downloads\sitio-9x19\galeria\torneo-tucuman"
 
+
+# **Lo que no es una foto de la jornada**, por si alguna vez hay que
+# dejar algo afuera: en la carpeta compartida terminan tambien el
+# afiche, el escudo del club y capturas de pantalla. En este torneo van
+# todos --se pidieron asi--, por eso la lista esta vacia; el filtro
+# queda puesto para el que no corresponda.
+$NO_VAN = @()
+
+# **Y los reenvios repetidos.** La misma foto vuelve a llegar horas
+# despues con otro numero de WhatsApp --en esta tanda, siete fotos y
+# cuatro videos--, y por nombre no hay forma de saberlo: pesan igual y
+# el contenido es identico. Se compara el hash y se deja la primera,
+# que por el orden es la que llego antes.
+$vistos = @{}
+function EsRepetida($archivo) {
+  $h = (Get-FileHash -LiteralPath $archivo.FullName -Algorithm MD5).Hash
+  if ($vistos.ContainsKey($h)) { return $true }
+  $vistos[$h] = $archivo.Name
+  return $false
+}
+
 $jpgEnc = [System.Drawing.Imaging.ImageCodecInfo]::GetImageEncoders() | Where-Object { $_.MimeType -eq 'image/jpeg' }
 
 function Guardar($bmp, $ruta, $calidad) {
@@ -53,7 +74,9 @@ New-Item -ItemType Directory -Force $dGran | Out-Null
 
 $todas = Get-ChildItem -LiteralPath $origen -File |
   Where-Object { $_.Extension -match '(?i)\.(jpg|jpeg|png)$' } |
-  Sort-Object Name
+  Where-Object { $NO_VAN -notcontains $_.Name } |
+  Sort-Object Name |
+  Where-Object { -not (EsRepetida $_) }
 
 # La primera foto es la que se ve en la tarjeta del torneo, asi que va
 # una grupal: se elige mirando las miniaturas, no a ciegas.
