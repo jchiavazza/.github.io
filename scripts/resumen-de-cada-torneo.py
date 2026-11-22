@@ -45,6 +45,7 @@ TORNEOS = {
     'quinta-fecha-esperanza':  'BWPR2',
     'clinica-parana':          'Z5ZLH',
     'san-jeronimo-sud':        'GX4A2',
+    'torneo-tucuman':          'GFRYA',
 }
 
 INICIO = '    <!-- resumen: lo arma scripts/resumen-de-cada-torneo.py -->'
