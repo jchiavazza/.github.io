@@ -1483,3 +1483,70 @@ footer a:hover { text-decoration: underline; }
   background: #000;
 }
 #video-anual .ayuda { text-align: center; }
+
+/* El lema del video, lo primero que se lee de la seccion. */
+.lema-video {
+  font-size: 20px;
+  font-weight: 700;
+  letter-spacing: .02em;
+  color: var(--acento);
+  margin-bottom: 10px;
+}
+
+/* Las cifras del año: el numero manda y la palabra lo explica, como
+   en el video. En una grilla que se acomoda sola, asi en el telefono
+   pasan de cinco en fila a dos por renglon sin quedar apretadas. */
+.cifras {
+  list-style: none;
+  margin: 14px 0 26px;
+  padding: 0;
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+  gap: 12px;
+}
+.cifras li {
+  padding: 16px 12px;
+  border-radius: 14px;
+  background: var(--fondo);
+  box-shadow: var(--relieve-chico);
+  text-align: center;
+  color: var(--texto-suave);
+  font-size: 14px;
+  line-height: 1.3;
+}
+.cifras strong {
+  display: block;
+  font-size: 30px;
+  color: var(--acento);
+  margin-bottom: 2px;
+}
+
+/* Los clubes, con el rombo del texto original hecho con CSS: asi no
+   depende de que el telefono tenga ese emoji. */
+.sedes-gracias {
+  list-style: none;
+  margin: 14px 0 26px;
+  padding: 0;
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+  gap: 8px 22px;
+}
+.sedes-gracias li {
+  position: relative;
+  padding-left: 20px;
+  color: var(--texto-suave);
+}
+.sedes-gracias li::before {
+  content: "";
+  position: absolute;
+  left: 2px; top: .55em;
+  width: 8px; height: 8px;
+  background: var(--acento);
+  transform: rotate(45deg);
+}
+
+.cierre-video {
+  font-size: 18px;
+  font-weight: 700;
+  color: var(--acento);
+}
