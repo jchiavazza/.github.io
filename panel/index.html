@@ -218,6 +218,20 @@
   .enlace-envivo b { display: block; font-size: 17px; margin-bottom: 4px; }
 
   .publicados { margin-top: 22px; display: grid; gap: 12px; }
+
+  /* Los años anteriores, plegados. Es el mismo gesto que en la
+     cartelera pública, y un <details> del navegador por lo mismo: ya
+     sabe abrirse y cerrarse solo. */
+  .anio-plegado > summary {
+    list-style: none; cursor: pointer;
+    padding: 11px 16px; border-radius: 12px; text-align: center;
+    border: 1px solid var(--borde); box-shadow: var(--relieve-chico);
+    font-weight: 700; color: var(--acento); font-size: 14px;
+  }
+  .anio-plegado > summary::-webkit-details-marker { display: none; }
+  .anio-plegado > summary::after { content: " ▾"; }
+  .anio-plegado[open] > summary::after { content: " ▴"; }
+  .anio-plegado > .publicados { margin-top: 12px; }
   .publicado {
     padding: 14px 16px; border-radius: 12px;
     border: 1px solid var(--borde); box-shadow: var(--relieve-chico);
@@ -1713,7 +1727,53 @@
         return;
       }
 
-      d.matches.forEach((m) => {
+      // Los torneos del año más nuevo quedan a la vista y los anteriores
+      // plegados, igual que la cartelera pública. Con dos temporadas
+      // juntas la página se hace larga y, peor, se confunde: las cajas
+      // de un torneo cerrado hace meses son iguales a las del que viene.
+      const anioDe = (m) => {
+        const a = String(m.fecha || "").slice(0, 4);
+        return /^\d{4}$/.test(a) ? a : "";
+      };
+      // Sin fecha va primero, con el año a la vista: no tiene año detrás
+      // del cual esconderse y acá es justamente lo que hay que ir a
+      // arreglar.
+      const paraOrdenar = (m) => anioDe(m) || "9999";
+      const lista = d.matches.slice()
+        .sort((a, b) => paraOrdenar(b).localeCompare(paraOrdenar(a)));
+      const elMasNuevo = anioDe(lista.filter((m) => anioDe(m))[0] || {});
+
+      // El cajón de cada año viejo se crea recién cuando hace falta, y
+      // después de las cajas del año nuevo porque la lista viene
+      // ordenada.
+      const cajones = {};
+      const dondeVa = (m) => {
+        const a = anioDe(m);
+        if (!a || a === elMasNuevo) return cont;
+        if (!cajones[a]) {
+          const det = document.createElement("details");
+          det.className = "anio-plegado";
+          const bot = document.createElement("summary");
+          const cuantos = lista.filter((x) => anioDe(x) === a).length;
+          bot.textContent = "Torneos " + a + " (" + cuantos + ")";
+          det.appendChild(bot);
+          const dentro = document.createElement("div");
+          dentro.className = "publicados";
+          det.appendChild(dentro);
+          // La lista se rehace entera después de cada orden: sin esto, el
+          // desplegable se cerraría en la cara del que acaba de tocar un
+          // botón de un torneo viejo.
+          det.open = aniosAbiertos.has(a);
+          det.addEventListener("toggle", () => {
+            if (det.open) aniosAbiertos.add(a); else aniosAbiertos.delete(a);
+          });
+          cont.appendChild(det);
+          cajones[a] = dentro;
+        }
+        return cajones[a];
+      };
+
+      lista.forEach((m) => {
         const caja = document.createElement('div');
         caja.className = 'publicado' + (m.oculto ? ' suspendido' : '');
         // La lista se rehace entera después de cada orden, así que el aviso
@@ -1913,7 +1973,7 @@
 
         caja.appendChild(botones);
         if (avisoSuyo) caja.appendChild(avisoSuyo);
-        cont.appendChild(caja);
+        dondeVa(m).appendChild(caja);
       });
     } catch (e) {
       cont.textContent = 'No se pudo traer la lista de publicados.';
@@ -1923,6 +1983,10 @@
   // El aviso de la última orden, para volver a ponerlo en la caja de su
   // torneo cuando la lista se rehace.
   let elUltimoAviso = null;
+
+  // Qué años viejos dejó abiertos, por lo mismo: la lista se rehace
+  // entera en cada orden y el desplegable volvía a cerrarse solo.
+  const aniosAbiertos = new Set();
 
   async function accionEnVivo(claveMatch, accion, cuando, vale, boton) {
     const estadoEV = document.getElementById('estado-envivo');
