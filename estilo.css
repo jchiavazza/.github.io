@@ -140,17 +140,76 @@ a { color: var(--acento); }
   margin-left: -6px;
 }
 
+/* El escudo con el botón del video debajo. Son una columna sola dentro
+   de la barra, así el botón queda del ancho del escudo y la medalla. */
+.bloque-marca {
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+}
+.escudos {
+  display: flex;
+  align-items: center;
+}
+
+/* El resumen del año en video: prende y apaga para que sea lo primero
+   que la vista agarra al entrar. Va debajo del escudo y no en el menú,
+   donde era un botón más entre ocho.
+
+   Apagar la animación al pasar el mouse no es un detalle: justo antes de
+   hacer clic conviene que el botón esté quieto y se lea entero. */
+.video-destacado {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: 2px 6px 0;
+  padding: 12px 16px;
+  border-radius: 14px;
+  border: 2px solid var(--acento);
+  background: var(--acento);
+  color: var(--acento-texto);
+  font-weight: 700;
+  font-size: 16px;
+  text-decoration: none;
+  white-space: nowrap;
+  box-shadow: var(--relieve-chico);
+  animation: prende-apaga 1.8s ease-in-out infinite;
+}
+.video-destacado:hover {
+  animation: none;
+  transform: translateY(-1px);
+}
+.video-destacado:active { box-shadow: var(--hundido); transform: none; }
+
+/* Prendido es el dorado pleno y apagado el fondo con el texto dorado:
+   cambia el botón entero y no sólo el brillo, que a dos metros no se
+   nota. El contorno queda siempre, para que al apagarse no desaparezca. */
+@keyframes prende-apaga {
+  0%, 45% {
+    background: var(--acento);
+    color: var(--acento-texto);
+    box-shadow: var(--relieve-chico);
+  }
+  55%, 100% {
+    background: color-mix(in srgb, var(--acento) 12%, var(--fondo));
+    color: var(--acento);
+    box-shadow: 0 0 0 3px color-mix(in srgb, var(--acento) 30%, transparent), var(--relieve-chico);
+  }
+}
+
+/* El que pidió menos movimiento en su sistema lo recibe quieto: el
+   botón se ve igual de dorado, nada más que sin titilar. */
+@media (prefers-reduced-motion: reduce) {
+  .video-destacado { animation: none; }
+}
+
 /* Los enlaces del menú son botones chicos, con el mismo relieve que los
    de la portada: se hunden al tocarlos igual que "Quiero tirar". */
 /* En bloque de tres por fila, no en una tira: con seis secciones, una
    sola línea deja el menú más largo que el resto de la página. */
 .barra nav {
   display: grid;
-  /* Dos columnas y no tres: con ocho botones, 3+3+2 deja un hueco en la
-     ultima fila --y el calendario, que entraba justo al lado de Contacto,
-     quedo descolgado--. En dos columnas son cuatro filas parejas, y de
-     paso los textos largos entran en un renglon en vez de partirse. */
-  grid-template-columns: repeat(2, 1fr);
+  grid-template-columns: repeat(3, 1fr);
   gap: 10px;
   max-width: 440px;
   flex: 0 1 440px;
@@ -161,9 +220,9 @@ a { color: var(--acento); }
 /* El calendario no es una sección más de la página: va suelto, después de
    una línea que lo separa del menú, y con el color del acento. */
 .barra .aparte {
-  /* A lo ancho de las dos columnas: no es una seccion mas de la pagina
-     y se lee como lo que es, algo aparte. */
-  grid-column: 1 / -1;
+  /* La última fila del menú queda con Contacto solo y dos columnas
+     libres: ahí entra justo el calendario, al lado de ése. */
+  grid-column: 2 / -1;
   padding: 11px 14px;
   border-radius: 14px;
   border: 1px solid var(--borde);

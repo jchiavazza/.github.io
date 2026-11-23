@@ -10,7 +10,7 @@
      archivo google27f9713e6eb2c514.html. No borrar ninguno de los dos. -->
 <meta name="google-site-verification" content="XFqVQXDWMgoB-UdauIgBkN-bCp5_d6BZNYdiPUPmPRA">
 <link rel="icon" href="assets/icono.png">
-<link rel="stylesheet" href="estilo.css?v=76">
+<link rel="stylesheet" href="estilo.css?v=77">
 
 <meta property="og:type" content="website">
 <meta property="og:title" content="Club 9x19 Shooting">
@@ -26,8 +26,22 @@
 
 <div class="envoltorio">
   <div class="barra">
-    <a class="marca" href="/"><img src="assets/logo-club.png" alt="Club 9x19 Shooting"></a>
-    <img class="medalla" src="assets/medalla.png" alt="Medalla del club: 9x19 Shooting, IDPA Argentina">
+    <!-- El escudo y, debajo, el video del año. Va acá y no en el menú
+         porque es lo primero que tiene que ver el que entra: en el menú
+         era un botón más entre ocho, y además dejaba la grilla de tres
+         columnas con un hueco en la última fila. -->
+    <div class="bloque-marca">
+      <div class="escudos">
+        <a class="marca" href="/"><img src="assets/logo-club.png" alt="Club 9x19 Shooting"></a>
+        <img class="medalla" src="assets/medalla.png" alt="Medalla del club: 9x19 Shooting, IDPA Argentina">
+      </div>
+      <a class="video-destacado" href="#video-anual">El año en video
+        <svg class="ico" viewBox="0 0 24 24" aria-hidden="true">
+          <circle cx="12" cy="12" r="9"/>
+          <path d="M10 8.5v7l6-3.5-6-3.5Z" class="lleno"/>
+        </svg>
+      </a>
+    </div>
     <nav>
       <a class="destacado" href="#proximas">Próximas Fechas
         <svg class="ico" viewBox="0 0 24 24" aria-hidden="true">
@@ -57,12 +71,6 @@
         <svg class="ico" viewBox="0 0 24 24" aria-hidden="true">
           <rect x="6.5" y="2.5" width="11" height="19" rx="2.5"/>
           <path d="M10.5 18.5h3"/>
-        </svg>
-      </a>
-      <a href="#video-anual">El año en video
-        <svg class="ico" viewBox="0 0 24 24" aria-hidden="true">
-          <circle cx="12" cy="12" r="9"/>
-          <path d="M10 8.5v7l6-3.5-6-3.5Z" class="lleno"/>
         </svg>
       </a>
       <a href="#contacto">Contacto
