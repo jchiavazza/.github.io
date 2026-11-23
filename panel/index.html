@@ -1696,6 +1696,15 @@
       if (!d.ok) return;
 
       cont.innerHTML = '';
+      // Los clubes sede ya usados, para sugerirlos al cargar otra fecha.
+      const sedes = document.createElement('datalist');
+      sedes.id = 'sedes-cargadas';
+      [...new Set(d.matches.map((m) => m.sede).filter(Boolean))].forEach((s) => {
+        const o = document.createElement('option');
+        o.value = s;
+        sedes.appendChild(o);
+      });
+      cont.appendChild(sedes);
       if (!d.matches.length) {
         const vacio = document.createElement('p');
         vacio.className = 'aclaracion';
@@ -1775,6 +1784,33 @@
         cuando.appendChild(campo);
         cuando.appendChild(ponerHora);
         caja.appendChild(cuando);
+
+        // **En qué club se corre.** Desde el anual 2027, faltar dos veces
+        // a las fechas de un mismo club deja al tirador fuera del
+        // campeonato, y para eso cada fecha tiene que decir dónde fue. Se
+        // sugieren los clubes ya cargados en otras fechas: el mismo club
+        // escrito de dos maneras serían dos clubes para la regla.
+        if (m.anual) {
+          const sede = document.createElement('p');
+          sede.className = 'datos';
+          const campoSede = document.createElement('input');
+          campoSede.type = 'text';
+          campoSede.maxLength = 60;
+          campoSede.placeholder = 'Ej.: Tiro Federal de Esperanza';
+          campoSede.value = m.sede || '';
+          campoSede.setAttribute('list', 'sedes-cargadas');
+          campoSede.style.marginRight = '8px';
+          const ponerSede = document.createElement('button');
+          ponerSede.type = 'button';
+          ponerSede.textContent = 'Guardar club';
+          ponerSede.addEventListener('click', function () {
+            accionEnVivo(m.clave, 'sede', null, campoSede.value.trim() || ' ', this);
+          });
+          sede.textContent = m.sede ? 'Club sede: ' : 'Sin club sede (lo pide el anual): ';
+          sede.appendChild(campoSede);
+          sede.appendChild(ponerSede);
+          caja.appendChild(sede);
+        }
 
         const botones = document.createElement('div');
         botones.className = 'botones';
@@ -1945,6 +1981,7 @@
         descongelado: 'Descongelado: se actualiza con la próxima sincronización.',
         'cuenta para el anual': 'Listo: este torneo suma para el campeonato anual.',
         'no cuenta': 'Listo: este torneo ya no suma para el campeonato anual.',
+        sede: d.sede ? 'Listo: esta fecha se corre en ' + d.sede + '.' : 'Listo: la fecha quedó sin club sede.',
       }[d.estado] || 'Listo.';
       // La lista se rehace y el aviso reaparece en la caja de este torneo.
       elUltimoAviso = { clave: claveMatch, texto: estadoEV.textContent, mal: false };

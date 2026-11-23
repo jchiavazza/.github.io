@@ -2,8 +2,8 @@
 <!--
   El torneo anual: la suma de las fechas del año.
 
-  De las cinco fechas se computan las cuatro mejores de cada tirador. En
-  cada fecha, el mejor tiempo vale el 100% y los demás el porcentaje que
+  Se computan las mejores fechas de cada tirador —4 de 5 en 2026, 7 de 9
+  en 2027, según `REGLAS` en functions/anual.js—. En cada fecha, el mejor tiempo vale el 100% y los demás el porcentaje que
   les toca contra ése.
 
   Acá no se calcula nada: la cuenta la hace `resultadosAnual` en el
@@ -17,7 +17,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Torneo Anual — Club 9x19 Shooting</title>
 <link rel="canonical" href="https://9x19shooting.com.ar/anual/">
-<meta name="description" content="Clasificación del torneo anual de IDPA del Club 9x19 Shooting: cinco fechas, se computan las cuatro mejores de cada tirador.">
+<meta name="description" content="Clasificación del torneo anual de IDPA del Club 9x19 Shooting: fecha por fecha, se computan las mejores de cada tirador.">
 <link rel="icon" href="../assets/icono.png">
 <link rel="stylesheet" href="../estilo.css?v=78">
 
@@ -55,8 +55,9 @@
 
   <div class="como-se-cuenta">
     <p><strong>En cada fecha, el mejor tiempo vale 100%</strong> y los demás el porcentaje que les toca contra ése: el que tardó el doble se lleva 50%.</p>
-    <p id="a-cuantas">De las cinco fechas se computan las cuatro mejores de cada tirador: la peor se descarta y queda tachada.</p>
-    <p><strong>El orden lo manda primero la cantidad de fechas corridas</strong> —hasta las cuatro que computan— y después el porcentaje: el que fue a dos va antes que el que fue a una, aunque en esa única haya ganado; entre el que corrió cuatro y el que corrió las cinco manda el porcentaje.</p>
+    <p id="a-cuantas">Se computan las mejores fechas de cada tirador: las peores se descartan y quedan tachadas.</p>
+    <p id="a-orden"><strong>El orden lo manda primero la cantidad de fechas corridas</strong> —hasta las que computan— y después el porcentaje: el que fue a dos va antes que el que fue a una, aunque en esa única haya ganado.</p>
+    <p id="a-faltas" hidden></p>
     <p>Abajo de todo van los que todavía no sumaron: primero los que fueron y quedaron <strong>DQ</strong>, después los que corrieron sin completar, y al final los que no participaron.</p>
   </div>
 
@@ -110,6 +111,6 @@
   </div>
 </footer>
 
-<script src="anual.js?v=6"></script>
+<script src="anual.js?v=7"></script>
 </body>
 </html>

@@ -89,6 +89,10 @@
   }
   tr.sin-sumar td { color: var(--texto-suave); }
 
+  /* El que quedó fuera del anual por faltar dos veces al mismo club: sin
+     puesto, al final, y con el motivo debajo del nombre. */
+  .motivo-fuera { display: block; font-size: 11px; color: var(--texto-suave); }
+
   .aviso-vacio { text-align: center; color: var(--texto-suave); padding: 30px 0; }
 
   /* Las fechas, abajo de todo: qué número es cada una. */

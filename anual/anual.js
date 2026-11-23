@@ -83,17 +83,30 @@
     filas.forEach((t, i) => {
       const tr = document.createElement('tr');
       const suma = total(t);
-      if (i < 3 && suma > 0) tr.className = 'podio';
-      if (!suma) tr.className = 'sin-sumar';
+      if (i < 3 && suma > 0 && !t.fuera) tr.className = 'podio';
+      if (!suma || t.fuera) tr.className = 'sin-sumar';
 
+      // El que quedó fuera del anual no tiene puesto: el servidor lo manda
+      // al fondo, y acá se ve un guion en vez de un número.
       const puesto = document.createElement('td');
-      puesto.className = 'puesto' + (suma > 0 ? '' : ' sin-puntos');
-      puesto.textContent = i + 1;
+      puesto.className = 'puesto' + (suma > 0 && !t.fuera ? '' : ' sin-puntos');
+      puesto.textContent = t.fuera ? '—' : i + 1;
       tr.appendChild(puesto);
 
       const quien = document.createElement('td');
       quien.className = 'tirador';
       quien.textContent = t.apellido + ', ' + t.nombre;
+      if (t.fuera) {
+        const marca = document.createElement('span');
+        marca.className = 'marca-dq marca-fuera';
+        marca.textContent = 'FUERA';
+        marca.title = (t.motivoFuera || 'Faltó dos veces al mismo club') + ': queda fuera del anual';
+        quien.appendChild(marca);
+        const motivo = document.createElement('small');
+        motivo.className = 'motivo-fuera';
+        motivo.textContent = t.motivoFuera || '';
+        quien.appendChild(motivo);
+      }
       // La marca sólo va en el que no sumó nada: ahí es lo que explica
       // por qué está donde está. Un DQ en una fecha suelta no descalifica
       // a nadie del anual y marcarlo haría creer lo contrario.
@@ -178,7 +191,9 @@
       a.href = '/envivo/?c=' + f.clave;
       a.textContent = f.nombre;
       li.appendChild(a);
-      li.appendChild(document.createTextNode(' · ' + comoFecha(f.fecha)));
+      li.appendChild(document.createTextNode(
+        ' · ' + comoFecha(f.fecha) + (f.sede ? ' · ' + f.sede : '')
+      ));
       lista.appendChild(li);
     });
     $('pie').hidden = false;
@@ -245,9 +260,48 @@
     $('a-datos').textContent =
       corridas === 1 ? '1 fecha publicada' : corridas + ' fechas publicadas';
 
+    // Las reglas las manda el servidor según el año: 4 de 5 en 2026, 7
+    // de 9 en 2027. Escritas acá a mano, la página diría las del año
+    // pasado el día que cambian.
+    const cuentan = datos.cuantasCuentan;
+    const deCuantas = datos.totalFechas;
+    const sobran = deCuantas ? deCuantas - cuentan : 0;
+    const numero = (n) => ['cero', 'una', 'dos', 'tres', 'cuatro', 'cinco', 'seis', 'siete',
+      'ocho', 'nueve', 'diez'][n] || String(n);
+
     $('a-cuantas').textContent =
-      'De las cinco fechas se computan las ' + datos.cuantasCuentan +
-      ' mejores de cada tirador: la peor se descarta y queda tachada.';
+      (deCuantas ? 'De las ' + numero(deCuantas) + ' fechas se computan ' : 'Se computan ') +
+      'las ' + numero(cuentan) + ' mejores de cada tirador' +
+      (sobran === 1 ? ': la peor se descarta y queda tachada.'
+        : sobran > 1 ? ': las ' + numero(sobran) + ' peores se descartan y quedan tachadas.'
+        : '.');
+
+    $('a-orden').innerHTML = '';
+    const fuerte = document.createElement('strong');
+    fuerte.textContent = 'El orden lo manda primero la cantidad de fechas corridas';
+    $('a-orden').appendChild(fuerte);
+    $('a-orden').appendChild(document.createTextNode(
+      ' —hasta las ' + numero(cuentan) + ' que computan— y después el porcentaje: ' +
+      'el que fue a dos va antes que el que fue a una, aunque en esa única haya ganado; ' +
+      'entre los que llegan a ' + numero(cuentan) + ' manda el porcentaje.'
+    ));
+
+    // La regla de las faltas por club, desde 2027.
+    const faltas = datos.faltasPorClub;
+    $('a-faltas').hidden = faltas === null || faltas === undefined;
+    if (!$('a-faltas').hidden) {
+      $('a-faltas').innerHTML = '';
+      const f = document.createElement('strong');
+      f.textContent = faltas === 1
+        ? 'No se puede faltar dos veces a las fechas de un mismo club'
+        : 'No se puede faltar más de ' + numero(faltas) + ' veces a las fechas de un mismo club';
+      $('a-faltas').appendChild(f);
+      $('a-faltas').appendChild(document.createTextNode(
+        ': el que lo hace queda fuera del anual, y figura al final de la tabla sin puesto. ' +
+        'La idea es que el campeonato recorra todos los clubes. ' +
+        'Faltar es no presentarse: el que fue y quedó DQ o no completó, estuvo.'
+      ));
+    }
   }
 
   // ------------------------------------------------------------------
