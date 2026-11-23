@@ -77,6 +77,14 @@
       });
     }
 
+    // El año de cada torneo, que es por lo que se separan en la
+    // cartelera. Sale de la fecha del match (2026-11-21) y no de cuándo
+    // se publicó: el calendario del año que viene se carga en noviembre.
+    function anioDe(m) {
+      const a = (m.fecha || "").slice(0, 4);
+      return /^\d{4}$/.test(a) ? a : "Sin fecha";
+    }
+
     function tarjeta(m) {
       const a = document.createElement('a');
       a.className = 'match-tarjeta';
@@ -139,7 +147,37 @@
 
         const cont = $('cartelera');
         cont.innerHTML = '';
-        ordenar(d.matches).forEach((m) => cont.appendChild(tarjeta(m)));
+
+        // Separados por año, del más nuevo al más viejo. Con la primera
+        // fecha del año que viene ya publicada, un torneo de marzo
+        // quedaba arriba de los que se corrieron, como si fuera el
+        // último resultado. El título del año sale sólo si hay más de
+        // uno: con todos del mismo año no separa nada y estorba.
+        const lista = ordenar(d.matches);
+        const anios = [];
+        lista.forEach((m) => {
+          const a = anioDe(m);
+          if (anios.indexOf(a) === -1) anios.push(a);
+        });
+        anios.sort((a, b) => {
+          // El que no tiene fecha, al final de todo.
+          if (a === "Sin fecha" || b === "Sin fecha") {
+            return (a === "Sin fecha" ? 1 : 0) - (b === "Sin fecha" ? 1 : 0);
+          }
+          return b.localeCompare(a);
+        });
+
+        anios.forEach((anio) => {
+          if (anios.length > 1) {
+            const t = document.createElement('h2');
+            t.className = 'anio-cartelera';
+            t.textContent = anio;
+            cont.appendChild(t);
+          }
+          lista.filter((m) => anioDe(m) === anio)
+               .forEach((m) => cont.appendChild(tarjeta(m)));
+        });
+
         $('sin-matches').hidden = d.matches.length > 0;
       } catch (e) {
         $('sin-matches').hidden = false;

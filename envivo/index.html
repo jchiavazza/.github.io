@@ -267,6 +267,16 @@
   @keyframes latido-etiqueta { 0%, 100% { opacity: 1; } 50% { opacity: .45; } }
   .etiqueta.termino { border: 1px solid var(--borde); color: var(--texto-suave); }
 
+  /* El año, como separador entre los torneos de uno y los del otro. Es
+     un rótulo y no una tarjeta: lo que se toca son los torneos. */
+  .anio-cartelera {
+    font-size: 14px; font-weight: 700; letter-spacing: .1em;
+    text-transform: uppercase; color: var(--texto-suave);
+    margin: 14px 0 -2px; padding-bottom: 8px;
+    border-bottom: 1px solid var(--borde);
+  }
+  .anio-cartelera:first-child { margin-top: 0; }
+
   /* El anual, al final de la cartelera: es la suma de todo lo que está
      arriba, así que va después y no compitiendo con los torneos. */
   .tarjeta-anual {
@@ -365,6 +375,6 @@
   </div>
 </footer>
 
-<script src="envivo.js?v=18"></script>
+<script src="envivo.js?v=19"></script>
 </body>
 </html>
