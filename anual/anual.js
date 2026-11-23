@@ -252,8 +252,11 @@
   }
 
   function cabecera() {
-    const anio = (datos.fechas[0] || {}).fecha || '';
-    $('a-titulo').textContent = 'Torneo Anual' + (anio ? ' ' + anio.slice(0, 4) : '');
+    // El año lo manda el servidor. Antes salía de la primera fecha, y
+    // un campeonato que todavía no se corrió no tiene ninguna: el título
+    // quedaba sin año justo donde más hace falta decirlo.
+    const anio = datos.anio || ((datos.fechas[0] || {}).fecha || '').slice(0, 4);
+    $('a-titulo').textContent = 'Torneo Anual' + (anio ? ' ' + anio : '');
     document.title = $('a-titulo').textContent + ' — Club 9x19 Shooting';
 
     const corridas = (datos.fechas || []).length;
@@ -313,7 +316,11 @@
   let reloj = null;
 
   function cargar() {
-    return fetch(API + '/resultadosAnual')
+    // `?anio=2027` mira el campeonato de otro año; sin parámetro, el que
+    // corre. El año que viene se puede mirar antes de que empiece: su
+    // calendario se publica en noviembre y la cartelera ya lo enlaza.
+    const pide = (new URLSearchParams(location.search).get('anio') || '').trim();
+    return fetch(API + '/resultadosAnual' + (/^\d{4}$/.test(pide) ? '?anio=' + pide : ''))
       .then((r) => r.json())
       .then((d) => {
         if (!d || !d.ok) throw new Error((d && d.error) || 'sin datos');

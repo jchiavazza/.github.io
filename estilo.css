@@ -67,6 +67,18 @@
 
 * { box-sizing: border-box; }
 
+/* `hidden` tiene que esconder, siempre.
+
+   El navegador lo hace con `display: none`, pero cualquier regla propia
+   que ponga `display` le gana por especificidad, y entonces el elemento
+   queda a la vista con el atributo puesto --que es el peor de los dos
+   mundos: se ve, y el que lee el código cree que no--. Ya pasó cuatro
+   veces acá: los torneos viejos de la portada, el QR, el visor de fotos
+   y el enlace "Torneos en vivo", que apuntaba a la página donde uno ya
+   estaba. Las cuatro se taparon una por una; esta regla las cubre a
+   todas y a las que vengan. */
+[hidden] { display: none !important; }
+
 body {
   margin: 0;
   background: var(--fondo);

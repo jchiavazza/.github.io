@@ -105,6 +105,41 @@ pasar lo que sirve y descarta lo que no.
 lo primero que se ve de la galería: conviene forzar uno de cancha a la
 cabeza, por lo mismo que las fotos fuerzan una grupal.
 
+## La cartelera, año por año
+
+`/envivo/` muestra **sólo el año más nuevo** que tenga torneos
+publicados, con su campeonato anual abajo. Los años anteriores quedan
+plegados, cada uno en un `<details>` con sus torneos y su campeonato
+adentro.
+
+Hizo falta en noviembre de 2026, cuando se publicó la primera fecha del
+2027: la cartelera ordena por fecha, así que un torneo de marzo quedaba
+arriba de los ocho que ya se habían corrido y se leía como el último
+resultado del club. Con nueve fechas por temporada, dos años juntos son
+una lista que nadie recorre.
+
+- **El año sale de la fecha del match**, no de cuándo se publicó: el
+  calendario del año que viene se carga en noviembre.
+- **Se pliega, no se esconde.** Lo de los años cerrados es el archivo
+  del club, que es de lo poco que no caduca acá.
+- **Es un `<details>` y no un botón con JavaScript**: el navegador ya
+  sabe abrirlo y cerrarlo, con el teclado también.
+- **El campeonato de cada año lo resuelve la nube.** `anualArchivado`
+  dice con qué nombre y en qué dirección quedó cada campeonato cerrado,
+  así que la tarjeta del 2026 apunta sola a su archivo. El del año que
+  todavía no cerró va a `/anual/`, y el del año que viene a
+  `/anual/?anio=2027`, que arma ese campeonato con sus propias reglas.
+  Ninguno de los dos años está escrito en el sitio.
+
+> **`hidden` tiene que esconder, siempre.** `estilo.css` termina con
+> `[hidden] { display: none !important; }`. El navegador lo hace con
+> `display: none`, pero cualquier regla propia que ponga `display` le
+> gana por especificidad: ya había pasado con los torneos viejos de la
+> portada, con el QR y con el visor de fotos —los tres tapados uno por
+> uno— y seguía pasando con el enlace "Torneos en vivo" del menú de
+> `/envivo/`, que se veía en la propia cartelera y llevaba a la página
+> donde uno ya estaba.
+
 ## El video del año no vive en este repositorio
 
 El resumen de la temporada está montado dos veces —apaisado y vertical—

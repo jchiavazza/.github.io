@@ -148,11 +148,7 @@
         const cont = $('cartelera');
         cont.innerHTML = '';
 
-        // Separados por año, del más nuevo al más viejo. Con la primera
-        // fecha del año que viene ya publicada, un torneo de marzo
-        // quedaba arriba de los que se corrieron, como si fuera el
-        // último resultado. El título del año sale sólo si hay más de
-        // uno: con todos del mismo año no separa nada y estorba.
+        // Los años que hay, del más nuevo al más viejo.
         const lista = ordenar(d.matches);
         const anios = [];
         lista.forEach((m) => {
@@ -166,26 +162,90 @@
           }
           return b.localeCompare(a);
         });
+        const conFecha = anios.filter((a) => a !== "Sin fecha");
+        const elMasNuevo = conFecha[0];
 
-        anios.forEach((anio) => {
-          if (anios.length > 1) {
-            const t = document.createElement('h2');
-            t.className = 'anio-cartelera';
-            t.textContent = anio;
-            cont.appendChild(t);
-          }
-          lista.filter((m) => anioDe(m) === anio)
-               .forEach((m) => cont.appendChild(tarjeta(m)));
+        // A la vista, el año más nuevo. El que no tiene fecha se muestra
+        // también: no tiene año detrás del cual esconderse y se perdería.
+        lista.filter((m) => anioDe(m) === elMasNuevo || anioDe(m) === "Sin fecha")
+             .forEach((m) => cont.appendChild(tarjeta(m)));
+        $('sin-matches').hidden = lista.length > 0;
+
+        // El campeonato del año que se está viendo, abajo de sus torneos.
+        ponerAnual($('tarjeta-anual'), elMasNuevo);
+
+        // Y los anteriores, plegados: un botón por año que abre sus
+        // torneos y su campeonato. Con nueve fechas por temporada, dos
+        // años desplegados son una lista que nadie recorre; y cerrarlos
+        // del todo escondería el archivo del club, que es de lo poco que
+        // no caduca acá.
+        const caja = $('anios-viejos');
+        caja.innerHTML = '';
+        conFecha.slice(1).forEach((a) => {
+          const caj = document.createElement('details');
+          caj.className = 'anio-viejo';
+          const bot = document.createElement('summary');
+          bot.textContent = 'Torneos ' + a;
+          caj.appendChild(bot);
+
+          const adentro = document.createElement('div');
+          adentro.className = 'cartelera';
+          lista.filter((m) => anioDe(m) === a).forEach((m) => adentro.appendChild(tarjeta(m)));
+
+          const anual = document.createElement('a');
+          anual.className = 'tarjeta-anual';
+          anual.appendChild(document.createElement('h3'));
+          anual.appendChild(document.createElement('p'));
+          ponerAnual(anual, a);
+          adentro.appendChild(anual);
+
+          caj.appendChild(adentro);
+          caja.appendChild(caj);
         });
-
-        $('sin-matches').hidden = d.matches.length > 0;
+        caja.hidden = conFecha.length < 2;
       } catch (e) {
         $('sin-matches').hidden = false;
         $('sin-matches').textContent = 'No se pudo cargar la lista de torneos.';
       }
     }
 
-    traerLista();
+    // Los campeonatos ya cerrados, que la nube sabe con qué nombre y en
+    // qué dirección quedó cada uno. Se piden una sola vez al abrir y
+    // sirven para todos los años de la cartelera; si la consulta falla,
+    // las tarjetas igual quedan armadas, apuntando al anual en curso.
+    let cerrados = [];
+
+    // La tarjeta del campeonato de un año. Cerrado, lleva a su archivo,
+    // que no cambia más; en curso --o todavía sin correr-- al anual, con
+    // el año puesto: el 2027 se puede mirar desde noviembre del 2026,
+    // vacío pero con sus reglas, porque su calendario ya está publicado.
+    function ponerAnual(donde, a) {
+      const titulo = donde.querySelector('h3');
+      const detalle = donde.querySelector('p');
+      const cual = cerrados.filter((x) => String(x.anio) === a)[0];
+
+      if (cual) {
+        donde.href = '/anual/' + cual.slug + '/';
+        titulo.textContent = (cual.nombre || 'Torneo Anual') + ' ' + cual.anio;
+        detalle.textContent = 'Resultados finales del campeonato: '
+          + cual.fechas + ' fechas · ' + cual.tiradores + ' tiradores.';
+        return;
+      }
+
+      const esteAnio = String(new Date().getFullYear());
+      donde.href = '/anual/' + (a && a !== esteAnio ? '?anio=' + a : '');
+      titulo.textContent = 'Torneo Anual' + (a ? ' ' + a : '');
+      detalle.textContent = 'La suma de las fechas del año: se computan las mejores '
+        + 'de cada tirador y las peores se descartan.';
+    }
+
+    // Primero los campeonatos cerrados y después la lista: si la
+    // consulta falla o tarda, se dibuja igual.
+    fetch(API + '/anualArchivado')
+      .then((r) => r.json())
+      .then((d) => { cerrados = (d && d.anios) || []; })
+      .catch(() => {})
+      .then(traerLista);
     // Cada tanto, por si alguien publica uno mientras la página está
     // abierta o el que está corriendo pasa a terminado.
     setInterval(() => { if (!document.hidden) traerLista(); }, 30000);
