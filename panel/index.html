@@ -1785,12 +1785,17 @@
         cuando.appendChild(ponerHora);
         caja.appendChild(cuando);
 
-        // **En qué club se corre.** Desde el anual 2027, faltar dos veces
-        // a las fechas de un mismo club deja al tirador fuera del
+        // **El club anfitrión.** Desde el anual 2027, faltar dos veces a
+        // las fechas de un mismo club deja al tirador fuera del
         // campeonato, y para eso cada fecha tiene que decir dónde fue. Se
         // sugieren los clubes ya cargados en otras fechas: el mismo club
         // escrito de dos maneras serían dos clubes para la regla.
-        if (m.anual) {
+        //
+        // **Va en todos los torneos, no sólo en los que cuentan para el
+        // anual.** Al publicar, lo primero que se ve es el torneo recién
+        // creado, todavía sin marcar: si el campo esperaba a la marca, no
+        // aparecía en ningún lado.
+        {
           const sede = document.createElement('p');
           sede.className = 'datos';
           const campoSede = document.createElement('input');
@@ -1802,11 +1807,11 @@
           campoSede.style.marginRight = '8px';
           const ponerSede = document.createElement('button');
           ponerSede.type = 'button';
-          ponerSede.textContent = 'Guardar club';
+          ponerSede.textContent = 'Guardar club anfitrión';
           ponerSede.addEventListener('click', function () {
             accionEnVivo(m.clave, 'sede', null, campoSede.value.trim() || ' ', this);
           });
-          sede.textContent = m.sede ? 'Club sede: ' : 'Sin club sede (lo pide el anual): ';
+          sede.textContent = m.sede ? 'Club anfitrión: ' : 'Club anfitrión (lo pide el anual 2027): ';
           sede.appendChild(campoSede);
           sede.appendChild(ponerSede);
           caja.appendChild(sede);
@@ -1981,7 +1986,7 @@
         descongelado: 'Descongelado: se actualiza con la próxima sincronización.',
         'cuenta para el anual': 'Listo: este torneo suma para el campeonato anual.',
         'no cuenta': 'Listo: este torneo ya no suma para el campeonato anual.',
-        sede: d.sede ? 'Listo: esta fecha se corre en ' + d.sede + '.' : 'Listo: la fecha quedó sin club sede.',
+        sede: d.sede ? 'Listo: esta fecha se corre en ' + d.sede + '.' : 'Listo: la fecha quedó sin club anfitrión.',
       }[d.estado] || 'Listo.';
       // La lista se rehace y el aviso reaparece en la caja de este torneo.
       elUltimoAviso = { clave: claveMatch, texto: estadoEV.textContent, mal: false };
