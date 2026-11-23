@@ -41,11 +41,17 @@
   function filasDeAhora() {
     if (mirando === 'general') return datos.general || [];
     const g = (datos.grupos || []).find((x) => x.nombre === mirando);
-    return g ? g.tabla : [];
+    // `g.tabla` con el mismo cuidado: una tabla vacía tampoco se guarda.
+    return (g && g.tabla) || [];
   }
 
+  // `t.fechas` puede no venir, y no es un error de nadie: **Firebase no
+  // guarda un objeto vacío**, borra la clave. El que no completó ninguna
+  // fecha --los dos DQ y los cuatro que se anotaron y no fueron-- se
+  // archivó con `fechas: {}` y vuelve sin `fechas`. Son 6 de los 91 del
+  // 2026, y con uno solo la tabla entera no se dibujaba.
   const deLaFecha = (t, i) => {
-    const f = t.fechas[i];
+    const f = (t.fechas || {})[i];
     if (!f) return null;
     return mirando === 'general' ? f.general : f.grupo;
   };
@@ -211,7 +217,10 @@
       dibujar();
       pie();
     })
-    .catch(() => {
+    .catch((e) => {
+      // Dejarlo en la consola: el cartel de abajo dice que hubo un
+      // problema, y durante meses ese cartel fue todo lo que se supo.
+      console.error('No se pudo armar la tabla del campeonato', e);
       $('sin-cerrar').hidden = false;
       $('sin-cerrar').textContent =
         'No se pudieron traer los resultados. Probá de nuevo en un rato.';
