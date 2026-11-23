@@ -52,6 +52,17 @@
   }
   .filtros button.actual { box-shadow: var(--hundido); color: var(--texto); }
 
+  /* El segundo renglón, el de los grupos de clase: más chico y pegado
+     al de las divisiones, para que se lea como "adentro de" la división
+     elegida y no como otro filtro al mismo nivel. Es el mismo que usa
+     la tabla de un torneo en /envivo/. */
+  .filtros.clases { margin: -8px 0 18px; align-items: center; }
+  .filtros.clases .rotulo {
+    font-size: 12px; text-transform: uppercase; letter-spacing: .05em;
+    color: var(--texto-suave); margin-right: 2px;
+  }
+  .filtros.clases button { padding: 6px 13px; font-size: 13px; border-radius: 10px; }
+
   table { border-collapse: collapse; width: 100%; font-size: 15px; }
   th, td { text-align: left; padding: 10px 12px; border-bottom: 1px solid var(--borde); }
   th {

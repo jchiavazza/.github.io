@@ -139,25 +139,73 @@
     });
   }
 
+  // Los filtros van en dos renglones, como la tabla de un torneo en
+  // /envivo/: arriba la division y abajo, si tiene mas de uno, sus
+  // grupos de premiacion. Siete botones con nombres largos --"SSP EX +
+  // SS" al lado de "CCP MM + NV"-- se leian como siete categorias
+  // sueltas, y son cuatro divisiones con sus grupos adentro.
+  //
+  // No hay un boton "Todas" por division, y no es un olvido: el anual no
+  // tiene una tabla por division. Cada grupo compara contra el mejor DE
+  // ESE GRUPO, que es como premia el club, asi que una tabla de la
+  // division entera seria una cuenta que no existe.
+  const divisionDe = (g) => (g && (g.division || g.nombre)) || '';
+
+  // La etiqueta del segundo renglon: el nombre del grupo sin la
+  // division adelante. Sale del nombre y no de `clases` para conservar
+  // como lo escribe el club: "EX + SS" y no "SS + EX + MA".
+  function soloLasClases(g) {
+    const t = String(g.nombre || '').slice(divisionDe(g).length).trim();
+    return t || 'Unica';
+  }
+
   function filtros() {
     const caja = $('filtros');
+    const clases = $('filtros-clase');
     caja.innerHTML = '';
+    clases.innerHTML = '';
 
-    const poner = (nombre, texto) => {
+    const grupos = datos.grupos || [];
+    const elegido = grupos.filter((g) => g.nombre === mirando)[0];
+    const division = elegido ? divisionDe(elegido) : '';
+
+    const poner = (donde, texto, actual, nombre) => {
       const b = document.createElement('button');
       b.type = 'button';
       b.textContent = texto;
-      b.className = nombre === mirando ? 'actual' : '';
+      b.className = actual ? 'actual' : '';
       b.onclick = () => {
         mirando = nombre;
         filtros();
         dibujar();
       };
-      caja.appendChild(b);
+      donde.appendChild(b);
     };
 
-    poner('general', 'General');
-    (datos.grupos || []).forEach((g) => poner(g.nombre, g.nombre));
+    poner(caja, 'General', mirando === 'general', 'general');
+
+    // Las divisiones, en el orden en que vienen los grupos. Tocar una
+    // abre su primer grupo: sin tabla de division entera, hay que caer
+    // en alguno, y el segundo renglon muestra cuales son los otros.
+    const divisiones = [];
+    grupos.forEach((g) => {
+      const d = divisionDe(g);
+      if (divisiones.indexOf(d) === -1) divisiones.push(d);
+    });
+    divisiones.forEach((d) => {
+      const suyos = grupos.filter((g) => divisionDe(g) === d);
+      poner(caja, d, division === d, suyos[0].nombre);
+    });
+
+    const hermanos = grupos.filter((g) => divisionDe(g) === division);
+    clases.hidden = hermanos.length < 2;
+    if (hermanos.length < 2) return;
+
+    const rotulo = document.createElement('span');
+    rotulo.className = 'rotulo';
+    rotulo.textContent = 'Clase';
+    clases.appendChild(rotulo);
+    hermanos.forEach((g) => poner(clases, soloLasClases(g), g.nombre === mirando, g.nombre));
   }
 
   function pie() {

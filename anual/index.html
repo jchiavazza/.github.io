@@ -27,7 +27,7 @@
 <meta property="og:url" content="https://9x19shooting.com.ar/anual/">
 <meta property="og:locale" content="es_AR">
 
-<link rel="stylesheet" href="tabla.css?v=1">
+<link rel="stylesheet" href="tabla.css?v=2">
 </head>
 <body>
 
@@ -48,7 +48,10 @@
   <header class="cabecera-anual">
     <h1 id="a-titulo">Torneo Anual</h1>
     <p class="datos" id="a-datos"></p>
-    <p class="acciones">
+    <!-- El video es el resumen del 2026: en el anual de otro año el
+         botón no va. Lo apaga anual.js, que es el que sabe qué año se
+         está mirando. -->
+    <p class="acciones" id="video-del-anio" data-anio="2026" hidden>
       <a class="boton" href="/#video-anual">Ver el resumen del año en video</a>
     </p>
   </header>
@@ -67,6 +70,9 @@
   </div>
 
   <div class="filtros" id="filtros"></div>
+  <!-- Los grupos de la división elegida. Aparece sólo cuando esa
+       división tiene más de uno. -->
+  <div class="filtros clases" id="filtros-clase" hidden></div>
 
   <div>
     <table id="tabla">
@@ -111,6 +117,6 @@
   </div>
 </footer>
 
-<script src="anual.js?v=9"></script>
+<script src="anual.js?v=10"></script>
 </body>
 </html>
