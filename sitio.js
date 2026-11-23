@@ -665,3 +665,38 @@
   video.src = video.dataset.vertical;
   if (video.dataset.posterVertical) video.poster = video.dataset.posterVertical;
 })();
+
+// El comunicado de la temporada, en una ventana del sitio.
+//
+// Antes el botón abría el PDF: en el celular eso baja un archivo, abre
+// otra aplicación y hay que volver atrás, para dos párrafos. El PDF
+// sigue estando, adentro, para el que quiera compartirlo o imprimirlo.
+//
+// Se cierra con el botón, tocando afuera o con Escape, igual que la
+// lista de inscriptos, y le devuelve el foco al botón que la abrió.
+
+(function () {
+  const fondo = document.getElementById('fondoComunicado');
+  const abrir = document.getElementById('verComunicado');
+  const cerrar = document.getElementById('cerrarComunicado');
+  if (!fondo || !abrir || !cerrar) return;
+
+  function mostrar() {
+    fondo.hidden = false;
+    document.body.style.overflow = 'hidden';
+    cerrar.focus();
+  }
+
+  function esconder() {
+    fondo.hidden = true;
+    document.body.style.overflow = '';
+    abrir.focus();
+  }
+
+  abrir.addEventListener('click', mostrar);
+  cerrar.addEventListener('click', esconder);
+  fondo.addEventListener('click', (e) => { if (e.target === fondo) esconder(); });
+  document.addEventListener('keydown', (e) => {
+    if (e.key === 'Escape' && !fondo.hidden) esconder();
+  });
+})();

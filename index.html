@@ -10,7 +10,7 @@
      archivo google27f9713e6eb2c514.html. No borrar ninguno de los dos. -->
 <meta name="google-site-verification" content="XFqVQXDWMgoB-UdauIgBkN-bCp5_d6BZNYdiPUPmPRA">
 <link rel="icon" href="assets/icono.png">
-<link rel="stylesheet" href="estilo.css?v=81">
+<link rel="stylesheet" href="estilo.css?v=82">
 
 <meta property="og:type" content="website">
 <meta property="og:title" content="Club 9x19 Shooting">
@@ -126,8 +126,7 @@
          se computa el anual. Se abre en otra pestaña en vez de bajarse:
          son dos párrafos para leer, no un manual para guardar. -->
     <p class="comunicado">
-      <a class="boton" href="assets/Comunicado-2027-9x19-Shooting.pdf?v=1"
-         data-descarga="comunicado-2027" target="_blank" rel="noopener">Comunicado 2027 (PDF)</a>
+      <button class="boton" type="button" id="verComunicado">Comunicado 2027</button>
       <span>Las dos novedades de la temporada: una sola fecha de
       clasificación en todo el año, y el anual a nueve fechas con las
       siete mejores.</span>
@@ -959,6 +958,73 @@
 
 </main>
 
+<!-- El comunicado de la temporada. Se lee acá y no abriendo el PDF:
+     en el celular un PDF se baja, abre otra aplicación y hay que volver
+     --y son dos párrafos--. El PDF queda adentro, para el que lo quiera
+     compartir o imprimir, y es el mismo archivo que se repartió.
+
+     El texto está escrito dos veces a propósito: acá y en el
+     `comunicados/2027/comunicado-2027.html` del repositorio de la App,
+     que es del que sale el PDF. Son dos cosas distintas --una página y
+     una hoja A4-- y no hay forma de compartir el texto sin generar el
+     HTML, que este sitio no hace. Si se corrige uno, corregir el otro. -->
+<div class="fondo-lista" id="fondoComunicado" hidden role="dialog" aria-modal="true"
+     aria-labelledby="tituloComunicado">
+  <div class="caja-lista">
+    <header>
+      <h3 id="tituloComunicado">Temporada 2027</h3>
+      <button class="boton chico cerrar-lista" type="button" id="cerrarComunicado">Cerrar</button>
+    </header>
+    <div class="adentro texto-comunicado">
+      <p class="entrada">Queremos adelantarles dos novedades para la temporada 2027.</p>
+
+      <h4>Clasificación IDPA</h4>
+      <p class="bajada-com">Una única fecha en el año: febrero de 2027</p>
+      <p>
+        Se va a realizar en el <strong>Tiro Federal de Esperanza</strong>,
+        el <strong>20 y 21 de febrero</strong>, en estos horarios:
+      </p>
+      <ul class="horarios-com">
+        <li><b>Sábado</b><span>9 a 12 hs · 15 a 19 hs</span></li>
+        <li><b>Domingo</b><span>9 a 13 hs</span></li>
+      </ul>
+      <p>
+        No va a haber otra fecha de clasificación de 9x19 Shooting en el
+        resto del año. A quien todavía no esté clasificado, quiera subir de
+        clase o esté por cumplir un año de su última clasificación, le
+        recomendamos que la agende desde ahora.
+      </p>
+
+      <h4>Torneo Anual 2027 — Zona Litoral - NEA</h4>
+      <ul class="cifras">
+        <li><strong>9</strong> fechas</li>
+        <li><strong>7</strong> mejores resultados computan</li>
+      </ul>
+      <p>
+        Quien corra todas las fechas descarta sus dos peores, sin importar
+        dónde hayan sido.
+      </p>
+      <p>
+        Quien falte tiene una condición: <strong>no puede faltar a dos
+        fechas del mismo club.</strong> La idea es que el anual recorra
+        todos los clubes y que todos nos visitemos.
+      </p>
+      <p class="aviso-com">
+        <strong>Quien falte a dos fechas del mismo club queda fuera del anual.</strong>
+      </p>
+
+      <p class="cierre-com">¡Los esperamos en la cancha!</p>
+
+      <p class="bajar-pdf">
+        <a class="boton chico" href="assets/Comunicado-2027-9x19-Shooting.pdf?v=2"
+           data-descarga="comunicado-2027"
+           download="Comunicado-2027-9x19-Shooting.pdf">Descargar en PDF</a>
+        <span>Para compartirlo o imprimirlo.</span>
+      </p>
+    </div>
+  </div>
+</div>
+
 <!-- La lista de inscriptos de un torneo. Se abre desde el botón
      "Inscriptos" de su tarjeta y la trae la Cloud Function
      `listaDeInscriptos`, que no pide clave y devuelve sólo apellido y
@@ -1011,6 +1077,6 @@
 </footer>
 
 <script src="inscripcion/torneos.js?v=30"></script>
-<script src="sitio.js?v=46"></script>
+<script src="sitio.js?v=47"></script>
 </body>
 </html>

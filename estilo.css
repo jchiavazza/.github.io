@@ -1652,3 +1652,59 @@ footer a:hover { text-decoration: underline; }
   font-weight: 700;
   color: var(--acento);
 }
+
+/* El comunicado, adentro de la ventana. Usa la misma caja que la
+   lista de inscriptos --ya tiene el fondo, el borde y el botón de
+   cerrar-- y acá sólo se acomoda el texto. */
+.texto-comunicado p { margin: 0 0 12px; line-height: 1.55; }
+.texto-comunicado .entrada { color: var(--texto-suave); }
+.texto-comunicado h4 {
+  margin: 22px 0 2px;
+  font-size: 19px;
+  color: var(--acento);
+}
+.texto-comunicado .bajada-com { font-weight: 700; margin-bottom: 10px; }
+
+/* Los horarios, como en la hoja impresa: dos recuadros oscuros, que
+   es lo que se mira de un vistazo. */
+.horarios-com {
+  list-style: none;
+  margin: 14px 0 16px;
+  padding: 0;
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+  gap: 10px;
+}
+.horarios-com li {
+  background: var(--texto);
+  color: var(--fondo);
+  border-radius: 10px;
+  padding: 10px 12px;
+  text-align: center;
+}
+.horarios-com b {
+  display: block;
+  color: var(--acento);
+  text-transform: uppercase;
+  letter-spacing: .06em;
+  font-size: 13px;
+}
+
+/* Lo que no se puede pasar por alto: la regla de las dos faltas. */
+.aviso-com {
+  background: var(--peligro);
+  color: #fff;
+  border-radius: 10px;
+  padding: 12px 14px;
+  margin: 16px 0 !important;
+}
+.cierre-com { font-weight: 700; color: var(--acento); font-size: 17px; }
+
+.bajar-pdf {
+  display: flex; flex-wrap: wrap; align-items: center; gap: 12px;
+  margin-top: 20px !important;
+  padding-top: 16px;
+  border-top: 1px solid var(--borde);
+}
+.bajar-pdf span { color: var(--texto-suave); font-size: 14px; }
+
