@@ -208,6 +208,295 @@ window.TORNEOS = {
     // A las 12 del mediodía del jueves, no a medianoche.
     cierra: '2026-09-17T12:00',
   },
+  '2027-clasificacion': {
+    titulo: 'Clasificación',
+    subtitulo: 'Apertura de la temporada 2027',
+    sede: 'Tiro Federal de Esperanza',
+    ciudad: 'Esperanza, Santa Fe',
+    direccion: 'Paso Viñal 1618',
+    fecha: '20 y 21 de febrero de 2027',
+    horaComienzo: '8:30',
+
+    dias: [
+      { valor: 'sabado', texto: 'Sábado 20' },
+      { valor: 'domingo', texto: 'Domingo 21' },
+    ],
+
+    // Todavía no abre y no hay fecha anunciada. Cuando el club la
+    // defina: `abre: '2027-01-15'`, y se abre sola ese día.
+    abre: '',
+
+    // Sin precio: el del año pasado no vale y abrir con él sería
+    // peor que no abrir. Mientras no esté cargado la inscripción
+    // no abre, aunque `abre` diga que sí.
+    precio: 0,
+    precioSegundaArma: 0,
+    alias: '9x19shooting.nx',
+    titularAlias: 'José Chiavazza',
+
+    cierra: '2027-02-18T21:00',
+  },
+
+  '2027-f1': {
+    titulo: '1ª Fecha',
+    subtitulo: 'Torneo Anual 2027',
+    sede: 'Tiro Federal de Esperanza',
+    ciudad: 'Esperanza, Santa Fe',
+    direccion: 'Paso Viñal 1618',
+    fecha: '13 y 14 de marzo de 2027',
+    horaComienzo: '8:30',
+
+    dias: [
+      { valor: 'sabado', texto: 'Sábado 13' },
+      { valor: 'domingo', texto: 'Domingo 14' },
+    ],
+
+    // Todavía no abre y no hay fecha anunciada. Cuando el club la
+    // defina: `abre: '2027-01-15'`, y se abre sola ese día.
+    abre: '',
+
+    // Sin precio: el del año pasado no vale y abrir con él sería
+    // peor que no abrir. Mientras no esté cargado la inscripción
+    // no abre, aunque `abre` diga que sí.
+    precio: 0,
+    precioSegundaArma: 0,
+    alias: '9x19shooting.nx',
+    titularAlias: 'José Chiavazza',
+
+    cierra: '2027-03-11T21:00',
+  },
+
+  '2027-f2': {
+    titulo: '2ª Fecha',
+    subtitulo: 'Torneo Anual 2027',
+    sede: 'Tiro Federal Argentino de Santa Fe',
+    ciudad: 'Santa Fe',
+    direccion: 'Av. Urquiza 751',
+    fecha: '10 y 11 de abril de 2027',
+    horaComienzo: '8:30',
+
+    dias: [
+      { valor: 'sabado', texto: 'Sábado 10' },
+      { valor: 'domingo', texto: 'Domingo 11' },
+    ],
+
+    // Todavía no abre y no hay fecha anunciada. Cuando el club la
+    // defina: `abre: '2027-01-15'`, y se abre sola ese día.
+    abre: '',
+
+    // Sin precio: el del año pasado no vale y abrir con él sería
+    // peor que no abrir. Mientras no esté cargado la inscripción
+    // no abre, aunque `abre` diga que sí.
+    precio: 0,
+    precioSegundaArma: 0,
+    alias: '9x19shooting.nx',
+    titularAlias: 'José Chiavazza',
+
+    cierra: '2027-04-08T21:00',
+  },
+
+  '2027-f3': {
+    titulo: '3ª Fecha',
+    subtitulo: 'Torneo Anual 2027',
+    sede: 'Tiro Federal Argentino de San Jerónimo Sud',
+    ciudad: 'San Jerónimo Sud, Santa Fe',
+    direccion: 'Av. 1 de Junio 50',
+    fecha: '15 y 16 de mayo de 2027',
+    horaComienzo: '8:30',
+
+    dias: [
+      { valor: 'sabado', texto: 'Sábado 15' },
+      { valor: 'domingo', texto: 'Domingo 16' },
+    ],
+
+    // Todavía no abre y no hay fecha anunciada. Cuando el club la
+    // defina: `abre: '2027-01-15'`, y se abre sola ese día.
+    abre: '',
+
+    // Sin precio: el del año pasado no vale y abrir con él sería
+    // peor que no abrir. Mientras no esté cargado la inscripción
+    // no abre, aunque `abre` diga que sí.
+    precio: 0,
+    precioSegundaArma: 0,
+    alias: '9x19shooting.nx',
+    titularAlias: 'José Chiavazza',
+
+    cierra: '2027-05-13T21:00',
+  },
+
+  '2027-f4': {
+    titulo: '4ª Fecha',
+    subtitulo: 'Torneo Anual 2027',
+    sede: 'Tiro Federal de Esperanza',
+    ciudad: 'Esperanza, Santa Fe',
+    direccion: 'Paso Viñal 1618',
+    fecha: '12 y 13 de junio de 2027',
+    horaComienzo: '8:30',
+
+    dias: [
+      { valor: 'sabado', texto: 'Sábado 12' },
+      { valor: 'domingo', texto: 'Domingo 13' },
+    ],
+
+    // Todavía no abre y no hay fecha anunciada. Cuando el club la
+    // defina: `abre: '2027-01-15'`, y se abre sola ese día.
+    abre: '',
+
+    // Sin precio: el del año pasado no vale y abrir con él sería
+    // peor que no abrir. Mientras no esté cargado la inscripción
+    // no abre, aunque `abre` diga que sí.
+    precio: 0,
+    precioSegundaArma: 0,
+    alias: '9x19shooting.nx',
+    titularAlias: 'José Chiavazza',
+
+    cierra: '2027-06-10T21:00',
+  },
+
+  '2027-f5': {
+    titulo: '5ª Fecha',
+    subtitulo: 'Torneo Anual 2027',
+    sede: 'Tiro Federal Argentino de Santa Fe',
+    ciudad: 'Santa Fe',
+    direccion: 'Av. Urquiza 751',
+    fecha: '10 y 11 de julio de 2027',
+    horaComienzo: '8:30',
+
+    dias: [
+      { valor: 'sabado', texto: 'Sábado 10' },
+      { valor: 'domingo', texto: 'Domingo 11' },
+    ],
+
+    // Todavía no abre y no hay fecha anunciada. Cuando el club la
+    // defina: `abre: '2027-01-15'`, y se abre sola ese día.
+    abre: '',
+
+    // Sin precio: el del año pasado no vale y abrir con él sería
+    // peor que no abrir. Mientras no esté cargado la inscripción
+    // no abre, aunque `abre` diga que sí.
+    precio: 0,
+    precioSegundaArma: 0,
+    alias: '9x19shooting.nx',
+    titularAlias: 'José Chiavazza',
+
+    cierra: '2027-07-08T21:00',
+  },
+
+  '2027-f6': {
+    titulo: '6ª Fecha',
+    subtitulo: 'Torneo Anual 2027',
+    sede: 'Tiro Federal Argentino de San Jerónimo Sud',
+    ciudad: 'San Jerónimo Sud, Santa Fe',
+    direccion: 'Av. 1 de Junio 50',
+    fecha: '7 y 8 de agosto de 2027',
+    horaComienzo: '8:30',
+
+    dias: [
+      { valor: 'sabado', texto: 'Sábado 7' },
+      { valor: 'domingo', texto: 'Domingo 8' },
+    ],
+
+    // Todavía no abre y no hay fecha anunciada. Cuando el club la
+    // defina: `abre: '2027-01-15'`, y se abre sola ese día.
+    abre: '',
+
+    // Sin precio: el del año pasado no vale y abrir con él sería
+    // peor que no abrir. Mientras no esté cargado la inscripción
+    // no abre, aunque `abre` diga que sí.
+    precio: 0,
+    precioSegundaArma: 0,
+    alias: '9x19shooting.nx',
+    titularAlias: 'José Chiavazza',
+
+    cierra: '2027-08-05T21:00',
+  },
+
+  '2027-f7': {
+    titulo: '7ª Fecha',
+    subtitulo: 'Torneo Anual 2027',
+    sede: 'Tiro Federal de Esperanza',
+    ciudad: 'Esperanza, Santa Fe',
+    direccion: 'Paso Viñal 1618',
+    fecha: '4 y 5 de septiembre de 2027',
+    horaComienzo: '8:30',
+
+    dias: [
+      { valor: 'sabado', texto: 'Sábado 4' },
+      { valor: 'domingo', texto: 'Domingo 5' },
+    ],
+
+    // Todavía no abre y no hay fecha anunciada. Cuando el club la
+    // defina: `abre: '2027-01-15'`, y se abre sola ese día.
+    abre: '',
+
+    // Sin precio: el del año pasado no vale y abrir con él sería
+    // peor que no abrir. Mientras no esté cargado la inscripción
+    // no abre, aunque `abre` diga que sí.
+    precio: 0,
+    precioSegundaArma: 0,
+    alias: '9x19shooting.nx',
+    titularAlias: 'José Chiavazza',
+
+    cierra: '2027-09-02T21:00',
+  },
+
+  '2027-f8': {
+    titulo: '8ª Fecha',
+    subtitulo: 'Copa · Torneo Anual 2027',
+    sede: 'Tiro Federal Argentino de Santa Fe',
+    ciudad: 'Santa Fe',
+    direccion: 'Av. Urquiza 751',
+    fecha: '9 y 10 de octubre de 2027',
+    horaComienzo: '8:30',
+
+    dias: [
+      { valor: 'sabado', texto: 'Sábado 9' },
+      { valor: 'domingo', texto: 'Domingo 10' },
+    ],
+
+    // Todavía no abre y no hay fecha anunciada. Cuando el club la
+    // defina: `abre: '2027-01-15'`, y se abre sola ese día.
+    abre: '',
+
+    // Sin precio: el del año pasado no vale y abrir con él sería
+    // peor que no abrir. Mientras no esté cargado la inscripción
+    // no abre, aunque `abre` diga que sí.
+    precio: 0,
+    precioSegundaArma: 0,
+    alias: '9x19shooting.nx',
+    titularAlias: 'José Chiavazza',
+
+    cierra: '2027-10-07T21:00',
+  },
+
+  '2027-f9': {
+    titulo: '9ª Fecha',
+    subtitulo: 'Torneo Anual 2027',
+    sede: 'Tiro Federal de Esperanza',
+    ciudad: 'Esperanza, Santa Fe',
+    direccion: 'Paso Viñal 1618',
+    fecha: '6 y 7 de noviembre de 2027',
+    horaComienzo: '8:30',
+
+    dias: [
+      { valor: 'sabado', texto: 'Sábado 6' },
+      { valor: 'domingo', texto: 'Domingo 7' },
+    ],
+
+    // Todavía no abre y no hay fecha anunciada. Cuando el club la
+    // defina: `abre: '2027-01-15'`, y se abre sola ese día.
+    abre: '',
+
+    // Sin precio: el del año pasado no vale y abrir con él sería
+    // peor que no abrir. Mientras no esté cargado la inscripción
+    // no abre, aunque `abre` diga que sí.
+    precio: 0,
+    precioSegundaArma: 0,
+    alias: '9x19shooting.nx',
+    titularAlias: 'José Chiavazza',
+
+    cierra: '2027-11-04T21:00',
+  },
 
 };
 
@@ -228,6 +517,42 @@ window.TORNEOS = {
 // de verdad cierra la inscripción es la función**, que vuelve a mirar
 // la misma fecha y rechaza lo que llegue tarde: acá cualquiera podría
 // cambiar la hora de su teléfono.
+// ¿Todavía NO abrió? Lo contrario de la de abajo, y con la misma
+// forma de escribir la fecha. Un torneo del año que viene se carga
+// con `abre` y hasta entonces la portada no invita a nada.
+//
+//   abre: '2027-01-15'       abre sola ese día
+//   abre: '2027-01-15T09:00' a esa hora
+//   abre: ''                 todavía no, sin fecha anunciada
+//   sin `abre`               abierta, como siempre
+//
+// **Sin precio cargado tampoco abre**, diga lo que diga `abre`: el
+// del año pasado no vale, y abrir cobrando ése sería peor que no
+// abrir. La misma regla está en functions/inscripciones.js.
+window.todaviaNoAbre = function (torneo) {
+  const t = typeof torneo === 'string' ? ((window.TORNEOS || {})[torneo] || {}) : (torneo || {});
+  // `precios` es el torneo que cobra por día, que no tiene `precio`.
+  if (!t.precio && !t.precios) return true;
+  if (!('abre' in t)) return false;
+  const abre = t.abre;
+  if (!abre) return true;
+  if (abre.includes('T')) return Date.now() < Date.parse(abre + ':00-03:00');
+
+  const d = new Date();
+  const mm = String(d.getMonth() + 1).padStart(2, '0');
+  const dd = String(d.getDate()).padStart(2, '0');
+  return (d.getFullYear() + '-' + mm + '-' + dd) < abre;
+};
+
+// Para el cartel: "Inscripción desde el 15/1". Vacío si no hay fecha.
+window.cuandoAbre = function (torneo) {
+  const t = typeof torneo === 'string' ? ((window.TORNEOS || {})[torneo] || {}) : (torneo || {});
+  const abre = String(t.abre || '').slice(0, 10);
+  if (!/^\d{4}-\d{2}-\d{2}$/.test(abre)) return '';
+  const p = abre.split('-');
+  return Number(p[2]) + '/' + Number(p[1]);
+};
+
 window.cerroLaInscripcion = function (torneo) {
   const cierra = typeof torneo === 'string'
     ? ((window.TORNEOS || {})[torneo] || {}).cierra

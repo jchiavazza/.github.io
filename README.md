@@ -267,6 +267,44 @@ Para abrir el torneo siguiente se copia el bloque anterior de
 > no una fecha del calendario, y no vale la pena moverla. Su botón y su
 > QR no se tocaron.
 
+### Y la apertura, igual: `abre`
+
+Las diez fechas del **calendario 2027** están cargadas desde noviembre
+de 2026, cada una con su tarjeta en la portada y su bloque en
+`torneos.js`, **sin abrir**. Se escribe igual que `cierra`:
+
+```js
+abre: '2027-01-15'        // abre sola ese día
+abre: '2027-01-15T09:00'  // a esa hora
+abre: ''                  // cargado, pero todavía no, y sin fecha anunciada
+// sin `abre`             // abierto, como siempre
+```
+
+La portada cambia *Inscribirme* por **«Inscripción desde el 15/1»** si
+hay fecha, o **«Inscripción: próximamente»** si no, y esconde el botón
+*Inscriptos* —no hay a quién listar—. El formulario muestra su propio
+cartel y la función rechaza lo que llegue igual.
+
+> **Sin precio no abre, diga lo que diga `abre`.** Las fechas del
+> calendario se cargan con `precio: 0` porque el del año que viene
+> todavía no está decidido. Abrir con el precio del año pasado sería
+> peor que no abrir: el importe **no viaja en el formulario**, lo
+> calcula la función, así que el correo le diría al tirador un número
+> equivocado. Es a prueba del olvido de quien ponga la fecha y no el
+> precio.
+
+> **El que cobra por día no tiene `precio` sino `precios`.** Las dos
+> cuentan: sin eso, Tucumán habría quedado cerrado de un día para el
+> otro. Lo fija `node functions/probar-inscripciones.js` en el
+> repositorio de la App.
+
+**Para abrir una fecha** hay que tocar los dos lados, como siempre:
+cargarle el precio y la fecha de apertura en `inscripcion/torneos.js`
+de acá y en `functions/inscripciones.js` de la App, y desplegar las
+seis funciones. Y cuando esté el afiche, agregarle a la tarjeta el
+bloque `<a class="afiche">` y el QR —copiados de una tarjeta vieja— y
+sacarle la clase `sin-afiche`.
+
 ### El cierre se apaga solo en los tres lados
 
 Un torneo cierra con su `cierra` en `torneos.js` —un día entero

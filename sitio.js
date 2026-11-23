@@ -555,17 +555,33 @@
   //
   // El resto de la tarjeta no se toca: la dirección, el horario y el
   // teléfono de informes son lo que más se mira los últimos días.
+  // Y antes de abrir, lo mismo del otro lado: el torneo del calendario
+  // que viene cargado pero cuya inscripción todavía no abrió. Se
+  // muestra la fecha si está anunciada --"Inscripción desde el 15/1"--
+  // y si no, que falta poco. La tarjeta se ve igual: el que mira el
+  // calendario quiere saber dónde y cuándo, y eso ya está ahí.
   document.querySelectorAll('[data-inscribirse]').forEach((boton) => {
-    if (!window.cerroLaInscripcion(boton.dataset.inscribirse)) return;
+    const cual = boton.dataset.inscribirse;
+    const cerro = window.cerroLaInscripcion(cual);
+    const noAbrio = !cerro && window.todaviaNoAbre && window.todaviaNoAbre(cual);
+    if (!cerro && !noAbrio) return;
 
+    const cuando = noAbrio && window.cuandoAbre ? window.cuandoAbre(cual) : '';
     const cartel = document.createElement('span');
     cartel.className = 'boton pendiente';
-    cartel.textContent = 'Inscripción cerrada';
+    cartel.textContent = cerro ? 'Inscripción cerrada'
+      : cuando ? 'Inscripción desde el ' + cuando
+      : 'Inscripción: próximamente';
     boton.replaceWith(cartel);
 
     const tarjeta = cartel.closest('.proxima-fecha');
     const qr = tarjeta && tarjeta.querySelector('.qr');
     if (qr) qr.hidden = true;
+
+    // Sin inscripción abierta no hay a quién listar: el botón
+    // "Inscriptos" contestaría una lista vacía, que parece un error.
+    const lista = tarjeta && tarjeta.querySelector('[data-inscriptos]');
+    if (lista && noAbrio) lista.hidden = true;
   });
 })();
 

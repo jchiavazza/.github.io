@@ -99,6 +99,17 @@
     return;
   }
 
+  // Y el que todavía no abrió: el torneo del calendario que ya está
+  // cargado para que la portada lo muestre, pero al que no se puede
+  // anotar nadie. La función tampoco lo acepta, por si alguien llega
+  // con el formulario de otro día.
+  if (window.todaviaNoAbre && window.todaviaNoAbre(torneo)) {
+    const cuando = window.cuandoAbre ? window.cuandoAbre(torneo) : '';
+    $('no-abre-aun').hidden = false;
+    if (cuando) $('cuando-abre').textContent = 'Abre el ' + cuando + '.';
+    return;
+  }
+
   // ------------------------------------------------------------------
   // Las opciones
 

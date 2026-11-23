@@ -727,6 +727,9 @@ section > .acciones {
     padding: 12px 10px;
   }
   .proxima-fecha .que { grid-column: 1 / -1; grid-row: 2; }
+  /* Sin afiche no hay primera columna que llenar: la fecha se corre
+     ahí, o el teléfono mostraría la tarjeta con un hueco. */
+  .proxima-fecha.sin-afiche .cuando { grid-column: 1; width: auto; }
 
   .proxima-fecha .dia { font-size: 25px; }
   .proxima-fecha .mes { font-size: 14px; }
