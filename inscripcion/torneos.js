@@ -239,7 +239,7 @@ window.TORNEOS = {
 
   '2027-f1': {
     titulo: '1ª Fecha',
-    subtitulo: 'Torneo Anual 2027',
+    subtitulo: 'Zona Litoral - NEA 2027',
     sede: 'Tiro Federal de Esperanza',
     ciudad: 'Esperanza, Santa Fe',
     direccion: 'Paso Viñal 1618',
@@ -268,7 +268,7 @@ window.TORNEOS = {
 
   '2027-f2': {
     titulo: '2ª Fecha',
-    subtitulo: 'Torneo Anual 2027',
+    subtitulo: 'Zona Litoral - NEA 2027',
     sede: 'Tiro Federal Argentino de Santa Fe',
     ciudad: 'Santa Fe',
     direccion: 'Av. Urquiza 751',
@@ -297,7 +297,7 @@ window.TORNEOS = {
 
   '2027-f3': {
     titulo: '3ª Fecha',
-    subtitulo: 'Torneo Anual 2027',
+    subtitulo: 'Zona Litoral - NEA 2027',
     sede: 'Tiro Federal Argentino de San Jerónimo Sud',
     ciudad: 'San Jerónimo Sud, Santa Fe',
     direccion: 'Av. 1 de Junio 50',
@@ -326,7 +326,7 @@ window.TORNEOS = {
 
   '2027-f4': {
     titulo: '4ª Fecha',
-    subtitulo: 'Torneo Anual 2027',
+    subtitulo: 'Zona Litoral - NEA 2027',
     sede: 'Tiro Federal de Esperanza',
     ciudad: 'Esperanza, Santa Fe',
     direccion: 'Paso Viñal 1618',
@@ -355,7 +355,7 @@ window.TORNEOS = {
 
   '2027-f5': {
     titulo: '5ª Fecha',
-    subtitulo: 'Torneo Anual 2027',
+    subtitulo: 'Zona Litoral - NEA 2027',
     sede: 'Tiro Federal Argentino de Santa Fe',
     ciudad: 'Santa Fe',
     direccion: 'Av. Urquiza 751',
@@ -384,7 +384,7 @@ window.TORNEOS = {
 
   '2027-f6': {
     titulo: '6ª Fecha',
-    subtitulo: 'Torneo Anual 2027',
+    subtitulo: 'Zona Litoral - NEA 2027',
     sede: 'Tiro Federal Argentino de San Jerónimo Sud',
     ciudad: 'San Jerónimo Sud, Santa Fe',
     direccion: 'Av. 1 de Junio 50',
@@ -413,7 +413,7 @@ window.TORNEOS = {
 
   '2027-f7': {
     titulo: '7ª Fecha',
-    subtitulo: 'Torneo Anual 2027',
+    subtitulo: 'Zona Litoral - NEA 2027',
     sede: 'Tiro Federal de Esperanza',
     ciudad: 'Esperanza, Santa Fe',
     direccion: 'Paso Viñal 1618',
@@ -442,7 +442,7 @@ window.TORNEOS = {
 
   '2027-f8': {
     titulo: '8ª Fecha',
-    subtitulo: 'Copa · Torneo Anual 2027',
+    subtitulo: 'Copa · Zona Litoral - NEA 2027',
     sede: 'Tiro Federal Argentino de Santa Fe',
     ciudad: 'Santa Fe',
     direccion: 'Av. Urquiza 751',
@@ -471,7 +471,7 @@ window.TORNEOS = {
 
   '2027-f9': {
     titulo: '9ª Fecha',
-    subtitulo: 'Torneo Anual 2027',
+    subtitulo: 'Zona Litoral - NEA 2027',
     sede: 'Tiro Federal de Esperanza',
     ciudad: 'Esperanza, Santa Fe',
     direccion: 'Paso Viñal 1618',

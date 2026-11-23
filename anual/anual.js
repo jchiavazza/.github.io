@@ -310,7 +310,10 @@
     // un campeonato que todavía no se corrió no tiene ninguna: el título
     // quedaba sin año justo donde más hace falta decirlo.
     const anio = datos.anio || ((datos.fechas[0] || {}).fecha || '').slice(0, 4);
-    $('a-titulo').textContent = 'Torneo Anual' + (anio ? ' ' + anio : '');
+    // El nombre del campeonato también lo manda el servidor: el 2026 fue
+    // el Homenaje a Jorge Pastor y el 2027 es Zona Litoral - NEA. Si no
+    // viene --una versión vieja de la función-- queda "Torneo Anual".
+    $('a-titulo').textContent = (datos.nombre || 'Torneo Anual') + (anio ? ' ' + anio : '');
 
     // El resumen en video es el del 2026: en el anual de otro año el
     // botón sobra. El año del video está en el HTML, así que el día que
