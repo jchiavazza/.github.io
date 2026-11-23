@@ -10,6 +10,12 @@
   const API = 'https://us-central1-x19shooting-sync.cloudfunctions.net';
   const $ = (id) => document.getElementById(id);
 
+  // `?anio=2027` mira el campeonato de otro año; sin parámetro, el que
+  // corre. El año que viene se puede mirar antes de que empiece: su
+  // calendario se publica en noviembre y la cartelera ya lo enlaza.
+  const otroAnio = ((new URLSearchParams(location.search).get('anio') || '').trim()
+    .match(/^\d{4}$/) || [''])[0];
+
   let datos = null;
   // Qué se está mirando: la general o el nombre de un grupo.
   let mirando = 'general';
@@ -316,11 +322,7 @@
   let reloj = null;
 
   function cargar() {
-    // `?anio=2027` mira el campeonato de otro año; sin parámetro, el que
-    // corre. El año que viene se puede mirar antes de que empiece: su
-    // calendario se publica en noviembre y la cartelera ya lo enlaza.
-    const pide = (new URLSearchParams(location.search).get('anio') || '').trim();
-    return fetch(API + '/resultadosAnual' + (/^\d{4}$/.test(pide) ? '?anio=' + pide : ''))
+    return fetch(API + '/resultadosAnual' + (otroAnio ? '?anio=' + otroAnio : ''))
       .then((r) => r.json())
       .then((d) => {
         if (!d || !d.ok) throw new Error((d && d.error) || 'sin datos');
@@ -360,5 +362,9 @@
   }
 
   cargar();
-  cerrados();
+  // Los campeonatos anteriores van en el anual del año que corre, que
+  // es a donde se entra sin saber qué hay. Pidiendo un año puntual no:
+  // a eso se llega desde la cartelera, que ya los lista a todos, y
+  // repetirlos abajo hace que el 2026 figure dentro del 2027.
+  if (!otroAnio) cerrados();
 })();
