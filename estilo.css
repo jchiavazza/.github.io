@@ -497,6 +497,23 @@ section > .acciones {
 
 /* ---------------------------------- próximas fechas */
 
+/* El comunicado de la temporada, arriba de las fechas: el botón y una
+   línea que dice de qué se trata, porque "Comunicado 2027" solo no
+   dice nada y nadie abre un PDF a ciegas. */
+.comunicado {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 14px;
+  margin: 0 0 22px;
+}
+.comunicado .boton { flex-shrink: 0; }
+.comunicado span {
+  color: var(--texto-suave);
+  font-size: 15px;
+  flex: 1 1 260px;
+}
+
 .grilla-proximas {
   display: grid;
   gap: 18px;
