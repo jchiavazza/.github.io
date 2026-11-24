@@ -1740,8 +1740,30 @@
       // del cual esconderse y acá es justamente lo que hay que ir a
       // arreglar.
       const paraOrdenar = (m) => anioDe(m) || "9999";
-      const lista = d.matches.slice()
-        .sort((a, b) => paraOrdenar(b).localeCompare(paraOrdenar(a)));
+
+      // Adentro de cada año, el mismo orden que la cartelera pública: lo
+      // que viene primero —del más próximo al más lejano— y después lo
+      // corrido, de lo más reciente para atrás. El orden que trae el
+      // servidor es por última sincronización, que acá deja el torneo que
+      // hay que tocar donde caiga.
+      const diaDe = (m) => String(m.fecha || "").slice(0, 10);
+      const ahora = new Date();
+      const hoy = ahora.getFullYear() + "-"
+        + String(ahora.getMonth() + 1).padStart(2, "0") + "-"
+        + String(ahora.getDate()).padStart(2, "0");
+
+      const lista = d.matches.slice().sort((a, b) => {
+        const porAnio = paraOrdenar(b).localeCompare(paraOrdenar(a));
+        if (porAnio !== 0) return porAnio;
+
+        const fa = diaDe(a);
+        const fb = diaDe(b);
+        const pasoA = fa && fa < hoy ? 1 : 0;
+        const pasoB = fb && fb < hoy ? 1 : 0;
+        if (pasoA !== pasoB) return pasoA - pasoB;
+        if (pasoA) return (fb || "").localeCompare(fa || "");
+        return (fa || "9999-99-99").localeCompare(fb || "9999-99-99");
+      });
       const elMasNuevo = anioDe(lista.filter((m) => anioDe(m))[0] || {});
 
       // El cajón de cada año viejo se crea recién cuando hace falta, y

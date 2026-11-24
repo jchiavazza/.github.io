@@ -64,16 +64,43 @@
     return m.cargados < m.posibles;
     }
 
-    // Primero el que se está corriendo, después los demás del más nuevo
-    // al más viejo. El orden que trae el servidor es por última
-    // sincronización, que no es lo mismo: un torneo terminado al que se
-    // le tocó algo ayer quedaría arriba del que se está corriendo hoy.
+    // El orden: lo que pasa ahora, lo que viene y después lo que ya pasó.
+    //
+    //   1. el que se está corriendo
+    //   2. los que todavía no se corrieron, **del más próximo al más
+    //      lejano**: lo primero que busca el que entra es cuándo es la
+    //      que viene, y con el año entero publicado tenía la de
+    //      noviembre arriba y la de febrero al final
+    //   3. los corridos, del más reciente al más viejo, que ahí sí es
+    //      lo último que pasó lo que interesa
+    //
+    // El orden que trae el servidor es por última sincronización, que no
+    // es ninguno de los tres: un torneo terminado al que se le tocó algo
+    // ayer quedaría arriba del que se está corriendo hoy.
     function ordenar(matches) {
+      // `fecha` puede venir como '2027-03-13 y 14': los primeros diez
+      // caracteres son el día, que es lo único que se compara.
+      const dia = (m) => String(m.fecha || '').slice(0, 10);
+      const d = new Date();
+      const hoy = d.getFullYear() + '-'
+        + String(d.getMonth() + 1).padStart(2, '0') + '-'
+        + String(d.getDate()).padStart(2, '0');
+
       return matches.slice().sort((a, b) => {
         const va = seEstaCorriendo(a) ? 1 : 0;
         const vb = seEstaCorriendo(b) ? 1 : 0;
         if (va !== vb) return vb - va;
-        return (b.fecha || '').localeCompare(a.fecha || '');
+
+        const fa = dia(a);
+        const fb = dia(b);
+        const pasoA = fa && fa < hoy ? 1 : 0;
+        const pasoB = fb && fb < hoy ? 1 : 0;
+        if (pasoA !== pasoB) return pasoA - pasoB;
+
+        // El que no tiene fecha va al final de su grupo en vez de
+        // colarse primero, que es lo que hace una cadena vacía.
+        if (pasoA) return (fb || '').localeCompare(fa || '');
+        return (fa || '9999-99-99').localeCompare(fb || '9999-99-99');
       });
     }
 
