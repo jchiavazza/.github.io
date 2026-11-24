@@ -508,6 +508,39 @@ section > .acciones {
   margin: 0 0 22px;
 }
 .comunicado .boton { flex-shrink: 0; }
+
+/* En rojo y titilando: es lo primero que tiene que ver el que entra,
+   porque cambia dos cosas de la temporada --una sola clasificación en
+   todo el año, y el anual que deja afuera al que falta dos veces al
+   mismo club-- y en el beige del resto de la página pasaba de largo. */
+#verComunicado {
+  background: var(--peligro);
+  border-color: var(--peligro);
+  color: #fff;
+  font-weight: 700;
+  animation: titila-comunicado 1.6s ease-in-out infinite;
+}
+#verComunicado:hover { animation: none; filter: brightness(1.1); }
+
+/* Prendido es el rojo pleno y apagado el fondo con el texto rojo: el
+   botón entero cambia, que a dos metros se nota, y no sólo el brillo. */
+@keyframes titila-comunicado {
+  0%, 45% {
+    background: var(--peligro);
+    color: #fff;
+    box-shadow: var(--relieve-chico);
+  }
+  55%, 100% {
+    background: color-mix(in srgb, var(--peligro) 12%, var(--fondo));
+    color: var(--peligro);
+    box-shadow: 0 0 0 3px color-mix(in srgb, var(--peligro) 35%, transparent), var(--relieve-chico);
+  }
+}
+
+/* Al que pidió menos movimiento le queda el rojo, quieto. */
+@media (prefers-reduced-motion: reduce) {
+  #verComunicado { animation: none; }
+}
 .comunicado span {
   color: var(--texto-suave);
   font-size: 15px;
