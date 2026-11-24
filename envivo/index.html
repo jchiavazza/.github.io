@@ -232,6 +232,13 @@
     .esc-movil .linea.es-dq { color: var(--peligro, #8A2018); font-weight: 700; }
   }
 
+  /* La tabla de una clasificación. La clase es el resultado, así que
+     va destacada; lo que todavía no pasó —le faltan cadenas, sin
+     empezar— va atenuado, para que se lea que no es un resultado. */
+  td.clase { font-weight: 700; color: var(--acento); }
+  td.flojo { color: var(--texto-suave); font-weight: 400; }
+  tr.es-dq td { color: var(--peligro, #8A2018); }
+
   /* La cartelera: un match por tarjeta. */
   .cartelera { display: grid; gap: 14px; margin-bottom: 30px; }
   .match-tarjeta {
@@ -396,6 +403,6 @@
   </div>
 </footer>
 
-<script src="envivo.js?v=21"></script>
+<script src="envivo.js?v=22"></script>
 </body>
 </html>

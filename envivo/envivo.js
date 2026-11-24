@@ -113,7 +113,13 @@
       if (m.nivel) partes.push(m.nivel);
       if (m.subtitulo) partes.push(m.subtitulo);
       partes.push(m.tiradores + (m.tiradores === 1 ? ' tirador' : ' tiradores'));
-      partes.push(m.etapas + (m.etapas === 1 ? ' etapa' : ' etapas'));
+      // Una clasificación no tiene etapas: son ocho cadenas para todos,
+      // y lo que dice algo es cuántos ya clasificaron.
+      if (m.tipo === 'clasificador') {
+        partes.push('clasificación de 72 disparos');
+      } else {
+        partes.push(m.etapas + (m.etapas === 1 ? ' etapa' : ' etapas'));
+      }
       const pct = m.posibles ? Math.round((m.cargados / m.posibles) * 100) : 0;
       partes.push(programado
         ? 'arranca ' + new Date(m.arranca).toLocaleString('es-AR',
@@ -639,6 +645,111 @@
     window.addEventListener('resize', acomodarBarra);
   }
 
+  // ------------------------------------------------------------------
+  // La clasificación, que es otra cosa que un torneo
+  // ------------------------------------------------------------------
+  //
+  // El clasificador de 72 disparos se corre con la otra app y lo que se
+  // mira no son puestos sino **qué clase sacó cada uno**: no hay
+  // escenarios, no hay divisiones que comparar entre sí y nadie gana.
+  // Por eso tiene su propio dibujo y no un filtro más del de arriba.
+  //
+  // La tabla la arma la nube igual que la de un torneo
+  // (`clasificador-tabla.js`), con el mismo cálculo que la app: acá no
+  // se calcula ningún tiempo ni ninguna clase.
+  const esClasificador = () => !!(datos && datos.tipo === "clasificador");
+
+  const COLUMNAS_CLASIFICADOR = [
+    "Tirador", "Nº IDPA", "División", "Tiempo total", "Clase",
+  ];
+
+  function dibujarCabeceraClasificador() {
+    const m = datos.match;
+    texto($("m-nombre"), m.nombre);
+    document.title = m.nombre + " — En vivo";
+
+    const partes = [];
+    if (m.subtitulo) partes.push(m.subtitulo);
+    if (m.club) partes.push(m.club);
+    if (m.fecha) partes.push(m.fecha.split("-").reverse().join("/"));
+    partes.push(m.tiradores + (m.tiradores === 1 ? " tirador" : " tiradores"));
+    texto($("m-datos"), partes.join(" · "));
+
+    // La barra cuenta planillas terminadas, que es lo que avanza en el
+    // día: las ocho cadenas de cada uno.
+    const pct = m.posibles ? Math.round((m.cargados / m.posibles) * 100) : 0;
+    $("m-barra").style.width = pct + "%";
+    texto($("m-avance"), m.posibles
+      ? m.cargados + " de " + m.posibles + " clasificaron"
+      : "todavía no hay tiradores cargados");
+  }
+
+  // Qué va en las dos últimas columnas según cómo le fue. Los estados
+  // son los mismos que muestra la app en el recuadro del tirador, para
+  // que las dos digan lo mismo.
+  function comoSeVe(fila) {
+    if (fila.estado === "dq") return { tiempo: "DQ", clase: "", mal: true };
+    if (fila.estado === "final") return { tiempo: tiempo(fila.tiempo), clase: fila.clase };
+    if (fila.estado === "sin-division") {
+      return { tiempo: tiempo(fila.tiempo), clase: "sin división", flojo: true };
+    }
+    if (fila.estado === "incompleta") {
+      return {
+        tiempo: "—",
+        clase: "le faltan " + fila.faltan + (fila.faltan === 1 ? " cadena" : " cadenas"),
+        flojo: true,
+      };
+    }
+    return { tiempo: "—", clase: "sin empezar", flojo: true };
+  }
+
+  function dibujarClasificador(primeraVez) {
+    const cabeza = $("cabeza");
+    if (!cabeza.dataset.clasificador) {
+      cabeza.innerHTML = "";
+      const tr = document.createElement("tr");
+      COLUMNAS_CLASIFICADOR.forEach((t, i) => {
+        const th = document.createElement("th");
+        th.textContent = t;
+        if (i >= 3) th.className = "num";
+        tr.appendChild(th);
+      });
+      cabeza.appendChild(tr);
+      cabeza.dataset.clasificador = "1";
+    }
+
+    const cuerpo = $("tabla").querySelector("tbody");
+    cuerpo.innerHTML = "";
+    const filas = datos.general || [];
+    $("vacio").hidden = filas.length > 0;
+
+    filas.forEach((f) => {
+      const visto = comoSeVe(f);
+      const tr = document.createElement("tr");
+      if (visto.mal) tr.className = "es-dq";
+
+      const celdas = [
+        [((f.apellido || "") + ", " + (f.nombre || "")).replace(/^, |, $/, ""), ""],
+        [f.numero || "—", "chico"],
+        [f.division || "—", "chico"],
+        [visto.tiempo, "num"],
+        [visto.clase || "—", "num" + (visto.flojo ? " flojo" : " clase")],
+      ];
+      celdas.forEach(([valor, clase]) => {
+        const td = document.createElement("td");
+        td.textContent = valor;
+        if (clase) td.className = clase;
+        tr.appendChild(td);
+      });
+      cuerpo.appendChild(tr);
+    });
+
+    // Una clasificación no tiene divisiones que comparar ni escenarios.
+    $("filtros").hidden = true;
+    $("filtros-clase").hidden = true;
+    if (primeraVez) document.querySelector("main").classList.remove("con-escenarios");
+  }
+
   function dibujarCabecera() {
     const m = datos.match;
     texto($('m-nombre'), m.nombre);
@@ -690,14 +801,19 @@
       const hayNovedad = !primeraVez && d.actualizado !== datos.actualizado;
       datos = d;
 
-      dibujarCabecera();
-      dibujarCabeza();
-      // Una división o una clase nueva —un inscripto de último momento—
-      // tiene que aparecer sin recargar la página.
-      if (primeraVez || firmaDeFiltros() !== filtrosDibujados) dibujarFiltros();
+      if (esClasificador()) {
+        dibujarCabeceraClasificador();
+        dibujarClasificador(primeraVez);
+      } else {
+        dibujarCabecera();
+        dibujarCabeza();
+        // Una división o una clase nueva —un inscripto de último momento—
+        // tiene que aparecer sin recargar la página.
+        if (primeraVez || firmaDeFiltros() !== filtrosDibujados) dibujarFiltros();
 
-      // En la primera vuelta no se destella: todo sería "nuevo".
-      dibujarTabla(primeraVez);
+        // En la primera vuelta no se destella: todo sería "nuevo".
+        dibujarTabla(primeraVez);
+      }
       if (hayNovedad || primeraVez) ultimoCambio = d.actualizado;
 
       // El ritmo se decide con lo que acaba de llegar: si el torneo ya
