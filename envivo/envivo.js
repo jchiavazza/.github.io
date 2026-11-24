@@ -755,17 +755,21 @@
       const tr = document.createElement("tr");
       if (visto.mal) tr.className = "es-dq";
 
+      // El nombre de la columna viaja en `data-campo` porque en el
+      // teléfono la tabla se parte en tarjetas y la cabecera desaparece:
+      // sin él, el número de IDPA sale solo y no se sabe qué es.
       const celdas = [
-        [((f.apellido || "") + ", " + (f.nombre || "")).replace(/^, |, $/, ""), ""],
-        [f.numero || "—", "chico"],
-        [f.division || "—", "chico"],
-        [visto.tiempo, "num"],
-        [visto.clase || "—", "num" + (visto.flojo ? " flojo" : " clase")],
+        [((f.apellido || "") + ", " + (f.nombre || "")).replace(/^, |, $/, ""), "", ""],
+        [f.numero || "—", "chico", "Nº IDPA"],
+        [f.division || "—", "chico", "División"],
+        [visto.tiempo, "num", "Tiempo total"],
+        [visto.clase || "—", "num" + (visto.flojo ? " flojo" : " clase"), "Clase"],
       ];
-      celdas.forEach(([valor, clase]) => {
+      celdas.forEach(([valor, clase, campo]) => {
         const td = document.createElement("td");
         td.textContent = valor;
         if (clase) td.className = clase;
+        if (campo) td.dataset.campo = campo;
         tr.appendChild(td);
       });
       cuerpo.appendChild(tr);

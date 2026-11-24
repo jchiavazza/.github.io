@@ -513,14 +513,14 @@ section > .acciones {
    porque cambia dos cosas de la temporada --una sola clasificación en
    todo el año, y el anual que deja afuera al que falta dos veces al
    mismo club-- y en el beige del resto de la página pasaba de largo. */
-#verComunicado {
+.boton-comunicado {
   background: var(--peligro);
   border-color: var(--peligro);
   color: #fff;
   font-weight: 700;
   animation: titila-comunicado 1.6s ease-in-out infinite;
 }
-#verComunicado:hover { animation: none; filter: brightness(1.1); }
+.boton-comunicado:hover { animation: none; filter: brightness(1.1); }
 
 /* Prendido es el rojo pleno y apagado el fondo con el texto rojo: el
    botón entero cambia, que a dos metros se nota, y no sólo el brillo. */
@@ -539,7 +539,7 @@ section > .acciones {
 
 /* Al que pidió menos movimiento le queda el rojo, quieto. */
 @media (prefers-reduced-motion: reduce) {
-  #verComunicado { animation: none; }
+  .boton-comunicado { animation: none; }
 }
 .comunicado span {
   color: var(--texto-suave);

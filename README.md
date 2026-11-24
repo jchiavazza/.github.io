@@ -140,6 +140,42 @@ una lista que nadie recorre.
 > `/envivo/`, que se veía en la propia cartelera y llevaba a la página
 > donde uno ya estaba.
 
+## El comunicado de la temporada
+
+`comunicado-2027.js` es el botón rojo, la línea que lo explica y la
+ventana que se abre: el texto entero está ahí y en ningún HTML. Cada
+página deja el hueco y el archivo lo llena:
+
+```html
+<p class="comunicado" data-comunicado></p>
+```
+
+**Sale en dos pantallas, y la segunda es la que importa**: la portada
+y `/envivo/` —la cartelera y la tabla de cada torneo—. El público de
+un torneo llega por el enlace directo que le pasaron por WhatsApp y no
+pasa nunca por la portada, así que lo que sólo esté en la portada no lo
+lee nadie.
+
+Por eso el texto no se escribe en el HTML: entre las dos páginas serían
+tres copias, y al tercer cambio una queda vieja. La ventana se arma una
+sola vez por más huecos que haya, y todos los botones abren esa misma.
+
+> **La copia que no se puede evitar** es
+> `comunicados/2027/comunicado-2027.html` del repositorio de la App, que
+> es la hoja A4 de la que sale el PDF. Son dos cosas distintas —una
+> página y una hoja— y este sitio no genera PDF. Si se corrige una,
+> corregir la otra.
+
+> **El aviso de descarga del PDF lo manda este archivo**, y no el
+> `data-descarga` de `sitio.js`, porque en `/envivo/` ese script no se
+> carga. El identificador `comunicado-2027` tiene que estar en la lista
+> cerrada `ARCHIVOS` de `registrarDescarga`, o la función contesta 400.
+
+Para la temporada que viene: cambiar el texto y el PDF de acá, o sacar
+los dos huecos si no hay comunicado. **No caduca solo**, a propósito: un
+comunicado que desaparece el día que vence deja al que lo busca sin
+nada.
+
 ## El video del año no vive en este repositorio
 
 El resumen de la temporada está montado dos veces —apaisado y vertical—

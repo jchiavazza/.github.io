@@ -22,7 +22,7 @@
 <link rel="canonical" href="https://9x19shooting.com.ar/envivo/">
 <meta name="description" content="Seguí en vivo la clasificación de un match de IDPA organizado por el Club 9x19 Shooting: las posiciones se actualizan solas a medida que los árbitros cargan los puntajes.">
 <link rel="icon" href="../assets/icono.png">
-<link rel="stylesheet" href="../estilo.css?v=83">
+<link rel="stylesheet" href="../estilo.css?v=84">
 
 <meta property="og:type" content="website">
 <meta property="og:title" content="Resultados en vivo">
@@ -212,6 +212,13 @@
     td.chico::before, td.etapas::before { content: attr(data-campo) ': '; }
     td.etapas { text-align: left; }
 
+    /* El tiempo y la clase de una clasificación. En la pantalla ancha
+       son columnas numéricas alineadas a la derecha; acá son renglones
+       de una tarjeta, así que llevan su nombre adelante y van a la
+       izquierda como el resto. */
+    td.num[data-campo]::before { content: attr(data-campo) ': '; }
+    td.num[data-campo] { text-align: left; }
+
     /* En el teléfono no hay columnas: los escenarios van en su línea. */
     .tabla-ancha { overflow: visible; }
     .barra-correr { display: none; }
@@ -340,6 +347,12 @@
       <p><span id="m-avance"></span> · <span class="vivo" id="m-vivo"><span class="punto"></span><span id="m-actualizado">conectando…</span></span></p>
     </div>
 
+    <!-- El comunicado de la temporada. Acá arriba y no sólo en la
+         cartelera, porque el público llega por el enlace directo al
+         torneo que le pasaron: la cartelera no la ve casi nadie. Lo
+         arma `comunicado-2027.js`, que es donde está escrito el texto. -->
+    <p class="comunicado" data-comunicado></p>
+
     <div class="filtros" id="filtros"></div>
     <!-- Las clases de la división elegida. Aparece sólo con una división
          elegida: debajo de la general no hay nada que separar. -->
@@ -368,6 +381,8 @@
       <h1>Resultados en vivo</h1>
       <p class="bajada">Elegí un torneo para ver su clasificación. El que se está corriendo se actualiza solo, mientras los árbitros cargan.</p>
     </header>
+
+    <p class="comunicado" data-comunicado></p>
 
     <div class="cartelera" id="cartelera"></div>
     <p class="aviso-vacio" id="sin-matches" hidden>
@@ -403,6 +418,7 @@
   </div>
 </footer>
 
-<script src="envivo.js?v=23"></script>
+<script src="../comunicado-2027.js?v=1"></script>
+<script src="envivo.js?v=24"></script>
 </body>
 </html>
