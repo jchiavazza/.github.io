@@ -1822,7 +1822,11 @@
         titulo.appendChild(b);
         const et = document.createElement('span');
         et.className = 'marca-estado ' + (!m.oculto && enCurso ? 'vivo' : 'quieto');
-        et.textContent = m.oculto ? 'SUSPENDIDO'
+        // El de otro club se publicó solo, con `publicarMiTorneo`: no es
+        // nuestro y no sale en la cartelera, pero se lista acá porque se
+        // sirve desde nuestra nube y el club tiene que poder verlo.
+        et.textContent = m.propio ? 'DE OTRO CLUB'
+          : m.oculto ? 'SUSPENDIDO'
           : programado ? 'PROGRAMADO'
           : enCurso ? 'EN VIVO'
           : m.congelado ? 'FIJADO' : 'TERMINADO';
